@@ -75,13 +75,9 @@ let
     '';
   };
 
-in {
-  reveal.js = reveal-js;
-
-  main = stdenv.mkDerivation {
-    pname = "rust-for-non-systems-programmers";
-    version = "1.0.0";
-    src = if lib.inNixShell then null else ./.;
-    buildInputs = [ reveal-js ];
-  };
+in stdenv.mkDerivation {
+  pname = "rust-for-non-systems-programmers";
+  version = "1.0.0";
+  src = if lib.inNixShell then null else ./.;
+  buildInputs = [ sfz dart-sass ];
 }
