@@ -6,13 +6,6 @@
 @import url(https://use.typekit.net/buc1fag.css)
 @import url(https://use.typekit.net/buc1fag.css)
 
-$br-default: 1.5rem
-$br-xxxsmall: .066666666 * $br-default
-$br-xxsmall: .1 * $br-default
-$br-xsmall: .4 * $br-default
-$br-small: .4 * $br-default
-$br-medium: 1 * $br-default
-$br-circle: 1000em
 $c-black: rgb(13, 9, 17)
 $c-peach: rgb(245, 167, 143)
 $c-peach-dark: rgb(187, 118, 97)
@@ -41,71 +34,6 @@ $c-peach-a15: rgba(243, 156, 129, 0.15)
 $c-gray-a15: rgba(132, 136, 153, 0.15)
 $c-gray: rgb(153, 136, 132)
 $c-gray-dark: rgb(68, 65, 64)
-$fw-normal: 300
-$fw-normal-wide: 300
-$fw-normal-mono: 700
-$fw-bold: 700
-$fw-bold-wide: 400
-$fw-bold-mono: 800
-$fw-xbold: 900
-$ls-xxxtight: -.06em
-$ls-xxtight: -.05em
-$ls-xtight: -.025em
-$ls-tight: -.0125em
-$ls-normal: 0
-$ls-loose: .025em
-$ls-xloose: .05em
-$ls-xxloose: .075em
-$lh-unit: 1em
-$lh-xxxtight: .6666666667 * $lh-unit
-$lh-xxtight: .775 * $lh-unit
-$lh-xtight: .866666667 * $lh-unit
-$lh-tight: 1 * $lh-unit
-$lh-normal: 1.125 * $lh-unit
-$lh-loose: 1.25 * $lh-unit
-$lh-xloose: 1.4 * $lh-unit
-$s-default: .5em
-$s-xxxxsmall: .13333333 * $s-default
-$s-xxxsmall: .133333333 * $s-default
-$s-xxsmall: .266666667 * $s-default
-$s-xsmall: .533333333 * $s-default
-$s-small: 0.8 * $s-default
-$s-medium: 1.266666667 * $s-default
-$s-large: 2 * $s-default
-$s-xlarge: 3.266666667 * $s-default
-$s-xxlarge: 4.5 * $s-default
-$s-xxxlarge: 10 * $s-default
-$s-xxxxlarge: 15 * $s-default
-$container-width: 120rem
-$ff-headline: modesto-condensed
-$ff-headline-wide: modesto-expanded
-$ff-primary: modesto-text
-$ff-mono: covik-sans-mono
-$fs-xsmall: 1.3rem
-$fs-small: 1.3rem
-$fs-medium: 1.3rem
-$fs-medium-condensed: 1.6rem
-$fs-medium-wide: 1.4rem
-$fs-large: 1.6rem
-$fs-xlarge: 1.9rem
-$fs-xlarge-wide: 1.5rem
-$fs-xlarge-condensed: 2.3rem
-$fs-xxlarge: 2.8rem
-$fs-xxxlarge: 2.8rem
-$fs-xxxxlarge: 3.4rem
-$fs-xxxxxlarge: 6.5rem
-
-// body
-  // --c-accent: $c-peach
-  // --c-accent-dark: $c-peach-dark
-  // --c-secondary-light: $c-purple-light
-  // --c-secondary: $c-purple
-  // --c-secondary-dark: $c-purple-dark
-  // --c-secondary-faded: $c-purple-xdark
-  // --c-accent-faded: $c-peach-a15
-  // font-weight: $fw-normal
-  // background-color: $c-black
-  // color: $c-accent
 
 // Override theme settings (see ../template/settings.scss)
 $backgroundColor: $c-black
@@ -113,7 +41,7 @@ $backgroundColor: $c-black
 $mainColor: $c-purple
 $headingColor: $c-white
 
-$mainFontSize: 42px
+$mainFontSize: 36px
 $mainFont: modesto-text, sans-serif
 $headingFont: modesto-expanded, sans-serif
 $headingTextShadow: none
@@ -126,8 +54,12 @@ $selectionBackgroundColor: lighten( $linkColor, 25% )
 
 $heading1Size: 2.0em
 $heading2Size: 1.6em
-$heading3Size: 1.3em
+$heading3Size: 1.0em
 $heading4Size: 1.0em
+
+// Theme template ------------------------------
+@import "../template/theme"
+// ---------------------------------------------
 
 .reveal
   .small
@@ -141,14 +73,37 @@ $heading4Size: 1.0em
     font-family: modesto-text, sans-serif
     font-weight: 400
 
+  code
+    font-size: 0.9em
+
+  pre
+    font-size: 0.7em
+
+  pre.center
+    display: flex
+
+    & > code
+      margin: auto
+      overflow: unset
+
   pre, code, pre code
-    font-family: covik-sans-mono
+    font-family: "PragmataPro Mono Liga", Monaco, monospace
+
+  iframe.main
+    width: 95%
+    min-height: 500px
+
+  .r-stack > *
+    width: 100%
+
+  & > .slides section .fragment.instant
+    transition: none
+
+  .caption
+    font-size: 0.6em
+    color: $c-purple
 
 section.has-light-background
   &, h1, h2, h3, h4, h5, h6
     color: #222
 
-
-// Theme template ------------------------------
-@import "../template/theme"
-// ---------------------------------------------

@@ -1,31 +1,12 @@
 @import url(https://use.typekit.net/buc1fag.css);
 @import url(https://use.typekit.net/buc1fag.css);
-.reveal .small {
-  font-size: 0.6em;
-  line-height: 1;
-}
-.reveal span.author {
-  color: #f5a78f;
-}
-.reveal h2 {
-  font-family: modesto-text, sans-serif;
-  font-weight: 400;
-}
-.reveal pre, .reveal code, .reveal pre code {
-  font-family: covik-sans-mono;
-}
-
-section.has-light-background, section.has-light-background h1, section.has-light-background h2, section.has-light-background h3, section.has-light-background h4, section.has-light-background h5, section.has-light-background h6 {
-  color: #222;
-}
-
 /*********************************************
  * GLOBAL STYLES
  *********************************************/
 :root {
   --background-color: #0d0911;
   --main-font: modesto-text, sans-serif;
-  --main-font-size: 42px;
+  --main-font-size: 36px;
   --main-color: #ab94bf;
   --block-margin: 20px;
   --heading-margin: 0 0 20px 0;
@@ -39,7 +20,7 @@ section.has-light-background, section.has-light-background h1, section.has-light
   --heading1-text-shadow: none;
   --heading1-size: 2em;
   --heading2-size: 1.6em;
-  --heading3-size: 1.3em;
+  --heading3-size: 1em;
   --heading4-size: 1em;
   --code-font: monospace;
   --link-color: #faf9f3;
@@ -55,7 +36,7 @@ section.has-light-background, section.has-light-background h1, section.has-light
 
 .reveal {
   font-family: modesto-text, sans-serif;
-  font-size: 42px;
+  font-size: 36px;
   font-weight: normal;
   color: #ab94bf;
 }
@@ -107,7 +88,7 @@ section.has-light-background, section.has-light-background h1, section.has-light
 }
 
 .reveal h3 {
-  font-size: 1.3em;
+  font-size: 1em;
 }
 
 .reveal h4 {
@@ -345,6 +326,51 @@ section.has-light-background, section.has-light-background h1, section.has-light
   .backgrounds {
     background-color: #0d0911;
   }
+}
+.reveal .small {
+  font-size: 0.6em;
+  line-height: 1;
+}
+.reveal span.author {
+  color: #f5a78f;
+}
+.reveal h2 {
+  font-family: modesto-text, sans-serif;
+  font-weight: 400;
+}
+.reveal code {
+  font-size: 0.9em;
+}
+.reveal pre {
+  font-size: 0.7em;
+}
+.reveal pre.center {
+  display: flex;
+}
+.reveal pre.center > code {
+  margin: auto;
+  overflow: unset;
+}
+.reveal pre, .reveal code, .reveal pre code {
+  font-family: "PragmataPro Mono Liga", Monaco, monospace;
+}
+.reveal iframe.main {
+  width: 95%;
+  min-height: 500px;
+}
+.reveal .r-stack > * {
+  width: 100%;
+}
+.reveal > .slides section .fragment.instant {
+  transition: none;
+}
+.reveal .caption {
+  font-size: 0.6em;
+  color: #ab94bf;
+}
+
+section.has-light-background, section.has-light-background h1, section.has-light-background h2, section.has-light-background h3, section.has-light-background h4, section.has-light-background h5, section.has-light-background h6 {
+  color: #222;
 }
 
 /*# sourceMappingURL=rustconf.css.map */
