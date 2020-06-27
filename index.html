@@ -17,232 +17,8 @@
 <body>
     <div class="reveal">
         <div class="slides">
-
-            <section>
-                <h1>Rust<br>
-                    <div class=small>for</div>
-                    Non-Systems Programmers
-                </h1>
-                <span class=author>Rebecca Turner</span>
-
-                <aside class=notes>
-                    Hey folks, my name is Rebecca Turner and I'm going to tell you
-                    why you should be writing non-systems code in Rust.
-                </aside>
+            <section data-markdown="rust-for-non-systems-programmers.md">
             </section>
-
-            <section>
-                <h2>Systems programming</h2>
-
-                <ul>
-                    <li>Resource-constrained</li>
-                    <li>Concurrent</li>
-                    <li>High-performance</li>
-                    <li>“Low-level”</li>
-                </ul>
-
-                <aside class=notes>
-                    By systems programming, I'm talking about programming in
-                    resource-constrained environments (like embedded systems),
-                    concurrent or distributed software with many threads or
-                    workers, software that needs to run extremely quickly, or other
-                    so-called “low-level” programs which need to directly access
-                    hardware.
-
-                    <p>
-                        Allegedly, Rust is great for all these use-cases. I say
-                        <i>allegedly</i> because I'm not a systems programmer — most of
-                        my programs read some files, maybe make some network calls, do
-                        some light parsing, and not much else. Most of the time, they
-                        don't even need to be particularly fast.
-                </aside>
-            </section>
-
-            <section>
-                <h2>What makes a good non-systems language?</h2>
-
-                <ul>
-                    <li>Expressive: write what you mean</li>
-                    <li>Safe: no use-after-free bugs, no bounds-checking errors...</li>
-                    <li>TODO</li>
-                </ul>
-            </section>
-
-            <section>
-                <h2>Tooling</h2>
-
-                <ul>
-                    <li>Documentation: <a href="https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html">rustdoc</a> (API
-                        docs) and <a href="https://rust-lang.github.io/mdBook/">mdBook</a> (long-form guides)</li>
-                    <li>Language servers: <a href="https://github.com/rust-lang/rls">rls</a> (official) and <a
-                            href="https://github.com/rust-analyzer/rust-analyzer">rust-analyzer</a> (community)</li>
-                    <li>Package manager, build system: <a
-                            href="https://doc.rust-lang.org/book/ch01-03-hello-cargo.html">Cargo</a></li>
-                </ul>
-            </section>
-
-            <section>
-                <h2>Documentation</h2>
-
-                <iframe class=main src="https://docs.rs/rand/0.7.3/rand/"></iframe>
-
-                <aside class=notes>
-                    Here's the generated documentation for the <a href="https://docs.rs/rand/">
-                        <code>rand</code></a> crate,
-                    which you can find at <a href="https://docs.rs/rand/">
-                        <code>docs.rs/rand</code></a>.
-                </aside>
-            </section>
-
-            <section>
-                <h2>Mutability</h2>
-
-                <div class="r-stack">
-                    <div class="fragment fade-out instant" data-fragment-index=1>
-                        <pre class=center><code class=rust data-trim>
-fn main() {
-    let var = 2;
-    var = 4;
-}
-                    </code></pre>
-                        <caption><a
-                                href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=cbd74684121a3803c2d8451d886d3b78">Listing
-                                1</a>
-                        </caption>
-                    </div>
-
-                    <div class="fragment instant fade-in-then-out" data-fragment-index=1>
-                        <pre><code class=nohighlight data-noescape data-trim>
-<span class=hljs-title>error<a href="https://doc.rust-lang.org/error-index.html#E0384">[E0384]</a>: cannot assign twice to immutable variable `var`</span>
- --&gt; src/main.rs:3:5
-  |
-2 |     let var = 2;
-  |         ---
-  |         |
-  |         first assignment to `var`
-  |         help: make this binding mutable: `mut var`
-3 |     var = 4;
-  |     ^^^^^^^ cannot assign twice to immutable variable
-                </code></pre>
-                    </div>
-
-                    <div class="fragment instant fade-in-then-out">
-                        <pre><code class=rust data-trim>
-fn main() {
-    let nums = vec![1, 2, 3];
-    nums.push(4);
-}
-                        </code></pre>
-                        <caption><a
-                                href="https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=b5153b87b7ff53d3dbbe6cb15a761ded">Listing
-                                2</a></caption>
-                    </div>
-
-
-                    <div class="fragment instant fade-in-then-out">
-                        <pre><code class=nohighlight data-noescape data-trim>
-<span class=hljs-title>error<a href="https://doc.rust-lang.org/stable/error-index.html#E0596">[E0596]</a>: cannot borrow `nums` as mutable,
-as it is not declared as mutable</span>
- --&gt; src/main.rs:3:5
-  |
-2 |     let nums = vec![1, 2, 3];
-  |         ---- help: consider changing this to be mutable:
-  |                    `mut nums`
-3 |     nums.push(4);
-  |     ^^^^ cannot borrow as mutable
-                        </code></pre>
-                    </div>
-                </div>
-
-                <aside class=notes>
-                    One of my favorite Rust features is mutability tracking.
-                    Here's the simple form, which you might've seen in
-                    JavaScript as <code>let</code>/<code>const</code> or Java
-                    as <code>final</code>.
-
-                    <p>This doesn't compile because we didn't declare
-                        <code>var</code> as mutable.
-                    </p>
-
-                    <p>But Rust actually goes a step further: non-mutable
-                        variables aren't allowed to change <em>internally,</em>
-                        either.
-                    </p>
-
-                    <p>This code doesn't compile because adding elements to a <a
-                            href="https://doc.rust-lang.org/std/vec/struct.Vec.html"><code>Vec</code></a>
-                        means changing memory, and that requires having mutable access to the variable.
-                    </p>
-
-                    <p>This gives us a really powerful way to make sure we aren't changing variables we shouldn't;
-                        instead of having to manually verify every line of code and every function we call, we just make
-                        sure a variable isn't declared as mutable, and Rust makes sure we don't change it.
-                    </p>
-                </aside>
-            </section>
-
-            <section>
-                <h2>Type system</h2>
-                <h3>The Type System is Real, and it is Your Friend</h3>
-
-                <ul>
-                    <li>Never see <code>AttributeError: 'NoneType' object has no attribute 'append'</code> ever again
-                    </li>
-                    <li>Autocomplete works</li>
-                    <li>Encode meaning in the types</li>
-                </ul>
-
-                <aside class=notes>
-                    Rust's type system is pretty powerful, and it is your friend.
-                </aside>
-            </section>
-
-            <section>
-                <h2>Goodbye null pointer errors</h2>
-                Hello, <code>Option</code>!
-
-                <pre><code class=rust data-trim>
-let maybe_name = Some("Rebecca");
-let no_name: Option&lt;String&gt; = None;
-                </code></pre>
-            </section>
-
-            <section data-markdown>
-                <textarea data-template>
-                    ## Goodbye null pointer errors
-                    Hello, `Option`!
-
-                    ```rust
-                    let maybe_name = Some("Rebecca");
-                    let no_name: Option<String> = None;
-                    ```
-                </textarea>
-            </section>
-
-            <section>
-                <h2>Cloning</h2>
-            </section>
-
-            <section>
-                <h2>Borrowing</h2>
-            </section>
-
-            <section>
-                <h2>Error handling</h2>
-            </section>
-
-            <section>
-                <h2>Iterators</h2>
-            </section>
-
-            <section>
-                <h2>(De)serialization</h2>
-            </section>
-
-            <section>
-                <h2>Shell scripting</h2>
-            </section>
-
         </div>
     </div>
 
@@ -250,10 +26,8 @@ let no_name: Option&lt;String&gt; = None;
     <script src="plugin/notes/notes.js"></script>
     <script src="plugin/markdown/markdown.js"></script>
     <script src="plugin/highlight/highlight.js"></script>
+    <script src="plugin/highlight/rust.js"></script>
     <script>
-        // More info about initialization & config:
-        // - https://revealjs.com/initialization/
-        // - https://revealjs.com/config/
         Reveal.initialize({
             width: 960,
             height: 540,
@@ -266,8 +40,7 @@ let no_name: Option&lt;String&gt; = None;
             markdown: {
                 smartypants: true,
             },
-            // Learn about plugins: https://revealjs.com/plugins/
-            plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+            plugins: [RevealMarkdown, HighlightRustCompiler, RevealHighlight, RevealNotes]
         });
     </script>
 </body>

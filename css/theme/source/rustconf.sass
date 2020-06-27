@@ -61,7 +61,7 @@ $heading4Size: 1.0em
 @import "../template/theme"
 // ---------------------------------------------
 
-.reveal
+.reveal > .slides
   .small
     font-size: 0.6em
     line-height: 1
@@ -103,7 +103,11 @@ $heading4Size: 1.0em
     font-size: 0.6em
     color: $c-purple
 
+.reveal > .speaker-notes
+  a
+    color: #00a
+    text-decoration: underline
+
 section.has-light-background
   &, h1, h2, h3, h4, h5, h6
     color: #222
-

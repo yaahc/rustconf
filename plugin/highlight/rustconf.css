@@ -66,4 +66,13 @@
   font-weight: bold;
 }
 
+.hljs-error {
+  color: #b53f28;
+  font-weight: bold;
+}
+
+.hljs-path {
+  text-decoration: underline;
+}
+
 /*# sourceMappingURL=rustconf.css.map */
