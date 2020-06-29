@@ -6,7 +6,7 @@ const _HighlightRustCompiler = {
         const highlight = reveal.getPlugin('highlight')
 
         highlight.hljs.registerLanguage('rust-compiler',
-            function (hljs) {
+            function (_hljs) {
                 console.log('registering rust-compiler language')
                 return {
                     contains: [
@@ -25,6 +25,8 @@ const _HighlightRustCompiler = {
                                 }
                             ],
                             starts: {
+                                className: 'comment',
+                                end: '\n',
                                 contains: [
                                     {
                                         className: 'path',

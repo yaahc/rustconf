@@ -71,11 +71,6 @@ fn main() {
 }
 ```
 
-<caption>
-
-[Listing 1][playground-1]
-
-</caption>
 </div>
 
 [playground-1]: https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=cbd74684121a3803c2d8451d886d3b78
@@ -105,12 +100,6 @@ fn main() {
   nums.push(4);
 }
 ```
-
-<caption>
-
-[Listing 2][playground-2]
-
-</caption>
 
 [playground-2]: https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=b5153b87b7ff53d3dbbe6cb15a761ded
 
@@ -157,9 +146,10 @@ Rust makes sure we don't change it.
 ---
 
 ## Type system
-### The Type System is Real, and it is Your Friend
+### The Type System is Big and Strong and Your Friend
 
-- Never see <code>AttributeError: 'NoneType' object has no attribute 'append'</code> ever again
+- Never see `AttributeError: 'NoneType' object has no attribute
+  'append'` ever again
 - Autocomplete works
 - Encode meaning in the types
 
@@ -172,8 +162,44 @@ Hello, `Option`!
 
 ```rust
 let maybe_name = Some("Rebecca");
-let no_name: Option<String> = None;
+let no_name: Option&lt;String> = None;
 ```
+
+Notes: An `Option` has two states: it can either be `Some` value, or `None`.
+
+You'll hear Rust programmers talk about "zero-cost abstractions" a lot, and
+`Option` is a great example --- it gives us a really powerful toolkit for
+working with things that *might* not exist, and then most of the time it
+represents `None` as a null pointer.
+
+`Option` is a really beautiful type, and it makes dealing with optional values
+safer because it makes us *explicit* about accessing the internal type.
+
+---
+
+## Matching
+
+```rust
+match some_option {
+  Some(val) => println!("Found a value: {}", val),
+  None => println!("Didn't get anything :("),
+}
+```
+
+Notes: Like tuple unpacking in Python and destructuring assignment in
+JavaScript, match expressions let us conditionally execute code based on the
+"shape" of a value.
+
+---
+
+## Matching
+
+```rust
+if let Some(val) = some_option {
+  println!("Found a value: {}", val);
+}
+```
+
 ---
 
 ## Cloning

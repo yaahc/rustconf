@@ -343,11 +343,9 @@
 }
 .reveal > .slides pre {
   font-size: 0.7em;
-}
-.reveal > .slides pre.center {
   display: flex;
 }
-.reveal > .slides pre.center > code {
+.reveal > .slides pre > code {
   margin: auto;
   overflow: unset;
 }
@@ -361,7 +359,7 @@
 .reveal > .slides .r-stack > * {
   width: 100%;
 }
-.reveal > .slides > .slides section .fragment.instant {
+.reveal > .slides section .fragment.instant {
   transition: none;
 }
 .reveal > .slides .caption {

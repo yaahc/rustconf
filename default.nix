@@ -36,8 +36,10 @@ let
   sfz = stdenv.mkDerivation rec {
     pname = "sfz";
     version = "0.1.0";
-    src = fetchzip (let inherit (stdenv.targetPlatform) isDarwin;
-    in {
+
+    inherit (stdenv.targetPlatform) isDarwin;
+
+    src = fetchzip {
       sha256 = if isDarwin then
         "0ndmyibdzyab50l1rczskxyf73ar6c84wg60namspcmzd9xr823q"
       else
@@ -45,11 +47,17 @@ let
       url =
         let platform = if isDarwin then "apple-darwin" else "unknown-linux-gnu";
         in "https://github.com/weihanglo/${pname}/releases/download/${version}/${pname}-${version}-x86_64-${platform}.tar.gz";
-    });
+    };
 
     installPhase = ''
       mkdir -p $out/bin/
       cp sfz $out/bin/
+      if [[ -z "$isDarwin" ]]
+      then
+        ${patchelf}/bin/patchelf \
+          --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
+          $out/bin/sfz
+      fi
     '';
   };
 
