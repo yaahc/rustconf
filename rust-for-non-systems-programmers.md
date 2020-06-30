@@ -34,6 +34,12 @@ of the time, they don't even need to be particularly fast.
 
 ---
 
+## Why do I like Rust?
+
+Notes: As much as this is a talk
+
+---
+
 ## Tooling
 
 - Documentation: [rustdoc] (API docs) and [mdBook] (long-form guides)
@@ -61,9 +67,6 @@ find at [docs.rs/rand][`rand`].
 
 ## Mutability
 
-<div class="r-stack">
-<div class="fragment fade-out instant" data-fragment-index=1>
-
 ```rust
 fn main() {
   let var = 2;
@@ -71,11 +74,15 @@ fn main() {
 }
 ```
 
-</div>
-
 [playground-1]: https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=cbd74684121a3803c2d8451d886d3b78
 
-<div class="fragment instant fade-in-then-out" data-fragment-index=1>
+Notes: One of my favorite Rust features is mutability tracking. Here's the simple
+form, which you might've seen in JavaScript as `let`/`const` or Java as
+`final`.
+
+---
+
+## Mutability
 
 ```rust-compiler
 error[E0384]: cannot assign twice to immutable variable `var`
@@ -90,9 +97,11 @@ error[E0384]: cannot assign twice to immutable variable `var`
   |     ^^^^^^^ cannot assign twice to immutable variable
 ```
 
-</div>
+Notes: This doesn't compile because we didn't declare `var` as mutable.
 
-<div class="fragment instant fade-in-then-out">
+---
+
+## Mutability
 
 ```rust
 fn main() {
@@ -103,9 +112,12 @@ fn main() {
 
 [playground-2]: https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=b5153b87b7ff53d3dbbe6cb15a761ded
 
-</div>
+Notes: But Rust actually goes a step further: non-mutable variables aren't
+allowed to change *internally,* either.
 
-<div class="fragment instant fade-in-then-out">
+---
+
+## Mutability
 
 ```language-rust-compiler
 error[E0596]: cannot borrow `nums` as mutable,
@@ -119,22 +131,8 @@ as it is not declared as mutable
   |     ^^^^ cannot borrow as mutable
 ```
 
-</div>
-</div>
-
-Notes:
-
-One of my favorite Rust features is mutability tracking. Here's the simple
-form, which you might've seen in JavaScript as `let`/`const` or Java as
-`final`.
-
-This doesn't compile because we didn't declare `var` as mutable.
-
-But Rust actually goes a step further: non-mutable variables aren't allowed to
-change *internally,* either.
-
-This code doesn't compile because adding elements to a [`Vec`] means changing
-memory, and that requires having mutable access to the variable.
+Notes: This code doesn't compile because adding elements to a [`Vec`] means
+changing memory, and that requires having mutable access to the variable.
 
 This gives us a really powerful way to make sure we aren't changing variables
 we shouldn't; instead of having to manually verify every line of code and every
@@ -156,6 +154,31 @@ Rust makes sure we don't change it.
 Notes: Rust's type system is pretty powerful, and it is your friend.
 
 ---
+
+## Enums
+### AKA: sum / union types
+
+- Types that can be a number of different things, one at a time
+
+---
+
+## You already use enums
+
+- `null` / `nil` / `undefined` / `None` are used for variables that are either
+  an object or nothing
+- Strings are used to represent a fixed set of constants
+- Exceptions are used to represent different kinds of errors
+
+---
+
+## But too much of the time, you *don't* use enums
+
+- This field isn't null *if* this other field is `true`
+- Calling this method after this other method is an error
+- The response object will either have a `response` key or an `error` key
+
+---
+
 
 ## Goodbye null pointer errors
 Hello, `Option`!
