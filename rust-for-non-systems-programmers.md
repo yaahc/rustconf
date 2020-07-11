@@ -229,6 +229,7 @@ if let Some(val) = some_option {
 }
 ```
 
+---
 
 ## Cloning
 

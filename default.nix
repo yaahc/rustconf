@@ -1,7 +1,7 @@
 { pkgs ? import <nixpkgs> { } }:
 
 let
-  inherit (pkgs) fetchzip stdenv lib patchelf fetchFromGitHub;
+  inherit (pkgs) fetchzip stdenv lib patchelf fetchFromGitHub python38;
 
   dart-sass = stdenv.mkDerivation rec {
     pname = "dart-sass";
@@ -85,9 +85,11 @@ let
     '';
   };
 
+  py = python38.withPackages (pkgs: with pkgs; [ jedi ]);
+
 in stdenv.mkDerivation {
   pname = "rust-for-non-systems-programmers";
   version = "1.0.0";
   src = if lib.inNixShell then null else ./.;
-  buildInputs = [ sfz dart-sass ];
+  buildInputs = [ sfz dart-sass py ];
 }
