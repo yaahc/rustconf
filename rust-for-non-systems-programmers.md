@@ -1,7 +1,8 @@
 # Rust<br> <div class=small>for</div> Non-Systems Programmers
 <span class=author>Rebecca Turner</span>
 
-[@16kbps](https://twitter.com/16kbps) / [becca.ooo](https://becca.ooo)
+<i class="fab fa-twitter"></i> [@16kbps](https://twitter.com/16kbps)
+/ [becca.ooo](https://becca.ooo)
 
 Notes: Hey folks, my name is Rebecca Turner and I'm going to tell you why you
 should be writing non-systems code in Rust.
