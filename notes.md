@@ -1,0 +1,2 @@
+- Narrative around writing the weather app rather than strict itemization
+- "As non-systems programmers, we're used to..."
