@@ -17,7 +17,7 @@
 <body>
     <div class="reveal">
         <div class="slides">
-            <section data-markdown="rust-for-non-systems-programmers.md">
+            <section data-markdown="rust-for-non-systems-programmers.md" data-separator-notes="^Notes:">
             </section>
         </div>
     </div>
@@ -27,6 +27,7 @@
     <script src="plugin/markdown/markdown.js"></script>
     <script src="plugin/highlight/highlight.js"></script>
     <script src="plugin/highlight/rust.js"></script>
+    <script src="plugin/highlight/shell.js"></script>
     <script>
         Reveal.initialize({
             width: 960,
@@ -40,7 +41,7 @@
             markdown: {
                 smartypants: true,
             },
-            plugins: [RevealMarkdown, HighlightRustCompiler, RevealHighlight, RevealNotes]
+            plugins: [RevealMarkdown, HighlightRustCompiler, HighlightShellSession, RevealHighlight, RevealNotes]
         });
     </script>
 </body>
