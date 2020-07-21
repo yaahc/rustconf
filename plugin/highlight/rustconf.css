@@ -55,6 +55,14 @@
   color: #736d77;
 }
 
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-doctag,
+.hljs-title,
+.hljs-section,
+.hljs-type,
+.hljs-selector-id,
 .hljs-bold {
   font-weight: bold;
 }
