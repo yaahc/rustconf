@@ -66,21 +66,14 @@ impl OpenWeather {
             ])
             .send()?
             .bytes()?;
-        match serde_json::from_reader(&*bytes) {
-            Ok(val) => Ok(val),
-            Err(err) => {
-                let client_err: Result<ClientError, _> =
-                    serde_json::from_reader(&*bytes);
-                match client_err {
-                    Ok(client_err) => {
-                        Err(WeatherError::Client(client_err))
-                    }
-                    Err(_) => {
-                        Err(WeatherError::Deserialize(err))
-                    }
-                }
-            }
-        }
+        // Attempt to deserialize as `Response`
+        serde_json::from_reader(&*bytes).map_err(|err| {
+            // If we fail, attempt to deserialize as `ClientError`
+            serde_json::from_reader(&*bytes)
+                .map(WeatherError::Client)
+                // If we don't have a `ClientError`, fail with the original error.
+                .unwrap_or(WeatherError::Deserialize(err))
+        })
     }
 }
 

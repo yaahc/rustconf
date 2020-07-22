@@ -128,7 +128,7 @@ find at [docs.rs/rand][`rand`].
 
 ## Getting started
 
-```rust
+<pre><code class="rust" data-line-numbers="1-10|1|3-10|3|4|5-9|5|8" data-trim>
 use std::env;
 
 fn main() {
@@ -139,7 +139,20 @@ fn main() {
         println!("Hello, {}!", user);
     }
 }
-```
+</code></pre>
+
+Notes: Here's a pretty simple rust program, just to show off a bit of syntax.
+
+1. The `use` statement imports names from libraries, here the standard library.
+2. Next, we define a function.
+3. The function named `main` is the entry point.
+4. We call the `var` function in the `env` module, and assign the value it
+   returns to `user`; Rust figures out the type for us.
+5. Next, we have an `if` statement, which has braces but no parenthesis.
+6. Note that we're also comparing strings with `==` --- rust has operator overloading!
+7. Finally, we have this `println!` macro --- the `!` means it's a macro, and
+   the string literal there is actually turned into a series of formatting
+   instructions at compile time so we don't waste time parsing at runtime.
 
 ---
 
@@ -157,7 +170,7 @@ error[E0308]: mismatched types
 
 ---
 
-```rust
+<pre><code class="rust" data-line-numbers="4">
 use std::env;
 
 fn main() {
@@ -168,7 +181,7 @@ fn main() {
         println!("Hello, {}!", user);
     }
 }
-```
+</code></pre>
 
 ---
 

@@ -344,10 +344,14 @@
 .reveal > .slides pre {
   font-size: 0.7em;
   display: flex;
+  box-shadow: none;
 }
 .reveal > .slides pre > code {
   margin: auto;
   overflow: unset;
+}
+.reveal > .slides pre > code.has-highlights {
+  margin: 0;
 }
 .reveal > .slides pre, .reveal > .slides code, .reveal > .slides pre code {
   font-family: "PragmataPro Mono Liga", Monaco, monospace;
