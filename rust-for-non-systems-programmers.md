@@ -48,36 +48,10 @@ So I want to introduce the rest of us to Rust.
 
 - Programmers comfortable in dynamic languages like Python, JavaScript, Ruby,
   etc.
-- Who are tired of the same old problems --- `null`/`undefined` errors, poor
-  documentation, etc.
-
----
-
-## Systems programming
-
-- Resource-constrained
-- Concurrent
-- High-performance
-- “Low-level”
-
-Notes: By systems programming, I'm talking about programming in
-resource-constrained environments (like embedded systems), concurrent or
-distributed software with many threads or workers, software that needs to run
-extremely quickly, or other so-called “low-level” programs which need to
-directly access hardware.
-
-Allegedly, Rust is great for all these use-cases. I say _allegedly_
-because I'm not a systems programmer — most of my programs read some files,
-maybe make some network calls, do some light parsing, and not much else. Most
-of the time, they don't even need to be particularly fast.
-
----
-
-## What makes a good non-systems language?
-
-- Expressive: write what you mean
-- Safe: no use-after-free bugs, no bounds-checking errors...
-- ...TODO
+- Who are tired of some of the problems with those languages:
+  - Null/undefined errors
+  - Runtime type errors
+  - Poor documentation
 
 ---
 
@@ -128,18 +102,18 @@ find at [docs.rs/rand][`rand`].
 
 ## Getting started
 
-<pre><code class="rust" data-line-numbers="1-10|1|3-10|3|4|5-9|5|8" data-trim>
+```rust no-line-numbers [1-10|1|3-10|3|4|5-9|5|8]
 use std::env;
 
 fn main() {
-    let user = env::var("USER");
+    let user = env::var("USER").unwrap();
     if user == "becca" {
         println!("Hello, Rebecca!");
     } else {
         println!("Hello, {}!", user);
     }
 }
-</code></pre>
+```
 
 Notes: Here's a pretty simple rust program, just to show off a bit of syntax.
 
@@ -153,35 +127,6 @@ Notes: Here's a pretty simple rust program, just to show off a bit of syntax.
 7. Finally, we have this `println!` macro --- the `!` means it's a macro, and
    the string literal there is actually turned into a series of formatting
    instructions at compile time so we don't waste time parsing at runtime.
-
----
-
-```rust-compiler
-error[E0308]: mismatched types
- --> src/main.rs:5:16
-  |
-5 |     if user == "becca" {
-  |                ^^^^^^^ expected enum `Result`, found `&str`
-  |
-  = note: expected enum
-          `Result&lt;std::string::String, std::env::VarError>`
-          found reference `&'static str`
-```
-
----
-
-<pre><code class="rust" data-line-numbers="4">
-use std::env;
-
-fn main() {
-    let user = env::var("USER").unwrap();
-    if user == "becca" {
-        println!("Hello, Rebecca!");
-    } else {
-        println!("Hello, {}!", user);
-    }
-}
-</code></pre>
 
 ---
 
@@ -202,7 +147,7 @@ Hello, nell!
 
 ---
 
-```shell-session
+<pre><code class="shell-session no-line-numbers" data-line-numbers="1-2|3-7" data-trim>
 $ env USER= ./target/debug/rustconf-code
 Hello, !
 $ env USER="$(printf '\xc3\x28')" ./target/debug/rustconf-code
@@ -210,7 +155,7 @@ thread 'main' panicked at 'called `Result::unwrap()` on an
 `Err` value: NotUnicode("\xC3(")', src/main.rs:4:16
 note: run with `RUST_BACKTRACE=1` environment variable to display
 a backtrace
-```
+</code></pre>
 
 ---
 

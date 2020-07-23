@@ -1,0 +1,21 @@
+[package]
+name = "md-compiler"
+version = "0.1.0"
+authors = ["Rebecca Turner <rbt@sent.as>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+lol_html = "0.2.0"
+pulldown-cmark = "0.7.2"
+structopt = "0.3.15"
+handlebars = "3.3.0"
+notify = "4.0.15"
+thiserror = "1.0.20"
+walkdir = "2.3.1"
+tracing = "0.1.16"
+tracing-subscriber = "0.2.8"
+eyre = "0.6.0"
+color-eyre = "0.5.0"
+serde = { version = "1.0", features = ["derive"] }

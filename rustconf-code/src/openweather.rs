@@ -1,6 +1,21 @@
+use chrono::prelude::*;
 use serde::Deserialize;
 
-pub type UnixUTC = i32;
+#[derive(Deserialize, Debug, Clone)]
+#[serde(from = "i64")]
+pub struct UnixUTC(DateTime<Utc>);
+
+impl From<i64> for UnixUTC {
+    fn from(time: i64) -> Self {
+        Self(Utc.timestamp(time, 0))
+    }
+}
+
+impl Into<i64> for UnixUTC {
+    fn into(self) -> i64 {
+        self.0.timestamp()
+    }
+}
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct OneCall {

@@ -76,4 +76,8 @@
   text-decoration: underline;
 }
 
+code.no-line-numbers .hljs-ln-numbers {
+  display: none;
+}
+
 /*# sourceMappingURL=rustconf.css.map */

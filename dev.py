@@ -1,13 +1,18 @@
 #!/usr/bin/env python3.8
 import asyncio
+from subprocess import CalledProcessError
 from typing import List, Optional
 import webbrowser
 from os import path
+import os
+import argparse
 
 
 async def run(program: str, *args: str):
     proc = await asyncio.create_subprocess_exec(program, *args, stdin=None, stderr=None)
-    await proc.wait()
+    rc = await proc.wait()
+    if rc != 0:
+        raise ValueError(program)
 
 
 async def sass_watch(watch: str, render: str):
@@ -25,18 +30,40 @@ async def open_browser(address: str):
     webbrowser.open_new_tab(address)
 
 
-async def amain():
+async def md_watch(watch: str):
+    print("Ensuring md-compiler is up-to-date")
+    os.chdir("md-compiler")
+    await run("cargo", "build", "--release")
+    os.chdir("..")
+    print("Compiling", watch, "to index.html")
+    await run("./md-compiler/target/release/md-compiler", "--watch", watch)
+
+
+async def nop():
+    pass
+
+
+async def amain(args):
     await asyncio.gather(
         serve_static("."),
         sass_watch("plugin/highlight/rustconf.sass", "plugin/highlight/rustconf.css"),
         sass_watch("css/theme/source", "dist/theme"),
-        open_browser("http://localhost:5000/"),
+        md_watch("rust-for-non-systems-programmers.md"),
+        open_browser("http://localhost:5000/") if args.open else nop(),
     )
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--no-open",
+        dest="open",
+        action="store_false",
+        help="Don't open a browser window",
+    )
+
     try:
-        asyncio.run(amain())
+        asyncio.run(amain(parser.parse_args()))
     except KeyboardInterrupt:
         print("Bye!")
 

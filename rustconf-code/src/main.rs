@@ -1,3 +1,4 @@
+use std::convert::{TryFrom, TryInto};
 use std::fs::File;
 use std::path::PathBuf;
 
@@ -69,8 +70,8 @@ impl OpenWeather {
         // Attempt to deserialize as `Response`
         serde_json::from_reader(&*bytes).map_err(|err| {
             // If we fail, attempt to deserialize as `ClientError`
-            serde_json::from_reader(&*bytes)
-                .map(WeatherError::Client)
+            (&*bytes)
+                .try_into()
                 // If we don't have a `ClientError`, fail with the original error.
                 .unwrap_or(WeatherError::Deserialize(err))
         })
@@ -87,6 +88,15 @@ enum WeatherError {
     Client(ClientError),
     #[error("Couldn't parse timestamp: {0}")]
     DateTime(#[from] chrono::format::ParseError),
+}
+
+impl TryFrom<&[u8]> for WeatherError {
+    type Error = serde_json::Error;
+    fn try_from(response: &[u8]) -> Result<Self, Self::Error> {
+        Ok(WeatherError::Client(serde_json::from_slice(
+            response,
+        )?))
+    }
 }
 
 #[derive(Deserialize, Debug, Clone)]
