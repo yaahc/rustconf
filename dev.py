@@ -22,7 +22,7 @@ async def sass_watch(watch: str, render: str):
 
 async def serve_static(root: str = "."):
     print("Serving static files in ", path.realpath(root))
-    await run("sfz", "--render-index", "--bind", "127.0.0.1", root)
+    await run("sfz", "--no-ignore", "--render-index", "--bind", "127.0.0.1", root)
 
 
 async def open_browser(address: str):
@@ -30,11 +30,15 @@ async def open_browser(address: str):
     webbrowser.open_new_tab(address)
 
 
-async def md_watch(watch: str):
+async def update_md_compiler():
     print("Ensuring md-compiler is up-to-date")
     os.chdir("md-compiler")
     await run("cargo", "build", "--release")
     os.chdir("..")
+    print("cwd =", os.getcwd())
+
+
+async def md_watch(watch: str):
     print("Compiling", watch, "to index.html")
     await run("./md-compiler/target/release/md-compiler", "--watch", watch)
 
@@ -44,6 +48,7 @@ async def nop():
 
 
 async def amain(args):
+    await update_md_compiler()
     await asyncio.gather(
         serve_static("."),
         sass_watch("plugin/highlight/rustconf.sass", "plugin/highlight/rustconf.css"),

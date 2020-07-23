@@ -23,7 +23,10 @@ sense to you.
 
 ---
 
-<img src=img/rust-2018-11-30.png alt="A screenshot of the rust-lang.org website in late 2018. The headline reads &quot;Rust is a systems programming languaeg that runs blazingly fast, prevents segfaults, and guarantees thread safety.&quot;">
+![A screenshot of the rust-lang.org website in late 2018. The headline reads
+"Rust is a systems programming languaeg that runs blazingly fast,
+prevents segfaults, and guarantees thread
+safety."](img/rust-2018-11-30.png)
 
 Notes: Here's the [rust-lang.org] website at the end of 2018, right before
 they rolled out the new site. The headline emphasizes systems programming,
@@ -33,7 +36,10 @@ speed, and memory safety --- all things I don't directly care about that much.
 
 ---
 
-<img src=img/rust-2020-07-19.png alt="A screenshot of the rust-lang.org website in mid-2020. The headline reads &quot;A language empowering everyone to build reliable and efficient software.&quot; and sections under &quot;Why Rust?&quot; emphasize performance, reliability, and productivity.">
+![A screenshot of the rust-lang.org website in mid-2020. The headline reads
+"A language empowering everyone to build reliable and efficient software."
+and sections under "Why Rust?" emphasize performance, reliability, and
+productivity.](img/rust-2020-07-19.png)
 
 Notes: And here's the same website today in mid-2020. Now we're "empowering
 everyone" to and focusing on reliability and productivity. But a lot of the
@@ -147,7 +153,7 @@ Hello, nell!
 
 ---
 
-<pre><code class="shell-session no-line-numbers" data-line-numbers="1-2|3-7" data-trim>
+```shell-session no-line-numbers [1-2|3-7]
 $ env USER= ./target/debug/rustconf-code
 Hello, !
 $ env USER="$(printf '\xc3\x28')" ./target/debug/rustconf-code
@@ -155,7 +161,7 @@ thread 'main' panicked at 'called `Result::unwrap()` on an
 `Err` value: NotUnicode("\xC3(")', src/main.rs:4:16
 note: run with `RUST_BACKTRACE=1` environment variable to display
 a backtrace
-</code></pre>
+```
 
 ---
 
@@ -186,7 +192,9 @@ I couldn't figure out who you are!
 
 ---
 
-<img src=img/receipt-printer.jpg alt="A Star TSP100 Eco futurePRNT 72mm receipt printer, powered on with a printed receipt showing the RustConf homepage reading &quot;Beaming to screens across the globe&quot;">
+![A Star TSP100 Eco futurePRNT 72mm receipt printer, powered on with a
+printed receipt showing the RustConf homepage reading "Beaming to screens
+across the globe"](img/receipt-printer.jpg)
 
 ---
 

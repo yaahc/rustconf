@@ -115,6 +115,10 @@ struct TemplateContext<'a> {
 
 impl App {
     fn render(&mut self) -> eyre::Result<()> {
+        self.input_buf.clear();
+        self.rendered_md.clear();
+        self.template_buf.clear();
+
         println!(
             "{:?} + {:?} => {:?}",
             &self.opt.input, &self.opt.template, &self.opt.output
