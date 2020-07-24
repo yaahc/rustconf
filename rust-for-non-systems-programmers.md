@@ -2,7 +2,7 @@
 
 <span class=author>Rebecca Turner</span>
 
-<i class="fab fa-twitter"></i> [@16kbps](https://twitter.com/16kbps)
+<fab fa-twitter> [@16kbps](https://twitter.com/16kbps)
 / [becca.ooo](https://becca.ooo)
 
 Notes: Hey folks, my name is Rebecca Turner and I'm going to tell you why you
@@ -52,12 +52,16 @@ So I want to introduce the rest of us to Rust.
 
 ## Who is this talk for?
 
+<ul fragments>
+
 - Programmers comfortable in dynamic languages like Python, JavaScript, Ruby,
   etc.
 - Who are tired of some of the problems with those languages:
   - Null/undefined errors
   - Runtime type errors
   - Poor documentation
+
+</ul>
 
 ---
 

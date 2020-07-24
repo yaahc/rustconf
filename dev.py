@@ -35,7 +35,6 @@ async def update_md_compiler():
     os.chdir("md-compiler")
     await run("cargo", "build", "--release")
     os.chdir("..")
-    print("cwd =", os.getcwd())
 
 
 async def md_watch(watch: str):

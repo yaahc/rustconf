@@ -350,7 +350,7 @@
   margin: auto;
   overflow: unset;
 }
-.reveal > .slides pre > code.has-highlights {
+.reveal > .slides pre > code[data-line-numbers] {
   margin: 0;
 }
 .reveal > .slides pre, .reveal > .slides code, .reveal > .slides pre code {
@@ -359,9 +359,6 @@
 .reveal > .slides iframe.main {
   width: 95%;
   min-height: 500px;
-}
-.reveal > .slides .r-stack > * {
-  width: 100%;
 }
 .reveal > .slides section .fragment.instant {
   transition: none;

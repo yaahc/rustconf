@@ -85,7 +85,7 @@ $heading4Size: 1.0em
       margin: auto
       overflow: unset
 
-      &.has-highlights
+      &[data-line-numbers]
         margin: 0
 
   pre, code, pre code
@@ -94,9 +94,6 @@ $heading4Size: 1.0em
   iframe.main
     width: 95%
     min-height: 500px
-
-  .r-stack > *
-    width: 100%
 
   & section .fragment.instant
     transition: none

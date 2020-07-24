@@ -1,9 +1,7 @@
-use std::error;
 use std::fs::{self, File};
 use std::io::{self, Read, Write};
 use std::iter;
-use std::path::{Path, PathBuf, StripPrefixError};
-use std::sync::Arc;
+use std::path::{Path, PathBuf};
 
 use eyre::{eyre, WrapErr};
 use handlebars::Handlebars;
@@ -11,7 +9,6 @@ use lol_html::{element, HtmlRewriter, OutputSink, Settings};
 use pulldown_cmark::{html, CowStr, Event, Parser};
 use serde::Serialize;
 use structopt::StructOpt;
-use thiserror::Error;
 use tracing::{event, info, instrument, span, warn, Level};
 
 #[derive(Debug, StructOpt)]
@@ -47,7 +44,6 @@ struct Opt {
 
 fn main() -> color_eyre::Result<()> {
     color_eyre::install().expect("Couldn't install color_eyre error reporter");
-    use tracing_subscriber::fmt::format::Format;
 
     let opt = {
         let mut opt = Opt::from_args();
@@ -242,27 +238,66 @@ impl App {
 }
 
 fn html_rewriter<O: OutputSink>(sink: O) -> eyre::Result<HtmlRewriter<'static, O>> {
+    use lol_html::html_content::{ContentType, UserData};
+
+    #[derive(Debug)]
+    struct RewriteData {
+        fragment_list: bool,
+    }
+
     Ok(HtmlRewriter::try_new(
         Settings {
-            element_content_handlers: vec![element!("pre > code", |el| {
-                if let Some(class) = el.get_attribute("class") {
-                    let new_header = unescape_fenced_header(&class);
-                    let mut new_class = String::new();
-                    for component in new_header {
-                        if component.starts_with('[') {
-                            el.set_attribute("data-line-numbers", &component)?;
-                        } else if let Some(inx) = component.find('=') {
-                            let (key, val) = component.split_at(inx);
-                            el.set_attribute(key, &val[1..])?;
-                        } else {
-                            new_class.push_str(&component);
-                            new_class.push(' ');
+            element_content_handlers: vec![
+                element!("pre > code", |el| {
+                    if let Some(class) = el.get_attribute("class") {
+                        let new_header = unescape_fenced_header(&class);
+                        let mut new_class = String::new();
+                        for component in new_header {
+                            if component.starts_with('[') {
+                                el.set_attribute(
+                                    "data-line-numbers",
+                                    &component.trim_start_matches('[').trim_end_matches(']'),
+                                )?;
+                            } else if let Some(inx) = component.find('=') {
+                                let (key, val) = component.split_at(inx);
+                                el.set_attribute(key, &val[1..])?;
+                            } else {
+                                new_class.push_str(&component);
+                                new_class.push(' ');
+                            }
+                        }
+                        el.set_attribute("class", new_class.trim_end_matches(' '))?;
+                    }
+                    Ok(())
+                }),
+                element!("fab, far, fas", |el| {
+                    let mut classes = el.tag_name();
+                    classes.push(' ');
+                    if let Some(old_classes) = el.get_attribute("class") {
+                        classes.push_str(&old_classes);
+                        classes.push(' ');
+                    }
+
+                    let mut attrs_to_remove = vec![];
+                    for attr in el.attributes() {
+                        let name = attr.name();
+                        if name.starts_with("fa") {
+                            classes.push_str(&name);
+                            classes.push(' ');
+                            attrs_to_remove.push(name);
                         }
                     }
-                    el.set_attribute("class", new_class.trim_end_matches(' '))?;
-                }
-                Ok(())
-            })],
+
+                    for name in attrs_to_remove {
+                        el.remove_attribute(&name);
+                    }
+
+                    el.set_attribute("class", classes.trim_end_matches(' '))?;
+                    el.set_tag_name("i")?;
+                    el.prepend("</i>", ContentType::Html);
+                    Ok(())
+                }),
+            ],
             ..Settings::default()
         },
         sink,
@@ -379,3 +414,5 @@ impl<'a> Iterator for MappedParser<'a> {
         ret
     }
 }
+
+// What'd you expect down here, *tests*? I have to laugh.
