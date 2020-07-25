@@ -354,6 +354,9 @@
 .reveal > .slides pre > code[data-line-numbers] {
   margin: 0;
 }
+.reveal > .slides pre > code.left {
+  margin: 0;
+}
 .reveal > .slides pre.term {
   display: block;
 }
