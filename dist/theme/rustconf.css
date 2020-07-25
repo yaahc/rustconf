@@ -349,9 +349,13 @@
 .reveal > .slides pre > code {
   margin: auto;
   overflow: unset;
+  max-height: initial;
 }
 .reveal > .slides pre > code[data-line-numbers] {
   margin: 0;
+}
+.reveal > .slides pre.term {
+  display: block;
 }
 .reveal > .slides pre, .reveal > .slides code, .reveal > .slides pre code {
   font-family: "PragmataPro Mono Liga", Monaco, monospace;
