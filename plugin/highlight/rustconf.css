@@ -80,4 +80,11 @@ code.no-line-numbers .hljs-ln-numbers {
   display: none;
 }
 
+.reveal .hljs.has-highlights tr:not(.highlight-line) {
+  opacity: 0.5;
+}
+.reveal .hljs.has-highlights tr:not(.highlight-line), .reveal .hljs.has-highlights tr:not(.highlight-line) span {
+  color: #aa9db6;
+}
+
 /*# sourceMappingURL=rustconf.css.map */
