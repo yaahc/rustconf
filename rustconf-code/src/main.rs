@@ -26,29 +26,38 @@ fn main() -> eyre::Result<()> {
         &config_json,
     )
     .wrap_err("Failed to deserialize configuration JSON")?;
+
     let onecall: OneCall = config
         .onecall()
         .wrap_err("Failed to deserialize hourly weather data")?;
-    // println!("OneCall: {:#?}", onecall);
+
     let historical = config
         .historical_day(Utc::today().and_hms(0, 0, 0) - Duration::days(1))
         .wrap_err("Failed to deserialize historical hourly weather data")?;
 
     let yesterday =
-        average(historical.iter().map(|h| h.feels_like));
-    println!("Yesterday felt like: {}", yesterday);
-    let today =
-        average(onecall.hourly.iter().map(|h| h.feels_like));
-    println!("Today should feel like: {}", today);
-    let diff = TempDifference::from(yesterday, today);
+        Stats::from(historical.iter().map(|h| h.feels_like));
+    let today = Stats::from(
+        onecall.hourly.iter().map(|h| h.feels_like).take(24),
+    );
+
+    let diff = TempDifference::from(yesterday.avg, today.avg);
+
     println!(
-        "Today will feel {} {} yesterday",
-        diff,
-        match diff {
+        "Good morning! Today will be about {avg:.2}°F ({min} - {max}°F); that's {diff} {than} yesterday{end}",
+        avg = today.avg, min = today.min, max = today.max,
+        diff = diff,
+        than = match diff {
             TempDifference::Same => "as",
             _ => "than",
+        },
+        end = if 60.0 <= today.avg && today.avg <= 80.0 {
+            ":)"
+        } else {
+            "."
         }
     );
+
     Ok(())
 }
 
@@ -170,6 +179,7 @@ struct Opt {
     config: PathBuf,
 }
 
+#[derive(Debug, PartialEq)]
 enum TempDifference {
     MuchColder,
     Colder,
@@ -211,10 +221,66 @@ impl TempDifference {
     }
 }
 
-fn average(itr: impl Iterator<Item = f64>) -> f64 {
-    let (sum, count) = itr
-        .fold((0.0, 0), |(sum, count), item| {
-            (sum + item, count + 1)
-        });
-    sum / count as f64
+struct Stats {
+    min: f64,
+    max: f64,
+    avg: f64,
+    count: usize,
+}
+
+impl Stats {
+    fn from(itr: impl Iterator<Item = f64>) -> Self {
+        let mut ret = Self {
+            min: f64::INFINITY,
+            max: f64::NEG_INFINITY,
+            avg: 0.0,
+            count: 0,
+        };
+        let mut sum = 0.0;
+
+        for i in itr {
+            if i < ret.min {
+                ret.min = i;
+            } else if i > ret.max {
+                ret.max = i;
+            }
+            ret.count += 1;
+            sum += i;
+        }
+
+        ret.avg = sum / ret.count as f64;
+        ret
+    }
+}
+
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_tempdiff() {
+        assert_eq!(
+            TempDifference::from(50.0, 69.0),
+            TempDifference::MuchWarmer
+        );
+        assert_eq!(
+            TempDifference::from(13.0, 19.0),
+            TempDifference::Warmer
+        );
+        assert_eq!(
+            TempDifference::from(50.0, 51.0),
+            TempDifference::Same
+        );
+        assert_eq!(
+            TempDifference::from(50.0, 49.0),
+            TempDifference::Same
+        );
+        assert_eq!(
+            TempDifference::from(19.0, 13.0),
+            TempDifference::Colder
+        );
+        assert_eq!(
+            TempDifference::from(19.0, 5.0),
+            TempDifference::MuchColder
+        );
+    }
 }

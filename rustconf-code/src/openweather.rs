@@ -1,7 +1,9 @@
+use std::fmt;
+
 use chrono::prelude::*;
 use serde::Deserialize;
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Clone)]
 #[serde(from = "i64")]
 pub struct UnixUTC(DateTime<Utc>);
 
@@ -14,6 +16,12 @@ impl From<i64> for UnixUTC {
 impl Into<i64> for UnixUTC {
     fn into(self) -> i64 {
         self.0.timestamp()
+    }
+}
+
+impl fmt::Debug for UnixUTC {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        self.0.fmt(f)
     }
 }
 
