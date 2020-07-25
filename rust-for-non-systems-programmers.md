@@ -2,8 +2,7 @@
 
 <span class=author>Rebecca Turner</span>
 
-<fab fa-twitter> [@16kbps](https://twitter.com/16kbps)
-/ [becca.ooo](https://becca.ooo)
+<fab fa-twitter> [@16kbps] / [becca.ooo]
 
 Notes: Hey folks, my name is Rebecca Turner and I'm going to tell you why you
 should be writing non-systems code in Rust.
@@ -32,6 +31,8 @@ Notes: Here's the [rust-lang.org] website at the end of 2018, right before
 they rolled out the new site. The headline emphasizes systems programming,
 speed, and memory safety --- all things I don't directly care about that much.
 
+*Next slide: Compare that with the new website.*
+
 [rust-lang.org]: https://rust-lang.org/
 
 ---
@@ -47,6 +48,8 @@ documentation has lagged behind and still assumes that new Rust programmers
 already know C++ or something similar.
 
 So I want to introduce the rest of us to Rust.
+
+*Next slide: Who is this talk for?*
 
 ---
 
@@ -81,6 +84,8 @@ Rust *really shines* in all of these areas. I work *with* the compiler to
 check my work. And it helps me feel a lot more confident that my programs do
 what I think they do.
 
+*Next slide: Tooling.*
+
 [mem]: https://en.wikipedia.org/wiki/Working_memory
 
 ---
@@ -90,6 +95,21 @@ what I think they do.
 - Documentation: [rustdoc] (API docs) and [mdBook] (long-form guides)
 - Language servers: [rls](official) and [rust-analyzer](community)
 - Package manager, build system: [Cargo]
+
+Notes: Before we get started, I want to point out a few of the tools that
+making writing Rust easy and fun.
+
+- rustdoc compiles `///` doc comments written in Markdown to webpages ---
+  complete with search, links, and more.
+- mdBook is used for writing longer-form narrative-style documentation; the
+  Rust Book and more are written with mdBook and serve as companions to the
+  rustdoc documentation.
+- Two very good language servers provide autocompletion, definition-jumping,
+  quick fixes, and more.
+- Cargo is a package manager and build system, integrating with the crates.io
+  package repository.
+
+*Next slide: A bit more on documentation.*
 
 [rustdoc]: https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html
 [mdbook]: https://rust-lang.github.io/mdBook/
@@ -112,7 +132,7 @@ find at [docs.rs/rand][`rand`].
 
 ## Getting started
 
-```rust no-line-numbers [1-10|1|3-10|3|4|5-9|5|8]
+```rust no-line-numbers [1-10|1|3-10|4|5-9|5|8]
 use std::env;
 
 fn main() {
@@ -127,16 +147,22 @@ fn main() {
 
 Notes: Here's a pretty simple rust program, just to show off a bit of syntax.
 
-1. The `use` statement imports names from libraries, here the standard library.
-2. Next, we define a function.
-3. The function named `main` is the entry point.
-4. We call the `var` function in the `env` module, and assign the value it
+1. The `use` statement imports names from libraries. `::` is used as a path
+   separator / namespacing operator.
+2. Next, we define a function with the `fn` keyword; The function named
+   `main` is the entry point.
+3. We call the `var` function in the `env` module, and assign the value it
    returns to `user`; Rust figures out the type for us.
-5. Next, we have an `if` statement, which has braces but no parenthesis.
-6. Note that we're also comparing strings with `==` --- rust has operator overloading!
-7. Finally, we have this `println!` macro --- the `!` means it's a macro, and
+
+   `env::var` returns a `Result`, so we have to unwrap it, which will crash
+   if there's an error.
+4. Next, we have an `if` statement, which has braces but no parenthesis.
+5. Note that we're also comparing strings with `==` --- rust has operator overloading!
+6. Finally, we have this `println!` macro --- the `!` means it's a macro, and
    the string literal there is actually turned into a series of formatting
    instructions at compile time so we don't waste time parsing at runtime.
+
+*Next slide: `cargo build`.*
 
 ---
 
@@ -146,14 +172,22 @@ $ cargo build
     Finished dev [unoptimized + debuginfo] target(s) in 0.17s
 ```
 
+Notes: We can run `cargo build` to compile the program.
+
+*Next slide: running the program.*
+
 ---
 
 ```shell-session
 $ ./target/debug/rustconf-code
 Hello, Rebecca!
-$ env USER=nell ./target/debug/rustconf-code
+$ USER=nell ./target/debug/rustconf-code
 Hello, nell!
 ```
+
+Notes: And then we can run it, and it does what we expect.
+
+*Next slide: ...although, we might not really expect an empty variable.*
 
 ---
 
@@ -166,6 +200,30 @@ thread 'main' panicked at 'called `Result::unwrap()` on an
 note: run with `RUST_BACKTRACE=1` environment variable to display
 a backtrace
 ```
+
+Notes: ...although, we might not really expect an empty variable.
+
+Also, invalid UTF-8 will crash the whole program.
+
+*Next slide: `Result`*
+
+---
+
+```rust
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+```
+
+Notes: `Result` is an `enum` --- what functional programmers call a sum type.
+While a tuple has a value from any number of different types at the same time, a
+sum type has a value from *one* of a number of different types.
+
+`Result` is generic, so for any types `T` and `E`, we have a type `Result<T,
+E>` which can be *either* an `Ok` value of type `T` or an `Err` value of type
+`E`; that's pretty much equivalent to a function returning `T` or throwing an
+exception `E`.
 
 ---
 

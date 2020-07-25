@@ -2,6 +2,7 @@ use std::convert::{TryFrom, TryInto};
 use std::fs::File;
 use std::path::PathBuf;
 
+use chrono::prelude::*;
 use eyre::WrapErr;
 use reqwest::blocking::{Client, Response};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
@@ -9,7 +10,7 @@ use structopt::StructOpt;
 use thiserror::Error;
 
 mod openweather;
-use openweather::OneCall;
+use openweather::*;
 
 fn main() -> eyre::Result<()> {
     let opt = Opt::from_args();
@@ -75,6 +76,50 @@ impl OpenWeather {
                 // If we don't have a `ClientError`, fail with the original error.
                 .unwrap_or(WeatherError::Deserialize(err))
         })
+    }
+
+    fn onecall(&self) -> Result<OneCall, WeatherError> {
+        self.get(
+            "onecall",
+            &[
+                ("exclude", "currently,minutely"),
+                ("units", "imperial"),
+            ],
+        )
+    }
+
+    fn historical(
+        &self,
+        start: DateTime<Utc>,
+        end: DateTime<Utc>,
+    ) -> Result<Vec<HistoricalHourly>, WeatherError> {
+        let historical: Historical = self.get(
+            "onecall",
+            &[
+                ("exclude", "currently,minutely"),
+                ("units", "imperial"),
+                ("start", &start.timestamp().to_string()),
+                ("end", &end.timestamp().to_string()),
+            ],
+        )?;
+        Ok(historical.hourly)
+    }
+
+    fn historical_count(
+        &self,
+        start: DateTime<Utc>,
+        count: usize,
+    ) -> Result<Vec<HistoricalHourly>, WeatherError> {
+        let historical: Historical = self.get(
+            "onecall",
+            &[
+                ("exclude", "currently,minutely"),
+                ("units", "imperial"),
+                ("start", &start.timestamp().to_string()),
+                ("cnt", &count.to_string()),
+            ],
+        )?;
+        Ok(historical.hourly)
     }
 }
 

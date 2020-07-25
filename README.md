@@ -9,9 +9,15 @@
 
 - Sass compiling / watching for changes to the slides and code highlight themes.
 - `sfz` (`cargo install sfz`) for a static file server
+- The `./md-compiler` binary to compile `template.html` (Handlebars syntax) and
+  the input file to `index.html` (it also runs `cargo build release` on launch
+  to keep the binary up to date)
 
 If you're using nixpkgs, you can get the dependencies set up with `nix-shell
 --command ./dev.py` or `just dev`.
+
+You can also use `./dev.py --no-open` to skip opening your browser to
+`localhost:5000`.
 
 ## Styles
 

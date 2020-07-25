@@ -78,3 +78,21 @@ pub struct DailyTemp {
     min: f64,
     max: f64,
 }
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct Historical {
+    pub hourly: Vec<HistoricalHourly>,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct HistoricalHourly {
+    pub dt: UnixUTC,
+    pub main: HistoricalMain,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct HistoricalMain {
+    pub temp: f64,
+    pub feels_like: f64,
+    pub humidity: f64,
+}

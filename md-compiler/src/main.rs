@@ -6,7 +6,7 @@ use std::path::{Path, PathBuf};
 use eyre::{eyre, WrapErr};
 use handlebars::Handlebars;
 use lol_html::{element, HtmlRewriter, OutputSink, Settings};
-use pulldown_cmark::{html, CowStr, Event, Parser};
+use pulldown_cmark::{html, CowStr, Event, Options, Parser};
 use serde::Serialize;
 use structopt::StructOpt;
 use tracing::{event, info, instrument, span, warn, Level};
@@ -121,6 +121,7 @@ impl App {
         );
         read_to_string(&self.opt.input, &mut self.input_buf)?;
         read_to_string(&self.opt.template, &mut self.template_buf)?;
+
         let parser = Self::map_parser(Parser::new(&self.input_buf));
         html::push_html(&mut self.rendered_md, parser);
 
@@ -153,20 +154,16 @@ impl App {
         self.render()?;
 
         let (tx, rx) = std::sync::mpsc::channel();
-        let mut watcher = watcher(tx, Duration::from_millis(self.opt.debounce_ms)).unwrap();
+        let mut watcher = watcher(tx, Duration::from_millis(self.opt.debounce_ms))?;
 
-        watcher
-            .watch(
-                &self.opt.input.parent().unwrap_or(&self.opt.input),
-                RecursiveMode::NonRecursive,
-            )
-            .unwrap();
-        watcher
-            .watch(
-                &self.opt.template.parent().unwrap_or(&self.opt.template),
-                RecursiveMode::NonRecursive,
-            )
-            .unwrap();
+        watcher.watch(
+            &self.opt.input.parent().unwrap_or(&self.opt.input),
+            RecursiveMode::NonRecursive,
+        )?;
+        watcher.watch(
+            &self.opt.template.parent().unwrap_or(&self.opt.template),
+            RecursiveMode::NonRecursive,
+        )?;
 
         let input_fn = &self
             .opt
@@ -402,7 +399,12 @@ impl<'a> Iterator for MappedParser<'a> {
                     self.has_notes = true;
                     Event::Html(r#"<aside class="notes">"#.into())
                 } else {
-                    Event::Text(text)
+                    Event::Text(
+                        text.replace("---", "—")
+                            .replace("--", "–")
+                            .replace("...", "…")
+                            .into(),
+                    )
                 }
             }
             Event::Start(Tag::CodeBlock(CodeBlockKind::Fenced(header))) => Event::Start(
