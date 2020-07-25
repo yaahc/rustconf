@@ -225,6 +225,8 @@ E>` which can be *either* an `Ok` value of type `T` or an `Err` value of type
 `E`; that's pretty much equivalent to a function returning `T` or throwing an
 exception `E`.
 
+*Next slide: gracefully handling errors with `match`.*
+
 ---
 
 ```rust
@@ -245,6 +247,12 @@ fn main() {
 }
 ```
 
+Notes: One way we can deal with that error is by matching on it, which is a
+little bit like a type-safe `isinstance` check. Here, we just handle an error
+by printing a simple message.
+
+*Next slide: showing what happens when we run it.*
+
 ---
 
 ```shell-session
@@ -252,13 +260,38 @@ $ env USER="$(printf '\xc3\x28')" ./target/debug/rustconf-code
 I couldn't figure out who you are!
 ```
 
+Notes: Now, when we run our program, we print an error message instead of
+crashing. We'll talk about some other ways to handle errors as we go, but for the
+definitive rundown check out Jane Ludsby's talk ["Error Handling Isn't All
+About Errors"][jane-errors].
+
+But this talk is about Rust's value as a practical programming language,
+which means doing more than writing "Hello, world!"s. So lets write a program
+in Rust and explore some of the ways the language helps us out.
+
+*Next slide: receipt printer, weather program overview.*
+
+[jane-errors]: https://rustconf.com/schedule/error-handling-isn-t-all-about-errors
+
 ---
 
 ![A Star TSP100 Eco futurePRNT 72mm receipt printer, powered on with a
 printed receipt showing the RustConf homepage reading "Beaming to screens
 across the globe"](img/receipt-printer.jpg)
 
+Notes: I have this receipt printer hooked up to my computer, and it's super fun
+to play with --- there's no ink, so paper is incredibly cheap, and they're
+designed for restaurants and retail, so they're incredibly durable.
+
+I always forget to check the weather in the morning, so I want to write a
+program I can set to run before I wake up that tells me the weather, and how
+it'll feel compared to the previous day.
+
+*Next slide: Minimal API call with OpenWeather.*
+
 ---
+
+## Simple API call with [openweathermap.org]
 
 ```python
 import json
@@ -275,9 +308,20 @@ with open("openweather_api.json") as f:
     print(res.text)
 ```
 
+[openweathermap.org]: https://openweathermap.org/
+
+Notes: Weather APIs come and go, but right now
+[OpenWeather][openweathermap.org] is providing decent data for free --- even if
+the default units are Kelvins.
+
+Here's a simple call of their API; we load the API key from a JSON file, we
+make a request, and then we print out the response text.
+
+Let's work on recreating this in Rust.
+
 ---
 
-```rust
+```rust no-line-numbers [1-15|4|5-6|7-13]
 use serde_json::Value;
 
 fn main() {
@@ -295,6 +339,29 @@ fn main() {
 }
 ```
 
+Notes: Here's a start at a line-by-line conversion of that program.
+
+1. We're using `include_str!` here which actually reads a file as UTF-8 at
+   *compile time* --- we'll work on opening files in a bit, but this works well
+   enough, end this is very much a "the perfect is the enemy of the good" talk.
+2. Next, we use `serde_json` to parse that string into a JSON value.
+3. Then, we get the `api_key` key out of the object as a string. Each time
+   we assert something about the type of a value in this object, we need to
+   unwrap it, because we might *not* have a value of the type we want, so we
+   need to deal with that somehow.
+
+   Note that this isn't entirely unique to Rust, though --- our
+   Python program would also crash if `api_key_obj` wasn't a JSON object, or if
+   it didn't have a key named `api_key`, or if the value to that key wasn't a
+   string. But Rust makes us be explicit about it.
+
+   That's not entirely a bad thing --- it helps us figure out where errors
+   could happen --- but it is awfully verbose and painful to write.
+
+   Fortunately, there's a better way.
+
+*Next slide: `Deserialize` derive.*
+
 ---
 
 ```rust
@@ -305,6 +372,15 @@ struct OpenWeatherConfig {
     api_key: String,
 }
 ```
+
+Notes: Here, we're declaring a struct, which is roughly a class, in the sense
+of a blob of data with named fields and methods. Then, we *derive* some traits
+for it. Traits are what Python programmers sometimes call protocols, or what
+Java calls interfaces. Here, `Debug` lets us pretty-print the struct's data,
+`Clone` lets us deeply copy it, and `Deserialize` lets us deserialize it from
+JSON --- or, with other serde libraries, XML, YAML, TOML, Protobufs, and more.
+
+*Next slide: Using the `Deserialize` implementation with `serde_json`.*
 
 ---
 
@@ -492,4 +568,26 @@ println!("{}", String::from_utf8_lossy(&*bytes));
 "03d"}],"base":"stations","main":{"temp":308.71,"feels_like":
 307.42,"temp_min":307.59,"temp_max":309.82,"pressure":1010,
 "humidity":37},"visibility":10000,"wind":{"speed":6.2, ...
+```
+
+---
+
+```rust
+#[derive(Deserialize, Debug, Clone)]
+pub struct OneCall {
+    pub hourly: Vec<Hourly>,
+    pub daily: Vec<Daily>,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct Hourly {
+    pub dt: UnixUTC,
+    pub temp: f64,
+    pub feels_like: f64,
+    pub humidity: f64,
+    pub clouds: f64,
+    pub rain: Option<Rain>,
+    pub snow: Option<Snow>,
+}
+
 ```
