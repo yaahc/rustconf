@@ -1,8 +1,9 @@
 use std::convert::{TryFrom, TryInto};
+use std::fmt;
 use std::fs::File;
 use std::path::PathBuf;
 
-use chrono::prelude::*;
+use chrono::{prelude::*, Duration};
 use eyre::WrapErr;
 use reqwest::blocking::{Client, Response};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
@@ -21,19 +22,33 @@ fn main() -> eyre::Result<()> {
                 opt.config
             )
         })?;
-    let config: OpenWeather =
-        serde_json::from_reader(&config_json)
-            .wrap_err("Failed to deserialize JSON")?;
+    let config: OpenWeather = serde_json::from_reader(
+        &config_json,
+    )
+    .wrap_err("Failed to deserialize configuration JSON")?;
     let onecall: OneCall = config
-        .get(
-            "onecall",
-            &[
-                ("exclude", "currently,minutely"),
-                ("units", "imperial"),
-            ],
-        )
+        .onecall()
         .wrap_err("Failed to deserialize hourly weather data")?;
-    println!("Data: {:#?}", onecall);
+    // println!("OneCall: {:#?}", onecall);
+    let historical = config
+        .historical_day(Utc::today().and_hms(0, 0, 0) - Duration::days(1))
+        .wrap_err("Failed to deserialize historical hourly weather data")?;
+
+    let yesterday =
+        average(historical.iter().map(|h| h.feels_like));
+    println!("Yesterday felt like: {}", yesterday);
+    let today =
+        average(onecall.hourly.iter().map(|h| h.feels_like));
+    println!("Today should feel like: {}", today);
+    let diff = TempDifference::from(yesterday, today);
+    println!(
+        "Today will feel {} {} yesterday",
+        diff,
+        match diff {
+            TempDifference::Same => "as",
+            _ => "than",
+        }
+    );
     Ok(())
 }
 
@@ -74,7 +89,13 @@ impl OpenWeather {
             (&*bytes)
                 .try_into()
                 // If we don't have a `ClientError`, fail with the original error.
-                .unwrap_or(WeatherError::Deserialize(err))
+                .unwrap_or_else(|_| {
+                    WeatherError::Deserialize(
+                        err,
+                        String::from_utf8_lossy(&*bytes)
+                            .to_string(),
+                    )
+                })
         })
     }
 
@@ -88,38 +109,24 @@ impl OpenWeather {
         )
     }
 
-    fn historical(
+    fn historical_day(
         &self,
-        start: DateTime<Utc>,
-        end: DateTime<Utc>,
+        date: DateTime<Utc>,
     ) -> Result<Vec<HistoricalHourly>, WeatherError> {
         let historical: Historical = self.get(
-            "onecall",
+            "onecall/timemachine",
             &[
-                ("exclude", "currently,minutely"),
                 ("units", "imperial"),
-                ("start", &start.timestamp().to_string()),
-                ("end", &end.timestamp().to_string()),
+                ("dt", &date.timestamp().to_string()),
             ],
         )?;
         Ok(historical.hourly)
     }
 
-    fn historical_count(
+    fn yesterday(
         &self,
-        start: DateTime<Utc>,
-        count: usize,
     ) -> Result<Vec<HistoricalHourly>, WeatherError> {
-        let historical: Historical = self.get(
-            "onecall",
-            &[
-                ("exclude", "currently,minutely"),
-                ("units", "imperial"),
-                ("start", &start.timestamp().to_string()),
-                ("cnt", &count.to_string()),
-            ],
-        )?;
-        Ok(historical.hourly)
+        self.historical_day(Utc::now() - Duration::days(1))
     }
 }
 
@@ -127,12 +134,10 @@ impl OpenWeather {
 enum WeatherError {
     #[error("Request: {0}")]
     Request(#[from] reqwest::Error),
-    #[error("Deserializing JSON: {0}")]
-    Deserialize(#[from] serde_json::Error),
+    #[error("{0} while deserializing JSON: {1}")]
+    Deserialize(serde_json::Error, String),
     #[error("Client error ({}): {}", .0.code, .0.message)]
     Client(ClientError),
-    #[error("Couldn't parse timestamp: {0}")]
-    DateTime(#[from] chrono::format::ParseError),
 }
 
 impl TryFrom<&[u8]> for WeatherError {
@@ -163,4 +168,53 @@ struct Opt {
         default_value = "openweather_api.json"
     )]
     config: PathBuf,
+}
+
+enum TempDifference {
+    MuchColder,
+    Colder,
+    Same,
+    Warmer,
+    MuchWarmer,
+}
+
+impl fmt::Display for TempDifference {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                TempDifference::MuchColder => "much colder",
+                TempDifference::Colder => "colder",
+                TempDifference::Same => "about the same",
+                TempDifference::Warmer => "warmer",
+                TempDifference::MuchWarmer => "much warmer",
+            }
+        )
+    }
+}
+
+impl TempDifference {
+    fn from(from: f64, to: f64) -> Self {
+        let delta = to - from;
+        if delta > 10.0 {
+            TempDifference::MuchWarmer
+        } else if delta > 5.0 {
+            TempDifference::Warmer
+        } else if delta < -10.0 {
+            TempDifference::MuchColder
+        } else if delta < -5.0 {
+            TempDifference::Colder
+        } else {
+            TempDifference::Same
+        }
+    }
+}
+
+fn average(itr: impl Iterator<Item = f64>) -> f64 {
+    let (sum, count) = itr
+        .fold((0.0, 0), |(sum, count), item| {
+            (sum + item, count + 1)
+        });
+    sum / count as f64
 }
