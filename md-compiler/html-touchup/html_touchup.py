@@ -53,10 +53,9 @@ class RevealTweaks:
 
     def fragments_lists(self):
         for list_tag in self.reveal_root.find_all('list', fragments=True):
-            for real_list in list_tag.find_all(['ul', 'li']):
-                for li in real_list.find_all('li'):
-                    old_class = li.get('class') or ''
-                    li['class'] = ('fragment ' + old_class).rstrip()
+            for li in list_tag.find(['ul', 'li']).find_all('li'):
+                old_class = li.get('class') or ''
+                li['class'] = ('fragment ' + old_class).rstrip()
             list_tag.unwrap()
 
     def next_slide_hints(self):
