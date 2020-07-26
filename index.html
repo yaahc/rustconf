@@ -23,13 +23,13 @@
 should be writing non-systems code in Rust.</p>
 
 </aside></div></section>
-<section class="title-card" data-state="purple"><div class="slide-wrapper">
+<section class="title-card"><div class="slide-wrapper">
 <h2>Why this talk?</h2>
 <aside class="notes"><p>I'm a non-systems programmer, and I really like Rust. But if you
 looked at the <a href="https://rust-lang.org/">rust-lang.org</a> website before 2019, that might not make
 sense to you.</p>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -41,7 +41,7 @@ they rolled out the new site. The headline emphasizes systems programming,
 speed, and memory safety — all things I don't directly care about that much.</p>
 <div class="next-slide"><p>Next slide: Compare that with the new website.</p></div>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -55,7 +55,7 @@ already know C++ or something similar.</p>
 <p>So I want to introduce the rest of us to Rust.</p>
 <div class="next-slide"><p>Next slide: Who is this talk for?</p></div>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -75,12 +75,12 @@ etc.</li>
 </li>
 </ul>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section class="title-card" data-state="peach"><div class="slide-wrapper">
 <h2>Why do I like Rust?</h2>
 <aside class="notes"><p>I have ADHD, and it varies from person to person but one area I really
 struggle with is <a href="https://en.wikipedia.org/wiki/Working_memory"><em>working memory</em></a>, which is roughly how much
@@ -95,7 +95,7 @@ check my work. And it helps me feel a lot more confident that my programs do
 what I think they do.</p>
 <div class="next-slide"><p>Next slide: Tooling.</p></div>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -123,7 +123,7 @@ package repository.</li>
 </ul>
 <div class="next-slide"><p>Next slide: A bit more on documentation.</p></div>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -134,7 +134,7 @@ package repository.</li>
 <aside class="notes"><p>Here's the generated documentation for the <a href="https://docs.rs/rand/"><code>rand</code></a> crate, which you can
 find at <a href="https://docs.rs/rand/">docs.rs/rand</a>.</p>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -182,7 +182,7 @@ instructions at compile time so we don't waste time parsing at runtime.</p>
 </ol>
 <p>Next slide: <code>cargo build</code>.</p>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -195,7 +195,7 @@ instructions at compile time so we don't waste time parsing at runtime.</p>
 <aside class="notes"><p>We can run <code>cargo build</code> to compile the program.</p>
 <div class="next-slide"><p>Next slide: running the program.</p></div>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -209,7 +209,7 @@ Hello, nell!
 <aside class="notes"><p>And then we can run it, and it does what we expect.</p>
 <div class="next-slide"><p>Next slide: …although, we might not really expect an empty variable.</p></div>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -227,7 +227,7 @@ a backtrace
 <p>Also, invalid UTF-8 will crash the whole program.</p>
 <p>Next slide: <code>Result</code></p>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -246,7 +246,7 @@ sum type has a value from <em>one</em> of a number of different types.</p>
 exception <code>E</code>.</p>
 <div class="next-slide"><p>Next slide: gracefully handling errors with <code>match</code>.</p></div>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -273,7 +273,7 @@ little bit like a type-safe <code>isinstance</code> check. Here, we just handle 
 by printing a simple message.</p>
 <div class="next-slide"><p>Next slide: showing what happens when we run it.</p></div>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -291,7 +291,7 @@ which means doing more than writing "Hello, world!"s. So lets write a program
 in Rust and explore some of the ways the language helps us out.</p>
 <div class="next-slide"><p>Next slide: receipt printer, weather program overview.</p></div>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -306,7 +306,7 @@ program I can set to run before I wake up that tells me the weather, and how
 it'll feel compared to the previous day.</p>
 <div class="next-slide"><p>Next slide: Minimal API call with OpenWeather.</p></div>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -333,7 +333,7 @@ the default units are Kelvins.</p>
 make a request, and then we print out the response text.</p>
 <p>Let's work on recreating this in Rust.</p>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -381,7 +381,7 @@ could happen — but it is awfully verbose and painful to write.</p>
 </ol>
 <p>Next slide: <code>Deserialize</code> derive.</p>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -402,7 +402,7 @@ Java calls interfaces. Here, <code>Debug</code> lets us pretty-print the struct'
 JSON — or, with other serde libraries, XML, YAML, TOML, Protobufs, and more.</p>
 <div class="next-slide"><p>Next slide: Using the <code>Deserialize</code> implementation with <code>serde_json</code>.</p></div>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -423,7 +423,7 @@ parsing the JSON, matching up keys to fields, and recursively constructing
 other <code>Deserialize</code>able values, is handled by <code>serde</code> and <code>serde_json</code>.</p>
 <div class="next-slide"><p>Next slide: Running this example.</p></div>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -445,7 +445,7 @@ OpenWeatherConfig {
 <p>That's not my actual API key, by the way. Don't worry.</p>
 <p>Next slide: <code>structopt</code>.</p>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -476,7 +476,7 @@ command-line options, along with bonuses like detecting that <code>Option</code>
 aren't mandatory and <code>Vec</code> fields can have multiple values.</p>
 <div class="next-slide"><p>Next slide: Generated help message.</p></div>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -498,7 +498,7 @@ OPTIONS:
                              an `api_key` field
 </code></pre>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -515,7 +515,7 @@ USAGE:
 For more information try --help
 </code></pre>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -533,7 +533,7 @@ fn main() -&gt; eyre::Result&lt;()&gt; {
 }
 </code></pre>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -558,7 +558,7 @@ fn main() -&gt; eyre::Result&lt;()&gt; {
 }
 </code></pre>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -577,7 +577,7 @@ Caused by:
     trailing comma at line 3 column 1
 </code></pre>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -596,7 +596,7 @@ fn get_weather(
 }
 </code></pre>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -622,7 +622,7 @@ Response: Response {
 }
 </code></pre>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -639,7 +639,7 @@ println!("{}", String::from_utf8_lossy(&amp;*bytes));
 "humidity":37},"visibility":10000,"wind":{"speed":6.2, ...
 </code></pre>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -663,7 +663,7 @@ pub struct Hourly {
 }
 </code></pre>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
@@ -692,6 +692,10 @@ pub struct Hourly {
             },
             plugins: [RevealMarkdown, HighlightRustCompiler, HighlightShellSession, RevealHighlight, RevealNotes]
         });
+
+        // new EventSource("tide-reload").addEventListener("reload", event => {
+        //     console.log(event);
+        // });
     </script>
 
 

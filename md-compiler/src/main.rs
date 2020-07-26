@@ -204,22 +204,24 @@ impl App {
             &self.opt.template.parent().unwrap_or(&self.opt.template),
             RecursiveMode::NonRecursive,
         )?;
+        watcher.watch(&self.opt.html_touchup, RecursiveMode::NonRecursive)?;
 
-        let input_fn = &self
-            .opt
-            .input
-            .file_name()
-            .expect("Input file should have a filename")
-            .to_owned();
-        let template_fn = &self
-            .opt
-            .template
-            .file_name()
-            .expect("Input file should have a filename")
-            .to_owned();
+        let filename = |p: &Path| {
+            p.file_name()
+                .unwrap_or_else(|| panic!(format!("{:?} should have a filename", p)))
+                .to_owned()
+        };
+
+        let input_fn = filename(&self.opt.input);
+        let template_fn = filename(&self.opt.template);
+        let html_touchup_fn = filename(&self.opt.html_touchup.join("html_touchup.py"));
         let is_relevant = |path: &Path| -> bool {
             path.file_name()
-                .map(|file_name| file_name == input_fn || file_name == template_fn)
+                .map(|file_name| {
+                    file_name == input_fn
+                        || file_name == template_fn
+                        || file_name == html_touchup_fn
+                })
                 .unwrap_or(true)
         };
 

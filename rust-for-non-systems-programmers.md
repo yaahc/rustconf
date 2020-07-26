@@ -11,7 +11,7 @@ should be writing non-systems code in Rust.
 [becca.ooo]: https://becca.ooo/
 
 <slide-footer>
-<left>Rebecca Turner</left>
+<left>Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</left>
 <right>
 <fab fa-twitter> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </right>
@@ -19,7 +19,7 @@ should be writing non-systems code in Rust.
 
 ---
 
-<slide class=title-card data-state=purple>
+<slide class=title-card>
 
 ## Why this talk?
 
@@ -78,6 +78,8 @@ Next slide: Who is this talk for?
   - Poor documentation
 
 ---
+
+<slide class=title-card data-state=peach>
 
 ## Why do I like Rust?
 

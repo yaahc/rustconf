@@ -390,7 +390,7 @@
   display: flex;
 }
 .reveal > .slides > section > .slide-footer, .reveal > .slides > section > .slide-footer a {
-  color: #736d77;
+  color: #979599;
 }
 .reveal > .slides > section > .slide-footer .slide-footer-left,
 .reveal > .slides > section > .slide-footer .slide-footer-center,
@@ -433,6 +433,12 @@
   background-color: #ab94bf;
 }
 
+.reveal > .speaker-notes::before {
+  opacity: 1;
+}
+.reveal > .speaker-notes .notes-placeholder {
+  color: #555f6e;
+}
 .reveal > .speaker-notes a {
   color: #00a;
   text-decoration: underline;
