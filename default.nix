@@ -88,7 +88,7 @@ let
   py = python38.withPackages (pkgs: with pkgs; [ jedi ]);
 
 in stdenv.mkDerivation {
-  pname = "rust-for-non-systems-programmers";
+  pname = "error-handling-isnt-all-about-errors";
   version = "1.0.0";
   src = if lib.inNixShell then null else ./.;
   buildInputs = [ sfz dart-sass py ];

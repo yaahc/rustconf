@@ -52,7 +52,7 @@ async def amain(args):
         serve_static("."),
         sass_watch("plugin/highlight/rustconf.sass", "plugin/highlight/rustconf.css"),
         sass_watch("css/theme/source", "dist/theme"),
-        md_watch("rust-for-non-systems-programmers.md"),
+        md_watch("error-handling-isnt-all-about-errors.md"),
         open_browser("http://localhost:5000/") if args.open else nop(),
     )
 

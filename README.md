@@ -1,7 +1,7 @@
 # RustConf slides
 
 `index.html` is the "main page" but just includes
-`rust-for-non-systems-programmers.md` (see: [reveal.js Markdown docs][rjs-md]).
+`error-handling-isnt-all-about-errors.md` (see: [reveal.js Markdown docs][rjs-md]).
 
 ## Development: `./dev.py`
 
