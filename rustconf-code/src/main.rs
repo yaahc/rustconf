@@ -61,7 +61,7 @@ fn main() -> eyre::Result<()> {
     Ok(())
 }
 
-#[derive(Debug, Clone, Deserialize)]
+#[derive(Deserialize, Debug, Clone)]
 struct OpenWeather {
     api_key: String,
 

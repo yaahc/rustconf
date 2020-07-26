@@ -1,4 +1,4 @@
-# Rust<br> <div class=small>for</div> Non-Systems Programmers
+# Rust <div class=small>for</div> Non-Systems Programmers
 
 <span class=author>Rebecca Turner</span>
 
@@ -10,7 +10,16 @@ should be writing non-systems code in Rust.
 [@16kbps]: https://twitter.com/16kbps
 [becca.ooo]: https://becca.ooo/
 
+<slide-footer>
+<left>Rebecca Turner</left>
+<right>
+<fab fa-twitter> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+</right>
+</slide-footer>
+
 ---
+
+<slide class=title-card data-state=purple>
 
 ## Why this talk?
 
@@ -22,6 +31,8 @@ sense to you.
 
 ---
 
+<slide class=image-slide>
+
 ![A screenshot of the rust-lang.org website in late 2018. The headline reads
 "Rust is a systems programming languaeg that runs blazingly fast,
 prevents segfaults, and guarantees thread
@@ -31,11 +42,13 @@ Notes: Here's the [rust-lang.org] website at the end of 2018, right before
 they rolled out the new site. The headline emphasizes systems programming,
 speed, and memory safety --- all things I don't directly care about that much.
 
-*Next slide: Compare that with the new website.*
+Next slide: Compare that with the new website.
 
 [rust-lang.org]: https://rust-lang.org/
 
 ---
+
+<slide class=image-slide>
 
 ![A screenshot of the rust-lang.org website in mid-2020. The headline reads
 "A language empowering everyone to build reliable and efficient software."
@@ -49,13 +62,13 @@ already know C++ or something similar.
 
 So I want to introduce the rest of us to Rust.
 
-*Next slide: Who is this talk for?*
+Next slide: Who is this talk for?
 
 ---
 
 ## Who is this talk for?
 
-<ul fragments>
+<list fragments>
 
 - Programmers comfortable in dynamic languages like Python, JavaScript, Ruby,
   etc.
@@ -63,8 +76,6 @@ So I want to introduce the rest of us to Rust.
   - Null/undefined errors
   - Runtime type errors
   - Poor documentation
-
-</ul>
 
 ---
 
@@ -84,7 +95,7 @@ Rust *really shines* in all of these areas. I work *with* the compiler to
 check my work. And it helps me feel a lot more confident that my programs do
 what I think they do.
 
-*Next slide: Tooling.*
+Next slide: Tooling.
 
 [mem]: https://en.wikipedia.org/wiki/Working_memory
 
@@ -92,9 +103,12 @@ what I think they do.
 
 ## Tooling
 
+<list fragments>
+
 - Documentation: [rustdoc] (API docs) and [mdBook] (long-form guides)
 - Language servers: [rls](official) and [rust-analyzer](community)
 - Package manager, build system: [Cargo]
+
 
 Notes: Before we get started, I want to point out a few of the tools that
 making writing Rust easy and fun.
@@ -109,7 +123,7 @@ making writing Rust easy and fun.
 - Cargo is a package manager and build system, integrating with the crates.io
   package repository.
 
-*Next slide: A bit more on documentation.*
+Next slide: A bit more on documentation.
 
 [rustdoc]: https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html
 [mdbook]: https://rust-lang.github.io/mdBook/
@@ -118,6 +132,8 @@ making writing Rust easy and fun.
 [cargo]: https://doc.rust-lang.org/book/ch01-03-hello-cargo.html
 
 ---
+
+<slide class=image-slide>
 
 ## Documentation
 
@@ -162,9 +178,11 @@ Notes: Here's a pretty simple rust program, just to show off a bit of syntax.
    the string literal there is actually turned into a series of formatting
    instructions at compile time so we don't waste time parsing at runtime.
 
-*Next slide: `cargo build`.*
+Next slide: `cargo build`.
 
 ---
+
+<slide class=center>
 
 ```shell-session
 $ cargo build
@@ -174,9 +192,11 @@ $ cargo build
 
 Notes: We can run `cargo build` to compile the program.
 
-*Next slide: running the program.*
+Next slide: running the program.
 
 ---
+
+<slide class=center>
 
 ```shell-session
 $ ./target/debug/rustconf-code
@@ -187,9 +207,11 @@ Hello, nell!
 
 Notes: And then we can run it, and it does what we expect.
 
-*Next slide: ...although, we might not really expect an empty variable.*
+Next slide: ...although, we might not really expect an empty variable.
 
 ---
+
+<slide class=center>
 
 ```shell-session no-line-numbers [1-2|3-7]
 $ env USER= ./target/debug/rustconf-code
@@ -205,9 +227,11 @@ Notes: ...although, we might not really expect an empty variable.
 
 Also, invalid UTF-8 will crash the whole program.
 
-*Next slide: `Result`*
+Next slide: `Result`
 
 ---
+
+<slide class=center>
 
 ```rust
 enum Result<T, E> {
@@ -224,6 +248,8 @@ sum type has a value from *one* of a number of different types.
 E>` which can be *either* an `Ok` value of type `T` or an `Err` value of type
 `E`; that's pretty much equivalent to a function returning `T` or throwing an
 exception `E`.
+
+Next slide: gracefully handling errors with `match`.
 
 ---
 
@@ -245,20 +271,55 @@ fn main() {
 }
 ```
 
+Notes: One way we can deal with that error is by matching on it, which is a
+little bit like a type-safe `isinstance` check. Here, we just handle an error
+by printing a simple message.
+
+Next slide: showing what happens when we run it.
+
 ---
+
+<slide class=center>
 
 ```shell-session
 $ env USER="$(printf '\xc3\x28')" ./target/debug/rustconf-code
 I couldn't figure out who you are!
 ```
 
+Notes: Now, when we run our program, we print an error message instead of
+crashing. We'll talk about some other ways to handle errors as we go, but for the
+definitive rundown check out Jane Ludsby's talk ["Error Handling Isn't All
+About Errors"][jane-errors].
+
+But this talk is about Rust's value as a practical programming language,
+which means doing more than writing "Hello, world!"s. So lets write a program
+in Rust and explore some of the ways the language helps us out.
+
+Next slide: receipt printer, weather program overview.
+
+[jane-errors]: https://rustconf.com/schedule/error-handling-isn-t-all-about-errors
+
 ---
+
+<slide class=image-slide>
 
 ![A Star TSP100 Eco futurePRNT 72mm receipt printer, powered on with a
 printed receipt showing the RustConf homepage reading "Beaming to screens
 across the globe"](img/receipt-printer.jpg)
 
+Notes: I have this receipt printer hooked up to my computer, and it's super fun
+to play with --- there's no ink, so paper is incredibly cheap, and they're
+designed for restaurants and retail, so they're incredibly durable.
+
+I always forget to check the weather in the morning, so I want to write a
+program I can set to run before I wake up that tells me the weather, and how
+it'll feel compared to the previous day.
+
+Next slide: Minimal API call with OpenWeather.
+
 ---
+
+## Simple API call with [openweathermap.org]
 
 ```python
 import json
@@ -275,9 +336,20 @@ with open("openweather_api.json") as f:
     print(res.text)
 ```
 
+[openweathermap.org]: https://openweathermap.org/
+
+Notes: Weather APIs come and go, but right now
+[OpenWeather][openweathermap.org] is providing decent data for free --- even if
+the default units are Kelvins.
+
+Here's a simple call of their API; we load the API key from a JSON file, we
+make a request, and then we print out the response text.
+
+Let's work on recreating this in Rust.
+
 ---
 
-```rust
+```rust no-line-numbers [1-15|4|5-6|7-13]
 use serde_json::Value;
 
 fn main() {
@@ -295,6 +367,29 @@ fn main() {
 }
 ```
 
+Notes: Here's a start at a line-by-line conversion of that program.
+
+1. We're using `include_str!` here which actually reads a file as UTF-8 at
+   *compile time* --- we'll work on opening files in a bit, but this works well
+   enough, end this is very much a "the perfect is the enemy of the good" talk.
+2. Next, we use `serde_json` to parse that string into a JSON value.
+3. Then, we get the `api_key` key out of the object as a string. Each time
+   we assert something about the type of a value in this object, we need to
+   unwrap it, because we might *not* have a value of the type we want, so we
+   need to deal with that somehow.
+
+   Note that this isn't entirely unique to Rust, though --- our
+   Python program would also crash if `api_key_obj` wasn't a JSON object, or if
+   it didn't have a key named `api_key`, or if the value to that key wasn't a
+   string. But Rust makes us be explicit about it.
+
+   That's not entirely a bad thing --- it helps us figure out where errors
+   could happen --- but it is awfully verbose and painful to write.
+
+   Fortunately, there's a better way.
+
+Next slide: `Deserialize` derive.
+
 ---
 
 ```rust
@@ -306,6 +401,15 @@ struct OpenWeatherConfig {
 }
 ```
 
+Notes: Here, we're declaring a struct, which is roughly a class, in the sense
+of a blob of data with named fields and methods. Then, we *derive* some traits
+for it. Traits are what Python programmers sometimes call protocols, or what
+Java calls interfaces. Here, `Debug` lets us pretty-print the struct's data,
+`Clone` lets us deeply copy it, and `Deserialize` lets us deserialize it from
+JSON --- or, with other serde libraries, XML, YAML, TOML, Protobufs, and more.
+
+Next slide: Using the `Deserialize` implementation with `serde_json`.
+
 ---
 
 ```rust
@@ -315,20 +419,39 @@ fn main() {
     let config_json = include_str!("../openweather_api.json");
     let config: OpenWeatherConfig =
         serde_json::from_str(config_json).unwrap();
-    println!("OpenWeather config: {:?}", config);
+    println!("{:?}", config);
 }
 ```
+
+Notes: Here's what deserializing to a value looks like. Note that we don't need
+to explicitly construct our `OpenWeatherConfig` object --- that, along with
+parsing the JSON, matching up keys to fields, and recursively constructing
+other `Deserialize`able values, is handled by `serde` and `serde_json`.
+
+Next slide: Running this example.
+
 
 ---
 
 ```shell-session
+$ cat openweather_api.json
+{
+  "api_key": "1b13e6aa173ce14137a50095476e653c"
+}
+
 $ cargo run
     Finished dev [unoptimized + debuginfo] target(s) in 0.05s
      Running `target/debug/rustconf-code`
-OpenWeather config: OpenWeatherConfig {
-    api_key: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+OpenWeatherConfig {
+    api_key: "1b13e6aa173ce14137a50095476e653c"
 }
 ```
+
+Notes: Now when we run this, we get some nice pretty-printed debug output by default.
+
+That's not my actual API key, by the way. Don't worry.
+
+Next slide: `structopt`.
 
 ---
 
@@ -351,6 +474,15 @@ fn main() {
 }
 ```
 
+Notes: The next change I want to make is adding `structopt`, which derives a
+command-line interface from a struct definition. Instead of declaring all our
+arguments as strings and pulling them out of an untyped hashmap, we just declare
+them as struct fields --- which means we get autocompletion for our
+command-line options, along with bonuses like detecting that `Option` fields
+aren't mandatory and `Vec` fields can have multiple values.
+
+Next slide: Generated help message.
+
 ---
 
 ```shell-session
@@ -359,14 +491,14 @@ rustconf-code 0.1.0
 A command-line interface to the openweathermap.org API
 
 USAGE:
-    rustconf-code --config &lt;config>
+    rustconf-code --config <config>
 
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
 
 OPTIONS:
-    -c, --config &lt;config>    Config filename; a JSON file with
+    -c, --config <config>    Config filename; a JSON file with
                              an `api_key` field
 ```
 
@@ -379,14 +511,14 @@ error: Found argument '--confgi' which wasn't expected, or isn't
        Did you mean --config?
 
 USAGE:
-    rustconf-code --config &lt;config>
+    rustconf-code --config <config>
 
 For more information try --help
 ```
 
 ---
 
-```rust
+```rust left
 use eyre::WrapErr;
 
 fn main() -> eyre::Result<()> {
@@ -401,7 +533,7 @@ fn main() -> eyre::Result<()> {
 
 ---
 
-```rust
+```rust no-line-numbers left [6-11,14]
 use eyre::WrapErr;
 
 fn main() -> eyre::Result<()> {
@@ -444,7 +576,7 @@ use reqwest::blocking::{Client, Response};
 
 fn get_weather(
     api_key: &str,
-) -> Result&lt;Response, reqwest::Error> {
+) -> Result<Response, reqwest::Error> {
     let client = Client::new();
     client
         .get("https://api.openweathermap.org/data/2.5/weather")
@@ -492,4 +624,25 @@ println!("{}", String::from_utf8_lossy(&*bytes));
 "03d"}],"base":"stations","main":{"temp":308.71,"feels_like":
 307.42,"temp_min":307.59,"temp_max":309.82,"pressure":1010,
 "humidity":37},"visibility":10000,"wind":{"speed":6.2, ...
+```
+
+---
+
+```rust
+#[derive(Deserialize, Debug, Clone)]
+pub struct OneCall {
+    pub hourly: Vec<Hourly>,
+    pub daily: Vec<Daily>,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct Hourly {
+    pub dt: UnixUTC,
+    pub temp: f64,
+    pub feels_like: f64,
+    pub humidity: f64,
+    pub clouds: f64,
+    pub rain: Option<Rain>,
+    pub snow: Option<Snow>,
+}
 ```

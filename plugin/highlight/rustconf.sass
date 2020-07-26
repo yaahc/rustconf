@@ -1,3 +1,5 @@
+@use "sass:color"
+
 $c-black: rgb(13, 9, 17)
 $c-peach: rgb(245, 167, 143)
 $c-peach-dark: rgb(187, 118, 97)
@@ -73,9 +75,12 @@ $c-gray-dark: rgb(68, 65, 64)
 
 .hljs-comment,
 .hljs-quote,
-.hljs-deletion,
-.hljs-meta
+.hljs-deletion
   color: $c-purple-dark
+
+.hljs-meta
+  color: $c-peach
+  font-style: italic
 
 .hljs-keyword,
 .hljs-selector-tag,
@@ -97,3 +102,16 @@ $c-gray-dark: rgb(68, 65, 64)
 
 code.no-line-numbers .hljs-ln-numbers
   display: none
+
+
+
+.reveal .hljs
+
+  &:not(.has-highlights)
+    color: $c-purple
+
+  &.has-highlights tr:not(.highlight-line)
+    opacity: 0.5
+
+    &, & span
+      color: color.adjust($c-purple, $saturation: -10)

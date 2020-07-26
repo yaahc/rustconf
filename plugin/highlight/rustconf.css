@@ -50,9 +50,13 @@
 
 .hljs-comment,
 .hljs-quote,
-.hljs-deletion,
-.hljs-meta {
+.hljs-deletion {
   color: #736d77;
+}
+
+.hljs-meta {
+  color: #f5a78f;
+  font-style: italic;
 }
 
 .hljs-keyword,
@@ -78,6 +82,16 @@
 
 code.no-line-numbers .hljs-ln-numbers {
   display: none;
+}
+
+.reveal .hljs:not(.has-highlights) {
+  color: #ab94bf;
+}
+.reveal .hljs.has-highlights tr:not(.highlight-line) {
+  opacity: 0.5;
+}
+.reveal .hljs.has-highlights tr:not(.highlight-line), .reveal .hljs.has-highlights tr:not(.highlight-line) span {
+  color: #aa9db6;
 }
 
 /*# sourceMappingURL=rustconf.css.map */
