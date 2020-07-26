@@ -1,7 +1,9 @@
+use std::ffi::{OsStr, OsString};
 use std::fs::{self, File};
 use std::io::{self, Read, Write};
 use std::iter;
 use std::path::{Path, PathBuf};
+use std::process::{Command, Stdio};
 
 use eyre::{eyre, WrapErr};
 use handlebars::Handlebars;
@@ -32,6 +34,10 @@ struct Opt {
     /// Slideshow template.
     #[structopt(long, parse(from_os_str), default_value = "template.html")]
     template: PathBuf,
+
+    /// Path to html_touchup helper directory
+    #[structopt(long, parse(from_os_str), default_value = "md-compiler/html-touchup")]
+    html_touchup: PathBuf,
 
     /// Input Markdown file.
     #[structopt(parse(from_os_str))]
@@ -140,9 +146,39 @@ impl App {
             slides: &String::from_utf8(rewritten_html)?,
         };
 
-        let output = File::create(&self.opt.output)?;
-        self.handlebars
-            .render_to_write(template_name, &template_context, output)?;
+        let mut child = Command::new("nix-shell")
+            .args(&[
+                self.opt.html_touchup.as_os_str(),
+                OsStr::new("--command"),
+                &{
+                    let mut ret: OsString = "python3.8 ".into();
+                    ret.push(&self.opt.html_touchup.join("html_touchup.py"));
+                    ret
+                },
+            ])
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .spawn()
+            .wrap_err("Failed to launch Python helper html_touchup")?;
+
+        {
+            let stdin = child
+                .stdin
+                .as_mut()
+                .ok_or_else(|| eyre!("Failed to get html_touchup's stdin handle"))?;
+
+            self.handlebars
+                .render_to_write(template_name, &template_context, stdin)?;
+        }
+
+        let html_touchup_out = child
+            .wait_with_output()
+            .wrap_err("Failed to get html_touchup's output")?;
+
+        File::create(&self.opt.output)?
+            .write_all(&html_touchup_out.stdout)
+            .wrap_err("Failed to write html_touchup's output")?;
+
         Ok(())
     }
 
@@ -384,13 +420,17 @@ impl<'a> Iterator for MappedParser<'a> {
         let started_paragraph = matches!(event, Event::Start(Tag::Paragraph));
 
         let ret = Some(match event {
-            Event::Rule => Event::Html(
-                format!(
-                    "{}</section>\n<section>",
-                    if self.has_notes { "</aside>" } else { "" }
-                )
-                .into(),
-            ),
+            Event::Rule => {
+                let ret = Event::Html(
+                    format!(
+                        "{}</section>\n<section>",
+                        if self.has_notes { "</aside>" } else { "" }
+                    )
+                    .into(),
+                );
+                self.has_notes = false;
+                ret
+            }
             Event::Text(text) => {
                 if self.started_paragraph && text.starts_with("Notes: ") {
                     self.lookahead = Some(Event::Text(

@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en-US">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Rust for Non-Systems Programmers
+  </title>
+  <link href="dist/reset.css" rel="stylesheet"/>
+  <link href="dist/reveal.css" rel="stylesheet"/>
+  <link href="dist/theme/rustconf.css" id="theme" rel="stylesheet"/>
+  <link href="plugin/highlight/rustconf.css" id="highlight-theme" rel="stylesheet"/>
+  <script crossorigin="anonymous" src="https://kit.fontawesome.com/9144026ed3.js">
+  </script>
+ </head>
+ <body>
+  <div class="reveal">
+   <div class="slides">
+    <section>
+     <h1>
+      Rust
+      <br/>
+      <div class="small">
+       for
+      </div>
+      Non-Systems Programmers
+     </h1>
+     <p>
+      <span class="author">
+       Rebecca Turner
+      </span>
+     </p>
+     <p>
+      <i class="fab fa-twitter">
+      </i>
+      <a href="https://twitter.com/16kbps">
+       @16kbps
+      </a>
+      /
+      <a href="https://becca.ooo/">
+       becca.ooo
+      </a>
+     </p>
+     <aside class="notes">
+      Hey folks, my name is Rebecca Turner and I'm going to tell you why you
+should be writing non-systems code in Rust.
+      <p>
+      </p>
+     </aside>
+    </section>
+    <section>
+     <h2>
+      Why this talk?
+     </h2>
+     <aside class="notes">
+      I'm a non-systems programmer, and I really like Rust. But if you
+looked at the
+      <a href="https://rust-lang.org/">
+       rust-lang.org
+      </a>
+      website before 2019, that might not make
+sense to you.
+      <p>
+      </p>
+     </aside>
+    </section>
+    <section>
+     <p>
+      <img alt='A screenshot of the rust-lang.org website in late 2018. The headline reads "Rust is a systems programming languaeg that runs blazingly fast, prevents segfaults, and guarantees thread safety."' src="img/rust-2018-11-30.png"/>
+     </p>
+     <aside class="notes">
+      Here's the
+      <a href="https://rust-lang.org/">
+       rust-lang.org
+      </a>
+      website at the end of 2018, right before
+they rolled out the new site. The headline emphasizes systems programming,
+speed, and memory safety — all things I don't directly care about that much.
+      <p>
+      </p>
+      <div class="next-slide">
+       <p>
+        Next slide: Compare that with the new website.
+       </p>
+      </div>
+     </aside>
+    </section>
+    <section>
+     <p>
+      <img alt='A screenshot of the rust-lang.org website in mid-2020. The headline reads "A language empowering everyone to build reliable and efficient software." and sections under "Why Rust?" emphasize performance, reliability, and productivity.' src="img/rust-2020-07-19.png"/>
+     </p>
+     <aside class="notes">
+      And here's the same website today in mid-2020. Now we're "empowering
+everyone" to and focusing on reliability and productivity. But a lot of the
+documentation has lagged behind and still assumes that new Rust programmers
+already know C++ or something similar.
+      <p>
+      </p>
+      <p>
+       So I want to introduce the rest of us to Rust.
+      </p>
+      <div class="next-slide">
+       <p>
+        Next slide: Who is this talk for?
+       </p>
+      </div>
+     </aside>
+    </section>
+    <section>
+     <h2>
+      Who is this talk for?
+     </h2>
+     <ul>
+      <li class="fragment">
+       Programmers comfortable in dynamic languages like Python, JavaScript, Ruby,
+etc.
+      </li>
+      <li class="fragment">
+       Who are tired of some of the problems with those languages:
+       <ul>
+        <li class="fragment fragment fragment">
+         Null/undefined errors
+        </li>
+        <li class="fragment fragment fragment">
+         Runtime type errors
+        </li>
+        <li class="fragment fragment fragment">
+         Poor documentation
+        </li>
+       </ul>
+      </li>
+     </ul>
+    </section>
+    <section>
+     <h2>
+      Why do I like Rust?
+     </h2>
+     <aside class="notes">
+      I have ADHD, and it varies from person to person but one area I really
+struggle with is
+      <a href="https://en.wikipedia.org/wiki/Working_memory">
+       <em>
+        working memory
+       </em>
+      </a>
+      , which is roughly how much
+information you can hold in your head at once. And as an engineer, that means
+that I can't hold much of the program concept in my mind while I work.
+      <p>
+      </p>
+      <p>
+       It's really important that I have a powerful compiler, linters, and tests
+because otherwise I have no way of knowing that the program's correct — and
+I also really need type annotations and autocompletion to remember which
+operations are supported on which variables.
+      </p>
+      <p>
+       Rust
+       <em>
+        really shines
+       </em>
+       in all of these areas. I work
+       <em>
+        with
+       </em>
+       the compiler to
+check my work. And it helps me feel a lot more confident that my programs do
+what I think they do.
+      </p>
+      <div class="next-slide">
+       <p>
+        Next slide: Tooling.
+       </p>
+      </div>
+     </aside>
+    </section>
+    <section>
+     <h2>
+      Tooling
+     </h2>
+     <ul>
+      <li class="fragment">
+       Documentation:
+       <a href="https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html">
+        rustdoc
+       </a>
+       (API docs) and
+       <a href="https://rust-lang.github.io/mdBook/">
+        mdBook
+       </a>
+       (long-form guides)
+      </li>
+      <li class="fragment">
+       Language servers:
+       <a href="official">
+        rls
+       </a>
+       and
+       <a href="community">
+        rust-analyzer
+       </a>
+      </li>
+      <li class="fragment">
+       Package manager, build system:
+       <a href="https://doc.rust-lang.org/book/ch01-03-hello-cargo.html">
+        Cargo
+       </a>
+      </li>
+     </ul>
+     <aside class="notes">
+      Before we get started, I want to point out a few of the tools that
+making writing Rust easy and fun.
+      <p>
+      </p>
+      <ul>
+       <li class="fragment">
+        rustdoc compiles
+        <code>
+         ///
+        </code>
+        doc comments written in Markdown to webpages —
+complete with search, links, and more.
+       </li>
+       <li class="fragment">
+        mdBook is used for writing longer-form narrative-style documentation; the
+Rust Book and more are written with mdBook and serve as companions to the
+rustdoc documentation.
+       </li>
+       <li class="fragment">
+        Two very good language servers provide autocompletion, definition-jumping,
+quick fixes, and more.
+       </li>
+       <li class="fragment">
+        Cargo is a package manager and build system, integrating with the crates.io
+package repository.
+       </li>
+      </ul>
+      <div class="next-slide">
+       <p>
+        Next slide: A bit more on documentation.
+       </p>
+      </div>
+     </aside>
+    </section>
+    <section>
+     <h2>
+      Documentation
+     </h2>
+     <iframe class="main" importance="low" loading="lazy" src="https://docs.rs/rand/0.7.3/rand/">
+     </iframe>
+     <aside class="notes">
+      Here's the generated documentation for the
+      <a href="https://docs.rs/rand/">
+       <code>
+        rand
+       </code>
+      </a>
+      crate, which you can
+find at
+      <a href="https://docs.rs/rand/">
+       docs.rs/rand
+      </a>
+      .
+      <p>
+      </p>
+     </aside>
+    </section>
+    <section>
+     <h2>
+      Getting started
+     </h2>
+     <pre><code class="language-rust no-line-numbers" data-line-numbers="1-10|1|3-10|4|5-9|5|8" data-noescape="">use <a href="https://docs.rs/std">std</a>::env;
+
+fn main() {
+    let user = env::var("USER").unwrap();
+    if user == "becca" {
+        println!("Hello, Rebecca!");
+    } else {
+        println!("Hello, {}!", user);
+    }
+}
+</code></pre>
+     <aside class="notes">
+      Here's a pretty simple rust program, just to show off a bit of syntax.
+      <p>
+      </p>
+      <ol>
+       <li>
+        <p>
+         The
+         <code>
+          use
+         </code>
+         statement imports names from libraries.
+         <code>
+          ::
+         </code>
+         is used as a path
+separator / namespacing operator.
+        </p>
+       </li>
+       <li>
+        <p>
+         Next, we define a function with the
+         <code>
+          fn
+         </code>
+         keyword; The function named
+         <code>
+          main
+         </code>
+         is the entry point.
+        </p>
+       </li>
+       <li>
+        <p>
+         We call the
+         <code>
+          var
+         </code>
+         function in the
+         <code>
+          env
+         </code>
+         module, and assign the value it
+returns to
+         <code>
+          user
+         </code>
+         ; Rust figures out the type for us.
+        </p>
+        <p>
+         <code>
+          env::var
+         </code>
+         returns a
+         <code>
+          Result
+         </code>
+         , so we have to unwrap it, which will crash
+if there's an error.
+        </p>
+       </li>
+       <li>
+        <p>
+         Next, we have an
+         <code>
+          if
+         </code>
+         statement, which has braces but no parenthesis.
+        </p>
+       </li>
+       <li>
+        <p>
+         Note that we're also comparing strings with
+         <code>
+          ==
+         </code>
+         — rust has operator overloading!
+        </p>
+       </li>
+       <li>
+        <p>
+         Finally, we have this
+         <code>
+          println!
+         </code>
+         macro — the
+         <code>
+          !
+         </code>
+         means it's a macro, and
+the string literal there is actually turned into a series of formatting
+instructions at compile time so we don't waste time parsing at runtime.
+        </p>
+       </li>
+      </ol>
+      <p>
+       Next slide:
+       <code>
+        cargo build
+       </code>
+       .
+      </p>
+     </aside>
+    </section>
+    <section>
+     <pre><code class="language-shell-session">$ cargo build
+   Compiling rustconf-code v0.1.0 (~/rustconf/rustconf-code)
+    Finished dev [unoptimized + debuginfo] target(s) in 0.17s
+</code></pre>
+     <aside class="notes">
+      We can run
+      <code>
+       cargo build
+      </code>
+      to compile the program.
+      <p>
+      </p>
+      <div class="next-slide">
+       <p>
+        Next slide: running the program.
+       </p>
+      </div>
+     </aside>
+    </section>
+    <section>
+     <pre><code class="language-shell-session">$ ./target/debug/rustconf-code
+Hello, Rebecca!
+$ USER=nell ./target/debug/rustconf-code
+Hello, nell!
+</code></pre>
+     <aside class="notes">
+      And then we can run it, and it does what we expect.
+      <p>
+      </p>
+      <div class="next-slide">
+       <p>
+        Next slide: …although, we might not really expect an empty variable.
+       </p>
+      </div>
+     </aside>
+    </section>
+    <section>
+     <pre><code class="language-shell-session no-line-numbers" data-line-numbers="1-2|3-7">$ env USER= ./target/debug/rustconf-code
+Hello, !
+$ env USER="$(printf '\xc3\x28')" ./target/debug/rustconf-code
+thread 'main' panicked at 'called `Result::unwrap()` on an
+`Err` value: NotUnicode("\xC3(")', src/main.rs:4:16
+note: run with `RUST_BACKTRACE=1` environment variable to display
+a backtrace
+</code></pre>
+     <aside class="notes">
+      ...although, we might not really expect an empty variable.
+      <p>
+      </p>
+      <p>
+       Also, invalid UTF-8 will crash the whole program.
+      </p>
+      <p>
+       Next slide:
+       <code>
+        Result
+       </code>
+      </p>
+     </aside>
+    </section>
+    <section>
+     <pre><code class="language-rust" data-noescape="">enum Result&lt;T, E&gt; {
+    Ok(T),
+    Err(E),
+}
+</code></pre>
+     <aside class="notes">
+      <code>
+       Result
+      </code>
+      is an
+      <code>
+       enum
+      </code>
+      — what functional programmers call a sum type.
+While a tuple has a value from any number of different types at the same time, a
+sum type has a value from
+      <em>
+       one
+      </em>
+      of a number of different types.
+      <p>
+      </p>
+      <p>
+       <code>
+        Result
+       </code>
+       is generic, so for any types
+       <code>
+        T
+       </code>
+       and
+       <code>
+        E
+       </code>
+       , we have a type
+       <code>
+        Result&lt;T, E&gt;
+       </code>
+       which can be
+       <em>
+        either
+       </em>
+       an
+       <code>
+        Ok
+       </code>
+       value of type
+       <code>
+        T
+       </code>
+       or an
+       <code>
+        Err
+       </code>
+       value of type
+       <code>
+        E
+       </code>
+       ; that's pretty much equivalent to a function returning
+       <code>
+        T
+       </code>
+       or throwing an
+exception
+       <code>
+        E
+       </code>
+       .
+      </p>
+      <div class="next-slide">
+       <p>
+        Next slide: gracefully handling errors with
+        <code>
+         match
+        </code>
+        .
+       </p>
+      </div>
+     </aside>
+    </section>
+    <section>
+     <pre><code class="language-rust" data-noescape="">use <a href="https://docs.rs/std">std</a>::env;
+
+fn main() {
+    let user = env::var("USER");
+    match user {
+        Ok(user) =&gt; {
+            if user == "becca" {
+                println!("Hello, Rebecca!");
+            } else {
+                println!("Hello, {}!", user);
+            }
+        }
+        Err(_) =&gt; println!("I couldn't figure out who you are!"),
+    }
+}
+</code></pre>
+     <aside class="notes">
+      One way we can deal with that error is by matching on it, which is a
+little bit like a type-safe
+      <code>
+       isinstance
+      </code>
+      check. Here, we just handle an error
+by printing a simple message.
+      <p>
+      </p>
+      <div class="next-slide">
+       <p>
+        Next slide: showing what happens when we run it.
+       </p>
+      </div>
+     </aside>
+    </section>
+    <section>
+     <pre><code class="language-shell-session">$ env USER="$(printf '\xc3\x28')" ./target/debug/rustconf-code
+I couldn't figure out who you are!
+</code></pre>
+     <aside class="notes">
+      Now, when we run our program, we print an error message instead of
+crashing. We'll talk about some other ways to handle errors as we go, but for the
+definitive rundown check out Jane Ludsby's talk
+      <a href="https://rustconf.com/schedule/error-handling-isn-t-all-about-errors">
+       "Error Handling Isn't All
+About Errors"
+      </a>
+      .
+      <p>
+      </p>
+      <p>
+       But this talk is about Rust's value as a practical programming language,
+which means doing more than writing "Hello, world!"s. So lets write a program
+in Rust and explore some of the ways the language helps us out.
+      </p>
+      <div class="next-slide">
+       <p>
+        Next slide: receipt printer, weather program overview.
+       </p>
+      </div>
+     </aside>
+    </section>
+    <section>
+     <p>
+      <img alt='A Star TSP100 Eco futurePRNT 72mm receipt printer, powered on with a printed receipt showing the RustConf homepage reading "Beaming to screens across the globe"' src="img/receipt-printer.jpg"/>
+     </p>
+     <aside class="notes">
+      I have this receipt printer hooked up to my computer, and it's super fun
+to play with — there's no ink, so paper is incredibly cheap, and they're
+designed for restaurants and retail, so they're incredibly durable.
+      <p>
+      </p>
+      <p>
+       I always forget to check the weather in the morning, so I want to write a
+program I can set to run before I wake up that tells me the weather, and how
+it'll feel compared to the previous day.
+      </p>
+      <div class="next-slide">
+       <p>
+        Next slide: Minimal API call with OpenWeather.
+       </p>
+      </div>
+     </aside>
+    </section>
+    <section>
+     <h2>
+      Simple API call with
+      <a href="https://openweathermap.org/">
+       openweathermap.org
+      </a>
+     </h2>
+     <pre><code class="language-python">import json
+
+import requests
+
+with open("openweather_api.json") as f:
+    api_key_obj = json.load(f)
+    api_key = api_key_obj["api_key"]
+    res = requests.get(
+        "https://api.openweathermap.org/data/2.5/weather",
+        params={"q": "Waltham,MA,US", "appid": api_key},
+    )
+    print(res.text)
+</code></pre>
+     <aside class="notes">
+      Weather APIs come and go, but right now
+      <a href="https://openweathermap.org/">
+       OpenWeather
+      </a>
+      is providing decent data for free — even if
+the default units are Kelvins.
+      <p>
+      </p>
+      <p>
+       Here's a simple call of their API; we load the API key from a JSON file, we
+make a request, and then we print out the response text.
+      </p>
+      <p>
+       Let's work on recreating this in Rust.
+      </p>
+     </aside>
+    </section>
+    <section>
+     <pre><code class="language-rust no-line-numbers" data-line-numbers="1-15|4|5-6|7-13" data-noescape="">use <a href="https://docs.rs/serde_json">serde_json</a>::Value;
+
+fn main() {
+    let api_key_json = include_str!("../openweather_api.json");
+    let api_key_obj: Value =
+        serde_json::from_str(api_key_json).unwrap();
+    let api_key = api_key_obj
+        .as_object()
+        .unwrap()
+        .get("api_key")
+        .unwrap()
+        .as_str()
+        .unwrap();
+    println!("API key is {}", api_key);
+}
+</code></pre>
+     <aside class="notes">
+      Here's a start at a line-by-line conversion of that program.
+      <p>
+      </p>
+      <ol>
+       <li>
+        <p>
+         We're using
+         <code>
+          include_str!
+         </code>
+         here which actually reads a file as UTF-8 at
+         <em>
+          compile time
+         </em>
+         — we'll work on opening files in a bit, but this works well
+enough, end this is very much a "the perfect is the enemy of the good" talk.
+        </p>
+       </li>
+       <li>
+        <p>
+         Next, we use
+         <code>
+          serde_json
+         </code>
+         to parse that string into a JSON value.
+        </p>
+       </li>
+       <li>
+        <p>
+         Then, we get the
+         <code>
+          api_key
+         </code>
+         key out of the object as a string. Each time
+we assert something about the type of a value in this object, we need to
+unwrap it, because we might
+         <em>
+          not
+         </em>
+         have a value of the type we want, so we
+need to deal with that somehow.
+        </p>
+        <p>
+         Note that this isn't entirely unique to Rust, though — our
+Python program would also crash if
+         <code>
+          api_key_obj
+         </code>
+         wasn't a JSON object, or if
+it didn't have a key named
+         <code>
+          api_key
+         </code>
+         , or if the value to that key wasn't a
+string. But Rust makes us be explicit about it.
+        </p>
+        <p>
+         That's not entirely a bad thing — it helps us figure out where errors
+could happen — but it is awfully verbose and painful to write.
+        </p>
+        <p>
+         Fortunately, there's a better way.
+        </p>
+       </li>
+      </ol>
+      <p>
+       Next slide:
+       <code>
+        Deserialize
+       </code>
+       derive.
+      </p>
+     </aside>
+    </section>
+    <section>
+     <pre><code class="language-rust" data-noescape="">use <a href="https://docs.rs/serde">serde</a>::Deserialize;
+
+#[derive(Debug, Clone, Deserialize)]
+struct OpenWeatherConfig {
+    api_key: String,
+}
+</code></pre>
+     <aside class="notes">
+      Here, we're declaring a struct, which is roughly a class, in the sense
+of a blob of data with named fields and methods. Then, we
+      <em>
+       derive
+      </em>
+      some traits
+for it. Traits are what Python programmers sometimes call protocols, or what
+Java calls interfaces. Here,
+      <code>
+       Debug
+      </code>
+      lets us pretty-print the struct's data,
+      <code>
+       Clone
+      </code>
+      lets us deeply copy it, and
+      <code>
+       Deserialize
+      </code>
+      lets us deserialize it from
+JSON — or, with other serde libraries, XML, YAML, TOML, Protobufs, and more.
+      <p>
+      </p>
+      <div class="next-slide">
+       <p>
+        Next slide: Using the
+        <code>
+         Deserialize
+        </code>
+        implementation with
+        <code>
+         serde_json
+        </code>
+        .
+       </p>
+      </div>
+     </aside>
+    </section>
+    <section>
+     <pre><code class="language-rust" data-noescape="">use <a href="https://docs.rs/serde">serde</a>::Deserialize;
+
+fn main() {
+    let config_json = include_str!("../openweather_api.json");
+    let config: OpenWeatherConfig =
+        serde_json::from_str(config_json).unwrap();
+    println!("{:?}", config);
+}
+</code></pre>
+     <aside class="notes">
+      Here's what deserializing to a value looks like. Note that we don't need
+to explicitly construct our
+      <code>
+       OpenWeatherConfig
+      </code>
+      object — that, along with
+parsing the JSON, matching up keys to fields, and recursively constructing
+other
+      <code>
+       Deserialize
+      </code>
+      able values, is handled by
+      <code>
+       serde
+      </code>
+      and
+      <code>
+       serde_json
+      </code>
+      .
+      <p>
+      </p>
+      <div class="next-slide">
+       <p>
+        Next slide: Running this example.
+       </p>
+      </div>
+     </aside>
+    </section>
+    <section>
+     <pre><code class="language-shell-session">$ cat openweather_api.json
+{
+  "api_key": "1b13e6aa173ce14137a50095476e653c"
+}
+
+$ cargo run
+    Finished dev [unoptimized + debuginfo] target(s) in 0.05s
+     Running `target/debug/rustconf-code`
+OpenWeatherConfig {
+    api_key: "1b13e6aa173ce14137a50095476e653c"
+}
+</code></pre>
+     <aside class="notes">
+      Now when we run this, we get some nice pretty-printed debug output by default.
+      <p>
+      </p>
+      <p>
+       That's not my actual API key, by the way. Don't worry.
+      </p>
+     </aside>
+    </section>
+    <section>
+     <pre><code class="language-rust" data-noescape="">use <a href="https://docs.rs/std">std</a>::path::PathBuf;
+
+use <a href="https://docs.rs/structopt">structopt</a>::StructOpt;
+
+/// A command-line interface to the openweathermap.org API.
+#[derive(Debug, StructOpt)]
+struct Opt {
+    /// Config filename; a JSON file with an `api_key` field.
+    #[structopt(short, long, parse(from_os_str))]
+    config: PathBuf,
+}
+
+fn main() {
+    let opt = Opt::from_args();
+    // …
+}
+</code></pre>
+     <aside class="notes">
+      The next change I want to make is adding
+      <code>
+       structopt
+      </code>
+      , which lets us
+define a command-line interface with a struct.
+      <p>
+      </p>
+     </aside>
+    </section>
+    <section>
+     <pre><code class="language-shell-session">$ ./target/debug/rustconf-code –help
+rustconf-code 0.1.0
+A command-line interface to the openweathermap.org API
+
+USAGE:
+    rustconf-code –config &lt;config&gt;
+
+FLAGS:
+    -h, –help       Prints help information
+    -V, –version    Prints version information
+
+OPTIONS:
+    -c, –config &lt;config&gt;    Config filename; a JSON file with
+                             an `api_key` field
+</code></pre>
+    </section>
+    <section>
+     <pre><code class="language-shell-session">$ ./target/debug/rustconf-code –confgi my-custom-file.json
+error: Found argument '–confgi' which wasn't expected, or isn't
+       valid in this context
+       Did you mean –config?
+
+USAGE:
+    rustconf-code –config &lt;config&gt;
+
+For more information try –help
+</code></pre>
+    </section>
+    <section>
+     <pre><code class="language-rust" data-noescape="">use <a href="https://docs.rs/eyre">eyre</a>::WrapErr;
+
+fn main() -&gt; eyre::Result&lt;()&gt; {
+    let opt = Opt::from_args();
+    let config_json = File::open(&amp;opt.config)?;
+    let config: OpenWeatherConfig =
+        serde_json::from_reader(&amp;config_json)?;
+    println!("Config: {:#?}", config);
+    Ok(())
+}
+</code></pre>
+    </section>
+    <section>
+     <pre><code class="language-rust" data-noescape="">use <a href="https://docs.rs/eyre">eyre</a>::WrapErr;
+
+fn main() -&gt; eyre::Result&lt;()&gt; {
+    let opt = Opt::from_args();
+    let config_json =
+        File::open(&amp;opt.config).wrap_err_with(|| {
+            format!(
+                "Failed to open config file {:?}",
+                opt.config
+            )
+        })?;
+    let config: OpenWeatherConfig =
+        serde_json::from_reader(&amp;config_json)
+            .wrap_err("Failed to deserialize JSON")?;
+    println!("Config: {:#?}", config);
+    Ok(())
+}
+</code></pre>
+    </section>
+    <section>
+     <pre><code class="language-shell-session">$ ./target/debug/rustconf-code –config nonexistent-file.json
+Error: Failed to open config file "nonexistent-file.json"
+
+Caused by:
+    No such file or directory (os error 2)
+
+$ ./target/debug/rustconf-code –config invalid-file.json
+Error: Failed to deserialize JSON
+
+Caused by:
+    trailing comma at line 3 column 1
+</code></pre>
+    </section>
+    <section>
+     <pre><code class="language-rust" data-noescape="">use <a href="https://docs.rs/reqwest">reqwest</a>::blocking::{Client, Response};
+
+fn get_weather(
+    api_key: &amp;str,
+) -&gt; Result&lt;Response, reqwest::Error&gt; {
+    let client = Client::new();
+    client
+        .get("https://api.openweathermap.org/data/2.5/weather")
+        .query(&amp;[("q", "Waltham,MA,US"), ("appid", api_key)])
+        .send()
+}
+</code></pre>
+    </section>
+    <section>
+     <pre><code class="language-rust" data-noescape="">println!("Response: {:#?}", get_weather(&amp;config.api_key)?);
+</code></pre>
+     <pre><code class="language-shell-session">$ cargo run
+Response: Response {
+    url: "https://api.openweathermap.org/data/2.5/weather?q=…",
+    status: 200,
+    headers: {
+        "server": "openresty",
+        "date": "Sun, 19 Jul 2020 19:30:04 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "465",
+        "connection": "keep-alive",
+        "x-cache-key": "/data/2.5/weather?q=waltham%2cma%2cus",
+        "access-control-allow-origin": "*",
+        "access-control-allow-credentials": "true",
+        "access-control-allow-methods": "GET, POST",
+    },
+}
+</code></pre>
+    </section>
+    <section>
+     <pre><code class="language-rust" data-noescape="">let res = get_weather(&amp;config.api_key)?;
+let bytes = res.bytes()?;
+println!("{}", String::from_utf8_lossy(&amp;*bytes));
+</code></pre>
+     <pre><code class="language-json">{"coord":{"lon":-71.24,"lat":42.38},"weather":[{"id":802,
+"main":"Clouds","description":"scattered clouds","icon":
+"03d"}],"base":"stations","main":{"temp":308.71,"feels_like":
+307.42,"temp_min":307.59,"temp_max":309.82,"pressure":1010,
+"humidity":37},"visibility":10000,"wind":{"speed":6.2, …
+</code></pre>
+    </section>
+    <section>
+     <pre><code class="language-rust" data-noescape="">#[derive(Deserialize, Debug, Clone)]
+pub struct OneCall {
+    pub hourly: Vec&lt;Hourly&gt;,
+    pub daily: Vec&lt;Daily&gt;,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct Hourly {
+    pub dt: UnixUTC,
+    pub temp: f64,
+    pub feels_like: f64,
+    pub humidity: f64,
+    pub clouds: f64,
+    pub rain: Option&lt;Rain&gt;,
+    pub snow: Option&lt;Snow&gt;,
+}
+
+</code></pre>
+    </section>
+   </div>
+  </div>
+  <script src="dist/reveal.js">
+  </script>
+  <script src="plugin/notes/notes.js">
+  </script>
+  <script src="plugin/markdown/markdown.js">
+  </script>
+  <script src="plugin/highlight/highlight.js">
+  </script>
+  <script src="plugin/highlight/rust.js">
+  </script>
+  <script src="plugin/highlight/shell.js">
+  </script>
+  <script>
+   Reveal.initialize({
+            width: 960,
+            height: 540,
+            hash: true,
+            controls: false,
+            progress: false,
+            showNotes: true,
+            transition: 'none',
+            /* vertical- */ center: false,
+            markdown: {
+                smartypants: true,
+            },
+            plugins: [RevealMarkdown, HighlightRustCompiler, HighlightShellSession, RevealHighlight, RevealNotes]
+        });
+  </script>
+ </body>
+</html>

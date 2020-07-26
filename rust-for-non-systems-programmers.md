@@ -31,7 +31,7 @@ Notes: Here's the [rust-lang.org] website at the end of 2018, right before
 they rolled out the new site. The headline emphasizes systems programming,
 speed, and memory safety --- all things I don't directly care about that much.
 
-*Next slide: Compare that with the new website.*
+Next slide: Compare that with the new website.
 
 [rust-lang.org]: https://rust-lang.org/
 
@@ -49,13 +49,13 @@ already know C++ or something similar.
 
 So I want to introduce the rest of us to Rust.
 
-*Next slide: Who is this talk for?*
+Next slide: Who is this talk for?
 
 ---
 
 ## Who is this talk for?
 
-<ul fragments>
+<list fragments>
 
 - Programmers comfortable in dynamic languages like Python, JavaScript, Ruby,
   etc.
@@ -63,8 +63,6 @@ So I want to introduce the rest of us to Rust.
   - Null/undefined errors
   - Runtime type errors
   - Poor documentation
-
-</ul>
 
 ---
 
@@ -84,7 +82,7 @@ Rust *really shines* in all of these areas. I work *with* the compiler to
 check my work. And it helps me feel a lot more confident that my programs do
 what I think they do.
 
-*Next slide: Tooling.*
+Next slide: Tooling.
 
 [mem]: https://en.wikipedia.org/wiki/Working_memory
 
@@ -92,9 +90,12 @@ what I think they do.
 
 ## Tooling
 
+<list fragments>
+
 - Documentation: [rustdoc] (API docs) and [mdBook] (long-form guides)
 - Language servers: [rls](official) and [rust-analyzer](community)
 - Package manager, build system: [Cargo]
+
 
 Notes: Before we get started, I want to point out a few of the tools that
 making writing Rust easy and fun.
@@ -109,7 +110,7 @@ making writing Rust easy and fun.
 - Cargo is a package manager and build system, integrating with the crates.io
   package repository.
 
-*Next slide: A bit more on documentation.*
+Next slide: A bit more on documentation.
 
 [rustdoc]: https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html
 [mdbook]: https://rust-lang.github.io/mdBook/
@@ -162,7 +163,7 @@ Notes: Here's a pretty simple rust program, just to show off a bit of syntax.
    the string literal there is actually turned into a series of formatting
    instructions at compile time so we don't waste time parsing at runtime.
 
-*Next slide: `cargo build`.*
+Next slide: `cargo build`.
 
 ---
 
@@ -174,7 +175,7 @@ $ cargo build
 
 Notes: We can run `cargo build` to compile the program.
 
-*Next slide: running the program.*
+Next slide: running the program.
 
 ---
 
@@ -187,7 +188,7 @@ Hello, nell!
 
 Notes: And then we can run it, and it does what we expect.
 
-*Next slide: ...although, we might not really expect an empty variable.*
+Next slide: ...although, we might not really expect an empty variable.
 
 ---
 
@@ -205,7 +206,7 @@ Notes: ...although, we might not really expect an empty variable.
 
 Also, invalid UTF-8 will crash the whole program.
 
-*Next slide: `Result`*
+Next slide: `Result`
 
 ---
 
@@ -225,7 +226,7 @@ E>` which can be *either* an `Ok` value of type `T` or an `Err` value of type
 `E`; that's pretty much equivalent to a function returning `T` or throwing an
 exception `E`.
 
-*Next slide: gracefully handling errors with `match`.*
+Next slide: gracefully handling errors with `match`.
 
 ---
 
@@ -251,7 +252,7 @@ Notes: One way we can deal with that error is by matching on it, which is a
 little bit like a type-safe `isinstance` check. Here, we just handle an error
 by printing a simple message.
 
-*Next slide: showing what happens when we run it.*
+Next slide: showing what happens when we run it.
 
 ---
 
@@ -269,7 +270,7 @@ But this talk is about Rust's value as a practical programming language,
 which means doing more than writing "Hello, world!"s. So lets write a program
 in Rust and explore some of the ways the language helps us out.
 
-*Next slide: receipt printer, weather program overview.*
+Next slide: receipt printer, weather program overview.
 
 [jane-errors]: https://rustconf.com/schedule/error-handling-isn-t-all-about-errors
 
@@ -287,7 +288,7 @@ I always forget to check the weather in the morning, so I want to write a
 program I can set to run before I wake up that tells me the weather, and how
 it'll feel compared to the previous day.
 
-*Next slide: Minimal API call with OpenWeather.*
+Next slide: Minimal API call with OpenWeather.
 
 ---
 
@@ -360,7 +361,7 @@ Notes: Here's a start at a line-by-line conversion of that program.
 
    Fortunately, there's a better way.
 
-*Next slide: `Deserialize` derive.*
+Next slide: `Deserialize` derive.
 
 ---
 
@@ -380,7 +381,7 @@ Java calls interfaces. Here, `Debug` lets us pretty-print the struct's data,
 `Clone` lets us deeply copy it, and `Deserialize` lets us deserialize it from
 JSON --- or, with other serde libraries, XML, YAML, TOML, Protobufs, and more.
 
-*Next slide: Using the `Deserialize` implementation with `serde_json`.*
+Next slide: Using the `Deserialize` implementation with `serde_json`.
 
 ---
 
@@ -391,20 +392,37 @@ fn main() {
     let config_json = include_str!("../openweather_api.json");
     let config: OpenWeatherConfig =
         serde_json::from_str(config_json).unwrap();
-    println!("OpenWeather config: {:?}", config);
+    println!("{:?}", config);
 }
 ```
+
+Notes: Here's what deserializing to a value looks like. Note that we don't need
+to explicitly construct our `OpenWeatherConfig` object --- that, along with
+parsing the JSON, matching up keys to fields, and recursively constructing
+other `Deserialize`able values, is handled by `serde` and `serde_json`.
+
+Next slide: Running this example.
+
 
 ---
 
 ```shell-session
+$ cat openweather_api.json
+{
+  "api_key": "1b13e6aa173ce14137a50095476e653c"
+}
+
 $ cargo run
     Finished dev [unoptimized + debuginfo] target(s) in 0.05s
      Running `target/debug/rustconf-code`
-OpenWeather config: OpenWeatherConfig {
-    api_key: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+OpenWeatherConfig {
+    api_key: "1b13e6aa173ce14137a50095476e653c"
 }
 ```
+
+Notes: Now when we run this, we get some nice pretty-printed debug output by default.
+
+That's not my actual API key, by the way. Don't worry.
 
 ---
 
@@ -427,6 +445,9 @@ fn main() {
 }
 ```
 
+Notes: The next change I want to make is adding `structopt`, which lets us
+define a command-line interface with a struct.
+
 ---
 
 ```shell-session
@@ -435,14 +456,14 @@ rustconf-code 0.1.0
 A command-line interface to the openweathermap.org API
 
 USAGE:
-    rustconf-code --config &lt;config>
+    rustconf-code --config <config>
 
 FLAGS:
     -h, --help       Prints help information
     -V, --version    Prints version information
 
 OPTIONS:
-    -c, --config &lt;config>    Config filename; a JSON file with
+    -c, --config <config>    Config filename; a JSON file with
                              an `api_key` field
 ```
 
@@ -455,7 +476,7 @@ error: Found argument '--confgi' which wasn't expected, or isn't
        Did you mean --config?
 
 USAGE:
-    rustconf-code --config &lt;config>
+    rustconf-code --config <config>
 
 For more information try --help
 ```
@@ -520,7 +541,7 @@ use reqwest::blocking::{Client, Response};
 
 fn get_weather(
     api_key: &str,
-) -> Result&lt;Response, reqwest::Error> {
+) -> Result<Response, reqwest::Error> {
     let client = Client::new();
     client
         .get("https://api.openweathermap.org/data/2.5/weather")
