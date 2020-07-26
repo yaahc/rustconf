@@ -1,4 +1,4 @@
-# Rust<br> <div class=small>for</div> Non-Systems Programmers
+# Rust <div class=small>for</div> Non-Systems Programmers
 
 <span class=author>Rebecca Turner</span>
 
@@ -10,7 +10,16 @@ should be writing non-systems code in Rust.
 [@16kbps]: https://twitter.com/16kbps
 [becca.ooo]: https://becca.ooo/
 
+<slide-footer>
+<left>Rebecca Turner</left>
+<right>
+<fab fa-twitter> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+</right>
+</slide-footer>
+
 ---
+
+<slide class=title-card data-state=purple>
 
 ## Why this talk?
 
@@ -21,6 +30,8 @@ sense to you.
 [rust-lang.org]: https://rust-lang.org/
 
 ---
+
+<slide class=image-slide>
 
 ![A screenshot of the rust-lang.org website in late 2018. The headline reads
 "Rust is a systems programming languaeg that runs blazingly fast,
@@ -36,6 +47,8 @@ Next slide: Compare that with the new website.
 [rust-lang.org]: https://rust-lang.org/
 
 ---
+
+<slide class=image-slide>
 
 ![A screenshot of the rust-lang.org website in mid-2020. The headline reads
 "A language empowering everyone to build reliable and efficient software."
@@ -120,6 +133,8 @@ Next slide: A bit more on documentation.
 
 ---
 
+<slide class=image-slide>
+
 ## Documentation
 
 <iframe class=main loading=lazy importance=low src="https://docs.rs/rand/0.7.3/rand/"></iframe>
@@ -167,6 +182,8 @@ Next slide: `cargo build`.
 
 ---
 
+<slide class=center>
+
 ```shell-session
 $ cargo build
    Compiling rustconf-code v0.1.0 (~/rustconf/rustconf-code)
@@ -178,6 +195,8 @@ Notes: We can run `cargo build` to compile the program.
 Next slide: running the program.
 
 ---
+
+<slide class=center>
 
 ```shell-session
 $ ./target/debug/rustconf-code
@@ -191,6 +210,8 @@ Notes: And then we can run it, and it does what we expect.
 Next slide: ...although, we might not really expect an empty variable.
 
 ---
+
+<slide class=center>
 
 ```shell-session no-line-numbers [1-2|3-7]
 $ env USER= ./target/debug/rustconf-code
@@ -209,6 +230,8 @@ Also, invalid UTF-8 will crash the whole program.
 Next slide: `Result`
 
 ---
+
+<slide class=center>
 
 ```rust
 enum Result<T, E> {
@@ -256,6 +279,8 @@ Next slide: showing what happens when we run it.
 
 ---
 
+<slide class=center>
+
 ```shell-session
 $ env USER="$(printf '\xc3\x28')" ./target/debug/rustconf-code
 I couldn't figure out who you are!
@@ -275,6 +300,8 @@ Next slide: receipt printer, weather program overview.
 [jane-errors]: https://rustconf.com/schedule/error-handling-isn-t-all-about-errors
 
 ---
+
+<slide class=image-slide>
 
 ![A Star TSP100 Eco futurePRNT 72mm receipt printer, powered on with a
 printed receipt showing the RustConf homepage reading "Beaming to screens
@@ -424,6 +451,8 @@ Notes: Now when we run this, we get some nice pretty-printed debug output by def
 
 That's not my actual API key, by the way. Don't worry.
 
+Next slide: `structopt`.
+
 ---
 
 ```rust
@@ -445,8 +474,14 @@ fn main() {
 }
 ```
 
-Notes: The next change I want to make is adding `structopt`, which lets us
-define a command-line interface with a struct.
+Notes: The next change I want to make is adding `structopt`, which derives a
+command-line interface from a struct definition. Instead of declaring all our
+arguments as strings and pulling them out of an untyped hashmap, we just declare
+them as struct fields --- which means we get autocompletion for our
+command-line options, along with bonuses like detecting that `Option` fields
+aren't mandatory and `Vec` fields can have multiple values.
+
+Next slide: Generated help message.
 
 ---
 
@@ -483,7 +518,7 @@ For more information try --help
 
 ---
 
-```rust
+```rust left
 use eyre::WrapErr;
 
 fn main() -> eyre::Result<()> {
@@ -498,7 +533,7 @@ fn main() -> eyre::Result<()> {
 
 ---
 
-```rust
+```rust no-line-numbers left [6-11,14]
 use eyre::WrapErr;
 
 fn main() -> eyre::Result<()> {
@@ -610,5 +645,4 @@ pub struct Hourly {
     pub rain: Option<Rain>,
     pub snow: Option<Snow>,
 }
-
 ```

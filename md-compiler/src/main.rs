@@ -1,6 +1,6 @@
 use std::ffi::{OsStr, OsString};
 use std::fs::{self, File};
-use std::io::{self, Read, Write};
+use std::io::{self, BufReader, BufWriter, Read, Write};
 use std::iter;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
@@ -131,20 +131,20 @@ impl App {
         let parser = Self::map_parser(Parser::new(&self.input_buf));
         html::push_html(&mut self.rendered_md, parser);
 
-        let mut rewritten_html = Vec::with_capacity(self.rendered_md.len());
-        let mut rewriter = html_rewriter(|c: &[u8]| rewritten_html.extend_from_slice(c))?;
-        rewriter
-            .write(&self.rendered_md.as_bytes())
-            .map_err(|err| eyre!(format!("{}", err)))?;
-
         let template_name = "input_template";
 
         self.handlebars
             .register_template_source(template_name, &mut self.template_buf.as_bytes())?;
 
         let template_context = TemplateContext {
-            slides: &String::from_utf8(rewritten_html)?,
+            slides: &self.rendered_md,
         };
+
+        {
+            let output = BufWriter::new(File::create(&self.opt.output)?);
+            self.handlebars
+                .render_to_write(template_name, &template_context, output)?;
+        }
 
         let mut child = Command::new("nix-shell")
             .args(&[
@@ -162,18 +162,24 @@ impl App {
             .wrap_err("Failed to launch Python helper html_touchup")?;
 
         {
-            let stdin = child
+            let mut stdin = child
                 .stdin
                 .as_mut()
                 .ok_or_else(|| eyre!("Failed to get html_touchup's stdin handle"))?;
 
-            self.handlebars
-                .render_to_write(template_name, &template_context, stdin)?;
+            let mut output = BufReader::new(File::open(&self.opt.output)?);
+
+            io::copy(&mut output, &mut stdin)?;
         }
 
         let html_touchup_out = child
             .wait_with_output()
             .wrap_err("Failed to get html_touchup's output")?;
+
+        if !html_touchup_out.status.success() {
+            return Err(eyre!("Failed to execute html_touchup")
+                .wrap_err(String::from_utf8_lossy(&html_touchup_out.stderr).to_string()));
+        }
 
         File::create(&self.opt.output)?
             .write_all(&html_touchup_out.stdout)
@@ -186,8 +192,6 @@ impl App {
     fn watch(&mut self) -> eyre::Result<()> {
         use notify::{watcher, DebouncedEvent, RecursiveMode, Watcher};
         use std::time::Duration;
-
-        self.render()?;
 
         let (tx, rx) = std::sync::mpsc::channel();
         let mut watcher = watcher(tx, Duration::from_millis(self.opt.debounce_ms))?;
@@ -219,7 +223,15 @@ impl App {
                 .unwrap_or(true)
         };
 
+        fn print_res(res: eyre::Result<()>) {
+            if let Err(res) = res {
+                println!("{}", res);
+            }
+        }
+
         event!(Level::INFO, "initialized filesystem watcher");
+
+        print_res(self.render());
 
         loop {
             let event = {
@@ -233,12 +245,12 @@ impl App {
             match event {
                 DebouncedEvent::Create(path) | DebouncedEvent::Write(path) => {
                     if is_relevant(&path) {
-                        self.render()?;
+                        print_res(self.render());
                     }
                 }
                 DebouncedEvent::Chmod(path) => {
                     if is_relevant(&path) {
-                        self.render()?;
+                        print_res(self.render());
                     }
                 }
                 DebouncedEvent::Remove(_path) => {
@@ -270,121 +282,9 @@ impl App {
     }
 }
 
-fn html_rewriter<O: OutputSink>(sink: O) -> eyre::Result<HtmlRewriter<'static, O>> {
-    use lol_html::html_content::{ContentType, UserData};
-
-    #[derive(Debug)]
-    struct RewriteData {
-        fragment_list: bool,
-    }
-
-    Ok(HtmlRewriter::try_new(
-        Settings {
-            element_content_handlers: vec![
-                element!("pre > code", |el| {
-                    if let Some(class) = el.get_attribute("class") {
-                        let new_header = unescape_fenced_header(&class);
-                        let mut new_class = String::new();
-                        for component in new_header {
-                            if component.starts_with('[') {
-                                el.set_attribute(
-                                    "data-line-numbers",
-                                    &component.trim_start_matches('[').trim_end_matches(']'),
-                                )?;
-                            } else if let Some(inx) = component.find('=') {
-                                let (key, val) = component.split_at(inx);
-                                el.set_attribute(key, &val[1..])?;
-                            } else {
-                                new_class.push_str(&component);
-                                new_class.push(' ');
-                            }
-                        }
-                        el.set_attribute("class", new_class.trim_end_matches(' '))?;
-                    }
-                    Ok(())
-                }),
-                element!("fab, far, fas", |el| {
-                    let mut classes = el.tag_name();
-                    classes.push(' ');
-                    if let Some(old_classes) = el.get_attribute("class") {
-                        classes.push_str(&old_classes);
-                        classes.push(' ');
-                    }
-
-                    let mut attrs_to_remove = vec![];
-                    for attr in el.attributes() {
-                        let name = attr.name();
-                        if name.starts_with("fa") {
-                            classes.push_str(&name);
-                            classes.push(' ');
-                            attrs_to_remove.push(name);
-                        }
-                    }
-
-                    for name in attrs_to_remove {
-                        el.remove_attribute(&name);
-                    }
-
-                    el.set_attribute("class", classes.trim_end_matches(' '))?;
-                    el.set_tag_name("i")?;
-                    el.prepend("</i>", ContentType::Html);
-                    Ok(())
-                }),
-            ],
-            ..Settings::default()
-        },
-        sink,
-    )?)
-}
-
 fn escape_fenced_header(header: CowStr<'_>) -> CowStr<'_> {
     // Haha ACAB
     header.replace(' ', "\u{101312}").into()
-}
-
-fn unescape_fenced_header(header: &str) -> Vec<String> {
-    let mut ret = String::with_capacity(header.len());
-    let mut next_is_entity = false;
-    let mut skip_next: usize = 0;
-    for cp in header.chars() {
-        if skip_next != 0 {
-            skip_next -= 1;
-            continue;
-        }
-
-        if next_is_entity {
-            // https://github.com/raphlinus/pulldown-cmark/blob/master/src/escape.rs#L92
-            // Thank G-d these are unique so I don't have to figure out lookahead or anything.
-            ret.push(match cp {
-                'q' => {
-                    skip_next = 4;
-                    '"'
-                }
-                'a' => {
-                    skip_next = 3;
-                    '&'
-                }
-                'l' => {
-                    skip_next = 2;
-                    '<'
-                }
-                'g' => {
-                    skip_next = 2;
-                    '>'
-                }
-                _ => unreachable!(),
-            })
-        } else {
-            match cp {
-                '\u{101312}' => ret.push(' '),
-                '&' => {
-                    next_is_entity = true;
-                }
-                c => ret.push(c),
-            }
-        }
-    }
-    ret.split_ascii_whitespace().map(str::to_owned).collect()
 }
 
 struct MappedParser<'a> {
@@ -392,6 +292,7 @@ struct MappedParser<'a> {
     has_notes: bool,
     started_paragraph: bool,
     lookahead: Option<Event<'a>>,
+    in_code: bool,
 }
 
 impl<'a> MappedParser<'a> {
@@ -400,6 +301,7 @@ impl<'a> MappedParser<'a> {
             inner,
             has_notes: false,
             started_paragraph: false,
+            in_code: false,
             lookahead: None,
         }
     }
@@ -437,7 +339,9 @@ impl<'a> Iterator for MappedParser<'a> {
                         text.strip_prefix("Notes: ").unwrap().to_owned().into(),
                     ));
                     self.has_notes = true;
-                    Event::Html(r#"<aside class="notes">"#.into())
+                    Event::Html(r#"</p><aside class="notes"><p>"#.into())
+                } else if self.in_code {
+                    Event::Text(text)
                 } else {
                     Event::Text(
                         text.replace("---", "—")
@@ -447,9 +351,20 @@ impl<'a> Iterator for MappedParser<'a> {
                     )
                 }
             }
-            Event::Start(Tag::CodeBlock(CodeBlockKind::Fenced(header))) => Event::Start(
-                Tag::CodeBlock(CodeBlockKind::Fenced(escape_fenced_header(header))),
-            ),
+            Event::Start(Tag::CodeBlock(CodeBlockKind::Fenced(header))) => {
+                self.in_code = true;
+                Event::Start(Tag::CodeBlock(CodeBlockKind::Fenced(escape_fenced_header(
+                    header,
+                ))))
+            }
+            Event::Start(Tag::CodeBlock(_)) => {
+                self.in_code = true;
+                event
+            }
+            Event::End(Tag::CodeBlock(_)) => {
+                self.in_code = false;
+                event
+            }
             event => event,
         });
         self.started_paragraph = started_paragraph;

@@ -57,9 +57,7 @@ $heading2Size: 1.6em
 $heading3Size: 1.0em
 $heading4Size: 1.0em
 
-// Theme template ------------------------------
 @import "../template/theme"
-// ---------------------------------------------
 
 .reveal > .slides
   .small
@@ -108,6 +106,68 @@ $heading4Size: 1.0em
   .caption
     font-size: 0.6em
     color: $c-purple
+
+  & > section
+    height: 100%
+
+    & > .slide-wrapper
+      height: 100%
+      overflow: hidden
+
+    & > .slide-footer
+      font-size: 0.8em
+      position: absolute
+      bottom: 0
+      width: 100%
+      text-align: center
+      display: flex
+
+      &, a
+        color: $c-purple-dark
+
+      .slide-footer-left,
+      .slide-footer-center,
+      .slide-footer-right
+        flex: auto
+
+      .slide-footer-left
+        text-align: left
+
+      .slide-footer-right
+        text-align: right
+
+  .image-slide
+    .slide-footer
+      display: none
+    p
+      margin: 0
+
+
+  .title-card, .center
+    & > .slide-wrapper
+      display: flex
+      align-items: center
+      justify-content: center
+
+  .title-card
+    h2
+      font-size: 3em
+
+    & > .slide-footer
+      display: none
+
+
+.reveal-viewport
+  &.peach, &.purple
+    & .title-card > .slide-wrapper
+      &, & h2
+        color: $c-black
+
+.reveal-viewport.peach
+  background-color: $c-peach
+
+.reveal-viewport.purple
+  background-color: $c-purple
 
 .reveal > .speaker-notes
   a
