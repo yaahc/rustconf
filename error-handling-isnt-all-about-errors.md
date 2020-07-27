@@ -350,7 +350,7 @@ Next slide: In other languages there is no distinction between errors and report
 
 ## The Error Trait
 
-```
+```rust []
 trait GoError {
     fn msg(&self) -> String;
 }
@@ -399,6 +399,8 @@ Error:
 Notes: In rust we can have the same error print to a log as one line, but the
 screen as many.
 
+Next slide: However, despite the fact that the error trait in rust is more flexible than most other languages, it is still restrictive in some ways.
+
 ---
 
 ## The Error Trait is restrictive
@@ -407,6 +409,10 @@ screen as many.
 
 - Can only represent errors with a single source
 - Can only access 3 forms of context
+
+Notes: Can't return types like SpanTrace without using hacks based on downcast to work around the error trait.
+
+Error return traces
 
 ---
 
@@ -640,21 +646,106 @@ Stderr:
    	tag
    	var</pre>
 
+Notes: And finally we have an error report including all the context we need
+to pinpoint what went wrong.
+
+Hopefully this makes it clear how benefitial it can be to keep errors and context separate.
+
 ---
 
 ## Libraries
 
-<list fragments>
+- Defining
+- Propagating
+- Matching and Reacting
+- Discarding
+- Reporting
 
-- Defining => thiserror, displaydoc, SNAFU
-- Defining ad-hoc errors + Reporting => anyhow, eyre
-- Report Hooks => color-eyre, color-backtrace, color-anyhow (soon tm)
-- Propagation => fehler
-- Context Capture => tracing-error, extracterr
+Notes: Defining => thiserror, displaydoc, SNAFU
+Defining ad-hoc errors + Reporting => anyhow, eyre
+Report Hooks => color-eyre, color-backtrace, color-anyhow (soon tm)
+Propagation => fehler
+Context Capture => tracing-error, extracterr
 
 ---
 
-## Common Concerns
+## Defining - thiserror
+
+``` rust []
+#[derive(thiserror::Error, Debug)]
+pub enum DataStoreError {
+    #[error("data store disconnected")]
+    Disconnect(#[from] io::Error),
+    #[error("the data for key `{0}` is not available")]
+    Redaction(String),
+    #[error("invalid header (expected {expected:?}, found {found:?})")]
+    InvalidHeader {
+        expected: String,
+        found: String,
+    },
+    #[error("unknown data store error")]
+    Unknown,
+}
+```
+
+---
+
+## Defining - displaydoc
+
+```rust []
+#[derive(thiserror::Error, Debug, displaydoc::Display)]
+pub enum DataStoreError {
+    /// data store disconnected
+    Disconnect(#[from] io::Error),
+    /// the data for key `{0}` is not available
+    Redaction(String),
+    /// invalid header (expected {expected:?}, found {found:?})
+    InvalidHeader {
+        expected: String,
+        found: String,
+    },
+    /// unknown data store error
+    Unknown,
+}
+```
+
+---
+
+## Defining - SNAFU
+
+
+```rust [1-13|10-11]
+#[derive(Debug, Snafu)]
+enum Error {
+    #[snafu(display("Unable to read configuration from {}: {}", path.display(), source))]
+    ReadConfiguration { source: io::Error, path: PathBuf },
+}
+
+fn process_data() -> Result<(), Error> {
+    let path = "config.toml";
+    let configuration = fs::read_to_string(path)
+        // wrap error while capturing `path` as context
+        .context(ReadConfiguration { path })?;
+    Ok(())
+}
+```
+
+---
+
+## Defining - anyhow/eyre
+
+```rust [1-2|4-6]
+// Construct an ad-hoc error
+Err(eyre!("file not found"))?
+
+// Constructing an ad-hoc wrapping error
+fallible_fn()
+    .wrap_err("failed operation")?;
+```
+
+---
+
+## Common Concerns - Defining
 
 - Open Set vs Closed Set
 - Stack Size
@@ -662,9 +753,84 @@ Stderr:
 
 ---
 
-## Reporters
+## Propagating - fehler
 
-- Reporters usually impl `From<E: Error>` and _don't_ impl `Error`
+```rust
+#[fehler::throws(i32)]
+fn foo(x: bool) -> i32 {
+    if x {
+        0
+    } else {
+        fehler::throw!(1);
+    }
+}
+```
+
+---
+
+## Gathering Context - tracing-error
+
+```rust [2|3|5-7]
+let error = std::fs::read_to_string("myfile.txt")
+    .in_current_span();
+let error: &(dyn std::error::Error + 'static) = &error;
+
+if let Some(spantrace) = error.span_trace() {
+    eprintln!("found a spantrace:\n{}", spantrace);
+}
+```
+
+---
+
+## Gathering Context - extracterr
+
+```rust
+type Error = extracter::Bundled<ExampleError, backtrace::Backtrace>;
+
+fn foo() -> Result<(), Error> {
+    Err(ExampleError)?
+}
+```
+
+---
+
+## Matching and Reacting
+
+---
+
+## Matching and Reacting - anyhow/eyre
+
+```rust
+use eyre::WrapErr;
+
+#[derive(Debug, displaydoc::Display)]
+/// Foo error
+struct FooError;
+
+let report = fallible_fn()
+    .wrap_err(FooError)
+    .unwrap_err();
+
+let foo_error = report.downcast_ref::<FooError>().unwrap();
+```
+
+---
+
+## Discarding
+
+---
+
+## Reporting
+
+- Reporters: anyhow/eyre
+- Hooks: color-eyre, jane-eyre, color-anyhow (soon), color-backtrace
+
+---
+
+## Common Concerns - Reporters
+
+- Reporters usually impl `From<E: Error>`
+- if they do they _cannot_ impl `Error`
 - Prints report via `Debug` trait
 
 ---

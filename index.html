@@ -352,7 +352,7 @@ let config = get_config()?;
 </div></section>
 <section><div class="slide-wrapper">
 <h2>The Error Trait</h2>
-<pre><code>trait GoError {
+<pre><code class="language-rust" data-line-numbers="" data-noescape="">trait GoError {
     fn msg(&amp;self) -&gt; String;
 }
 
@@ -397,6 +397,7 @@ Error:
       at <font color="#75507B">examples/usage.rs</font>:<font color="#75507B">58</font></pre>
 <aside class="notes"><p>In rust we can have the same error print to a log as one line, but the
 screen as many.</p>
+<div class="next-slide"><p>Next slide: However, despite the fact that the error trait in rust is more flexible than most other languages, it is still restrictive in some ways.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
@@ -410,7 +411,9 @@ screen as many.</p>
 <li class="fragment">Can only represent errors with a single source</li>
 <li class="fragment">Can only access 3 forms of context</li>
 </ul>
-</div><div class="slide-footer">
+<aside class="notes"><p>Can't return types like SpanTrace without using hacks based on downcast to work around the error trait.</p>
+<p>Error return traces</p>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
@@ -689,7 +692,10 @@ Stderr:
    	stash
    	tag
    	var</pre>
-</div><div class="slide-footer">
+<aside class="notes"><p>And finally we have an error report including all the context we need
+to pinpoint what went wrong.</p>
+<p>Hopefully this makes it clear how benefitial it can be to keep errors and context separate.</p>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
@@ -697,14 +703,41 @@ Stderr:
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Libraries</h2>
-
 <ul>
-<li class="fragment">Defining =&gt; thiserror, displaydoc, SNAFU</li>
-<li class="fragment">Defining ad-hoc errors + Reporting =&gt; anyhow, eyre</li>
-<li class="fragment">Report Hooks =&gt; color-eyre, color-backtrace, color-anyhow (soon tm)</li>
-<li class="fragment">Propagation =&gt; fehler</li>
-<li class="fragment">Context Capture =&gt; tracing-error, extracterr</li>
+<li>Defining</li>
+<li>Propagating</li>
+<li>Matching and Reacting</li>
+<li>Discarding</li>
+<li>Reporting</li>
 </ul>
+<aside class="notes"><p>Defining =&gt; thiserror, displaydoc, SNAFU
+Defining ad-hoc errors + Reporting =&gt; anyhow, eyre
+Report Hooks =&gt; color-eyre, color-backtrace, color-anyhow (soon tm)
+Propagation =&gt; fehler
+Context Capture =&gt; tracing-error, extracterr</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>Defining - thiserror</h2>
+<pre><code class="language-rust" data-line-numbers="" data-noescape="">#[derive(thiserror::Error, Debug)]
+pub enum DataStoreError {
+    #[error("data store disconnected")]
+    Disconnect(#[from] io::Error),
+    #[error("the data for key `{0}` is not available")]
+    Redaction(String),
+    #[error("invalid header (expected {expected:?}, found {found:?})")]
+    InvalidHeader {
+        expected: String,
+        found: String,
+    },
+    #[error("unknown data store error")]
+    Unknown,
+}
+</code></pre>
 </div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
@@ -712,7 +745,67 @@ Stderr:
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<h2>Common Concerns</h2>
+<h2>Defining - displaydoc</h2>
+<pre><code class="language-rust" data-line-numbers="" data-noescape="">#[derive(thiserror::Error, Debug, displaydoc::Display)]
+pub enum DataStoreError {
+    /// data store disconnected
+    Disconnect(#[from] io::Error),
+    /// the data for key `{0}` is not available
+    Redaction(String),
+    /// invalid header (expected {expected:?}, found {found:?})
+    InvalidHeader {
+        expected: String,
+        found: String,
+    },
+    /// unknown data store error
+    Unknown,
+}
+</code></pre>
+</div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>Defining - SNAFU</h2>
+<pre><code class="language-rust" data-line-numbers="1-13|10-11" data-noescape="">#[derive(Debug, Snafu)]
+enum Error {
+    #[snafu(display("Unable to read configuration from {}: {}", path.display(), source))]
+    ReadConfiguration { source: io::Error, path: PathBuf },
+}
+
+fn process_data() -&gt; Result&lt;(), Error&gt; {
+    let path = "config.toml";
+    let configuration = fs::read_to_string(path)
+        // wrap error while capturing `path` as context
+        .context(ReadConfiguration { path })?;
+    Ok(())
+}
+</code></pre>
+</div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>Defining - anyhow/eyre</h2>
+<pre><code class="language-rust" data-line-numbers="1-2|4-6" data-noescape="">// Construct an ad-hoc error
+Err(eyre!("file not found"))?
+
+// Constructing an ad-hoc wrapping error
+fallible_fn()
+    .wrap_err("failed operation")?;
+</code></pre>
+</div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>Common Concerns - Defining</h2>
 <ul>
 <li>Open Set vs Closed Set</li>
 <li>Stack Size</li>
@@ -725,9 +818,105 @@ Stderr:
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<h2>Reporters</h2>
+<h2>Propagating - fehler</h2>
+<pre><code class="language-rust" data-noescape="">#[fehler::throws(i32)]
+fn foo(x: bool) -&gt; i32 {
+    if x {
+        0
+    } else {
+        fehler::throw!(1);
+    }
+}
+</code></pre>
+</div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>Gathering Context - tracing-error</h2>
+<pre><code class="language-rust" data-line-numbers="2|3|5-7" data-noescape="">let error = std::fs::read_to_string("myfile.txt")
+    .in_current_span();
+let error: &amp;(dyn std::error::Error + 'static) = &amp;error;
+
+if let Some(spantrace) = error.span_trace() {
+    eprintln!("found a spantrace:\n{}", spantrace);
+}
+</code></pre>
+</div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>Gathering Context - extracterr</h2>
+<pre><code class="language-rust" data-noescape="">type Error = extracter::Bundled&lt;ExampleError, backtrace::Backtrace&gt;;
+
+fn foo() -&gt; Result&lt;(), Error&gt; {
+    Err(ExampleError)?
+}
+</code></pre>
+</div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>Matching and Reacting</h2>
+</div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>Matching and Reacting - anyhow/eyre</h2>
+<pre><code class="language-rust" data-noescape="">use <a href="https://docs.rs/eyre">eyre</a>::WrapErr;
+
+#[derive(Debug, displaydoc::Display)]
+/// Foo error
+struct FooError;
+
+let report = fallible_fn()
+    .wrap_err(FooError)
+    .unwrap_err();
+
+let foo_error = report.downcast_ref::&lt;FooError&gt;().unwrap();
+</code></pre>
+</div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>Discarding</h2>
+</div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>Reporting</h2>
 <ul>
-<li>Reporters usually impl <code>From&lt;E: Error&gt;</code> and <em>don't</em> impl <code>Error</code></li>
+<li>Reporters: anyhow/eyre</li>
+<li>Hooks: color-eyre, jane-eyre, color-anyhow (soon), color-backtrace</li>
+</ul>
+</div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>Common Concerns - Reporters</h2>
+<ul>
+<li>Reporters usually impl <code>From&lt;E: Error&gt;</code></li>
+<li>if they do they <em>cannot</em> impl <code>Error</code></li>
 <li>Prints report via <code>Debug</code> trait</li>
 </ul>
 </div><div class="slide-footer">
