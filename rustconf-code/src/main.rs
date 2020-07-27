@@ -43,9 +43,14 @@ fn main() -> eyre::Result<()> {
 
     let diff = TempDifference::from(yesterday.avg, today.avg);
 
+    print!(
+        "Good morning! Today will be about {:.2}°F ",
+        today.avg
+    );
     println!(
-        "Good morning! Today will be about {avg:.2}°F ({min} - {max}°F); that's {diff} {than} yesterday{end}",
-        avg = today.avg, min = today.min, max = today.max,
+        "({min} - {max}°F); that's {diff} {than} yesterday{end}",
+        min = today.min,
+        max = today.max,
         diff = diff,
         than = match diff {
             TempDifference::Same => "as",

@@ -34,7 +34,7 @@ sense to you.
 <slide class=image-slide>
 
 ![A screenshot of the rust-lang.org website in late 2018. The headline reads
-"Rust is a systems programming languaeg that runs blazingly fast,
+"Rust is a systems programming language that runs blazingly fast,
 prevents segfaults, and guarantees thread
 safety."](img/rust-2018-11-30.png)
 
@@ -63,6 +63,18 @@ already know C++ or something similar.
 So I want to introduce the rest of us to Rust.
 
 Next slide: Who is this talk for?
+
+---
+
+<slide class=title-card>
+
+## What is this talk?
+
+---
+
+<slide class=title-card data-state=purple>
+
+## What is this talk *not*?
 
 ---
 
@@ -139,10 +151,29 @@ Next slide: A bit more on documentation.
 
 ## Documentation
 
+<media fragments>
 <iframe class=main loading=lazy importance=low src="https://docs.rs/rand/0.7.3/rand/"></iframe>
+<iframe class=main loading=lazy importance=low src="https://docs.rs/rand/0.7.3/rand/fn.thread_rng.html"></iframe>
+<iframe class=main loading=lazy importance=low src="https://docs.rs/rand/0.7.3/rand/rngs/struct.ThreadRng.html"></iframe>
+<iframe class=main loading=lazy importance=low src="https://docs.rs/rand/0.7.3/rand/rngs/struct.ThreadRng.html#implementations"></iframe>
+<iframe class=main loading=lazy importance=low src="https://docs.rs/rand/0.7.3/rand/trait.RngCore.html"></iframe>
+<iframe class=main loading=lazy importance=low src="https://docs.rs/rand/0.7.3/rand/trait.RngCore.html#required-methods"></iframe>
+</media>
 
-Notes: Here's the generated documentation for the [`rand`] crate, which you can
+Notes: Here's the generated documentation for the <crate rand> crate, which you can
 find at [docs.rs/rand][`rand`].
+
+1. We can see the overview they wrote, and we can search the crate's items ---
+   with keyboard shortcuts!
+2. If we click on the `thread_rng` function, we get to this definition. Let's
+   click the return type and check out the documentation for `ThreadRng`.
+3. If we scroll down a bit, we can see the traits `ThreadRng` implements. Let's
+   check out the documentation for `RngCore`.
+4. We can see a description at first...
+5. And if we scroll down, we can see the required methods and their documentation.
+
+Next slide: Hello, world!
+
 
 [`rand`]: https://docs.rs/rand/
 
@@ -374,7 +405,7 @@ Notes: Here's a start at a line-by-line conversion of that program.
 1. We're using `include_str!` here which actually reads a file as UTF-8 at
    *compile time* --- we'll work on opening files in a bit, but this works well
    enough, end this is very much a "the perfect is the enemy of the good" talk.
-2. Next, we use `serde_json` to parse that string into a JSON value.
+2. Next, we use <crate serde_json> to parse that string into a JSON value.
 3. Then, we get the `api_key` key out of the object as a string. Each time
    we assert something about the type of a value in this object, we need to
    unwrap it, because we might *not* have a value of the type we want, so we
@@ -407,10 +438,11 @@ Notes: Here, we're declaring a struct, which is roughly a class, in the sense
 of a blob of data with named fields and methods. Then, we *derive* some traits
 for it. Traits are what Python programmers sometimes call protocols, or what
 Java calls interfaces. Here, `Debug` lets us pretty-print the struct's data,
-`Clone` lets us deeply copy it, and `Deserialize` lets us deserialize it from
-JSON --- or, with other serde libraries, XML, YAML, TOML, Protobufs, and more.
+`Clone` lets us deeply copy it, and <crate serde>'s `Deserialize` lets us
+deserialize it from JSON --- or, with other serde libraries, XML, YAML, TOML,
+Protobufs, and more.
 
-Next slide: Using the `Deserialize` implementation with `serde_json`.
+Next slide: Using the `Deserialize` implementation with <crate serde_json>.
 
 ---
 
@@ -428,7 +460,7 @@ fn main() {
 Notes: Here's what deserializing to a value looks like. Note that we don't need
 to explicitly construct our `OpenWeatherConfig` object --- that, along with
 parsing the JSON, matching up keys to fields, and recursively constructing
-other `Deserialize`able values, is handled by `serde` and `serde_json`.
+other `Deserialize`able values, is handled by <crate serde> and <crate serde_json>.
 
 Next slide: Running this example.
 
@@ -453,7 +485,7 @@ Notes: Now when we run this, we get some nice pretty-printed debug output by def
 
 That's not my actual API key, by the way. Don't worry.
 
-Next slide: `structopt`.
+Next slide: <crate structopt>.
 
 ---
 
@@ -476,12 +508,12 @@ fn main() {
 }
 ```
 
-Notes: The next change I want to make is adding `structopt`, which derives a
-command-line interface from a struct definition. Instead of declaring all our
-arguments as strings and pulling them out of an untyped hashmap, we just declare
-them as struct fields --- which means we get autocompletion for our
-command-line options, along with bonuses like detecting that `Option` fields
-aren't mandatory and `Vec` fields can have multiple values.
+Notes: The next change I want to make is adding <crate structopt>, which
+derives a command-line interface from a struct definition. Instead of declaring
+all our arguments as strings and pulling them out of an untyped hashmap, we
+just declare them as struct fields --- which means we get autocompletion for
+our command-line options, along with bonuses like detecting that `Option`
+fields aren't mandatory and `Vec` fields can have multiple values.
 
 Next slide: Generated help message.
 
@@ -532,6 +564,8 @@ fn main() -> eyre::Result<()> {
     Ok(())
 }
 ```
+
+Notes: <crate eyre>
 
 ---
 
@@ -614,7 +648,7 @@ Response: Response {
 
 ---
 
-```rust
+```rust left
 let res = get_weather(&config.api_key)?;
 let bytes = res.bytes()?;
 println!("{}", String::from_utf8_lossy(&*bytes));
@@ -627,6 +661,82 @@ println!("{}", String::from_utf8_lossy(&*bytes));
 307.42,"temp_min":307.59,"temp_max":309.82,"pressure":1010,
 "humidity":37},"visibility":10000,"wind":{"speed":6.2, ...
 ```
+
+---
+
+```rust
+use reqwest::blocking::Client;
+use serde::Deserialize;
+
+#[derive(Deserialize, Debug, Clone)]
+struct OpenWeather {
+    api_key: String,
+
+    lat: f64,
+    lon: f64,
+
+    #[serde(skip)]
+    client: Client,
+}
+```
+
+Notes: While we're at it, let's unify our config file with our API client --
+instead of passing an API key into every function call, we can keep it in the
+same struct that holds the <crate reqwest> client. And because the `Client` has a
+default value, we can tell serde to use that instead of expecting it in our
+config file.
+
+Next slide: Deserializing `OpenWeather` from a reader.
+
+---
+
+```rust
+fn main() -> eyre::Result<()> {
+    // ...
+    let config: OpenWeather = serde_json::from_reader(
+        &config_json,
+    )?;
+    // ...
+}
+```
+
+Notes: Now, we can just read our config object from the same JSON file we were
+using before, without even a constructor method.
+
+Next slide: `impl OpenWeather`.
+
+---
+
+```rust no-line-numbers [1-10|3|2,6]
+impl OpenWeather {
+    fn get<Response: DeserializeOwned>(
+        &self,
+        endpoint: &str,
+        params: &[(&str, &str)],
+    ) -> eyre::Result<Response> {
+      // I have discovered a truly marvelous implementation
+      // of this method, which this slide is too narrow
+      // to contain.
+    }
+}
+```
+
+Notes: Now, to make our API a bit cleaner, let's start implementing methods.
+This gives us something that looks a lot like the classes we're familiar with
+--- Rust doesn't have inheritance or subtyping, although generic functions and
+traits get us pretty close.
+
+An `impl` block lets us put methods on types.
+
+1. Like Python, Rust doesn't have an implicit `this` object you can reference
+   --- you need to write it explicitly.
+2. We also have angle brackets after the function name to indicate a generic
+   function. Here, we have one generic parameter named `Response` and the colon
+   indicates a *trait bound,* which means that `Response` has to be a type with
+   an implementation of `DeserializeOwned` --- which is exactly what
+   `#[derive(Deserialize)]` gives us. Essentially, we've copied a type
+   parameter from <crate serde_json>`::from_reader` so that we can deserialize
+   any type we define.
 
 ---
 
@@ -648,3 +758,125 @@ pub struct Hourly {
     pub snow: Option<Snow>,
 }
 ```
+
+Notes: We can define structs for the API responses --- these are pretty much
+copied from the [openweathermap.org] API docs.
+
+Next slide: `OpenWeather::onecall` method and use.
+
+---
+
+```rust no-line-numbers [1-9|11-17]
+impl OpenWeather {
+    fn onecall(&self) -> eyre::Result<OneCall> {
+        self.get(
+            "onecall",
+            &[ ("exclude", "currently,minutely"),
+                ("units", "imperial"), ],
+        )
+    }
+}
+
+fn main() -> eyre::Result<()> {
+    // ...
+    let onecall: OneCall = config
+        .onecall()
+        .wrap_err("Failed to deserialize hourly weather data")?;
+}
+```
+
+Notes:
+
+1. Then we can define a helper method to make that request directly. Note that
+   we don't need to annotate that `self.get` should be used with the generic
+   type parameter `Response` as `OneCall` --- the Rust compiler is smart enough
+   to figure out that because we're returning the result of `self.get` from
+   `OpenWeather::onecall`, `Response` can *only* possibly be `OneCall`.
+
+2. And then, of course, we can use the new method in our `main` to get the
+   forecast data as a richly-typed struct.
+
+---
+
+```
+#[derive(Debug, PartialEq)]
+enum TempDifference {
+    MuchColder,
+    Colder,
+    Same,
+    Warmer,
+    MuchWarmer,
+}
+```
+
+Notes: One thing I want from my forecast is to tell me if today is going to be
+warmer or colder than yesterday. So I'll create a `TempDifference` enum, and
+then a helper method to get the appropriate `TempDifference` for two floats.
+
+Next slide: `Stats`.
+
+---
+
+```rust
+let yesterday =
+    Stats::from(historical.iter().map(|h| h.feels_like));
+let today = Stats::from(
+    onecall.hourly.iter().map(|h| h.feels_like).take(24),
+);
+
+let diff = TempDifference::from(yesterday.avg, today.avg);
+```
+
+Notes: Then, I'm going to gather the minimum, maximum, and average temperature
+from yesterday and the forecast for today into these `Stats` structs I've
+created.
+
+Next slide: Printing the result.
+
+---
+
+```rust
+let today_is_warm = 60.0 <= today.avg && today.avg <= 80.0;
+print!("Good morning! Today will be about {:.2}°F ", today.avg);
+println!(
+    "({min} - {max}°F); that's {diff} {than} yesterday{end}",
+    min = today.min,
+    max = today.max,
+    diff = diff,
+    than = match diff {
+        TempDifference::Same => "as",
+        _ => "than",
+    },
+    end = if today_is_warm { ":)" } else { "." },
+);
+```
+
+Notes: And then we can print all this information out, and we're done!
+
+---
+
+```shell-session
+$ cargo build
+    Finished dev [unoptimized + debuginfo] target(s) in 0.04s
+
+$ ./target/debug/rustconf-code
+Good morning! Today will be about 85.16°F (76.42 - 94.96°F);
+that's about the same as yesterday.
+```
+
+---
+
+<slide class=title-card data-state=purple>
+
+## This is only a taste
+
+Notes: Everything I just talked about is just a tiny portion of what you can do
+with Rust --- and what Rust can do for you. There's so many features and tools
+I wanted to talk about that I didn't have time for --- adding methods to
+foreign types, type-safe numbers and unit conversions.
+
+---
+
+## Thanks for watching!
+
+<!-- have a receipt printer video...? -->
