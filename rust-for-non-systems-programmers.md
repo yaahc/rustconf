@@ -62,7 +62,159 @@ already know C++ or something similar.
 
 So I want to introduce the rest of us to Rust.
 
-Next slide: Who is this talk for?
+Next slide: What can Rust do for you?
+
+---
+
+<slide class=title-card data-state=peach>
+
+## What can Rust <br> do for you?
+
+Notes: TODO
+
+<!-- Next slide: Who is this talk for? -->
+
+---
+
+```plain
+rustconf-code 0.1.0
+A command-line interface to the openweathermap.org API
+
+USAGE:
+    rustconf-code [OPTIONS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -c, --config <config>    Config filename; a JSON file with
+                             an `api_key` field
+                             [default: openweather_api.json]
+```
+
+Notes: Rust can do command-line argument parsing...
+
+Next slide: that's generated from a struct.
+
+---
+
+```rust
+use structopt::StructOpt;
+
+/// A command-line interface to the openweathermap.org API.
+#[derive(Debug, StructOpt)]
+struct Opt {
+    /// Config filename; a JSON file with an `api_key` field.
+    #[structopt(
+        short, long, parse(from_os_str),
+        default_value = "openweather_api.json"
+    )]
+    config: PathBuf,
+}
+
+fn main() {
+  Opt::from_args();
+}
+```
+
+Notes: ...that's generated from a type definition.
+
+Next slide: JSON deserialization example.
+
+---
+
+<slide class=center>
+
+```shell-session left
+$ ./target/debug/rustconf-code --config bad-schema.json
+Error: Failed to deserialize configuration JSON
+
+Caused by:
+    invalid type: map, expected a string at line 2 column 14
+```
+
+Notes: Rust can give you great error reports for complex errors...
+
+Next slide: ...while automatically deserializing JSON to a custom type.
+
+---
+
+```rust left
+use serde::Deserialize;
+use eyre::WrapErr;
+
+#[derive(Deserialize, Debug, Clone)]
+struct Config {
+    api_key: String,
+}
+
+fn main() -> eyre::Result<()> {
+    let opt = Opt::from_args();
+    let config_json = File::open(&opt.config)?;
+    let config: OpenWeather = serde_json::from_reader(
+        &config_json,
+    )
+    .wrap_err("Failed to deserialize configuration JSON")?;
+}
+```
+
+Notes: ...while automatically deserializing a JSON blob to a custom type.
+
+Next slide: Pretty test diffs.
+
+---
+
+<pre class=term>running 1 test
+test tests::str_test ... <span style="color: #CC0000">FAILED</span>
+
+failures:
+---- tests::str_test stdout ----
+thread 'tests::str_test' panicked at
+'assertion failed: `(left == right)`
+
+<b>Diff</b> <span style="color: #CC0000">&lt; left</span> / <span style="color: #4E9A06">right &gt;</span> :
+<span style="color: #CC0000">&lt;"Hello, RustConf!"</span>
+<span style="color: #4E9A06">&gt;"Hello, RustConf</span><span style="background-color:#005F00"><span style="color: #4E9A06"><b> 2020</b></span></span><span style="color: #4E9A06">!"</span>
+
+', src/main.rs:11:9
+
+test result: <span style="color: #CC0000">FAILED</span>. 0 passed; 1 failed; 0 ignored;
+0 measured; 0 filtered out
+</pre>
+
+Notes: Rust can output fancy test diffs...
+
+Next slide: `pretty_assertions` code.
+
+---
+
+<slide class=center>
+
+```rust
+#[cfg(test)]
+mod tests {
+    use pretty_assertions::assert_eq;
+
+    #[test]
+    fn str_test() {
+        assert_eq!("Hello, RustConf!", "Hello, RustConf 2020!");
+    }
+}
+```
+
+Notes: ...with a one-line import that integrates with the default test framework.
+
+---
+
+<slide class=title-card data-state=teal>
+
+## (And a lot more)
+
+Notes: Rust can do a lot more, too. But I don't just want to list random Rust
+features for 30 minutes.
+
+Next slide: What is this talk?
 
 ---
 
@@ -70,11 +222,39 @@ Next slide: Who is this talk for?
 
 ## What is this talk?
 
+Notes: Before I figured out Rust, I was primarily a Python programmer. I found
+--- and still find -- a lot of Rust documentation aimed more at C++ programmers
+than Python programmers. I've never really understood memory management, which
+means that I don't feel comfortable writing C++ and I don't understand that
+sort of documentation.
+
+I also used to struggle to figure out how Rust would be used for actually
+*doing* the things I wanted to do --- writing user-level applications.
+
+So we're going to write a non-trivial Rust program together, and see how we can
+solve a lot of common problems in a Rust-y way.
+
+Next slide: What is this talk *not*?
+
 ---
 
 <slide class=title-card data-state=purple>
 
 ## What is this talk *not*?
+
+Notes: There's a lot of stuff that isn't a high priority to me as a Python
+programmer in Rust, that I'm going to pretty much skip entirely.
+
+We're not going to optimize anything, because the totally naive program we're
+going to write takes 1/10th of a second to run, which is almost entirely
+waiting on some network requests.
+
+We're not going to talk about macros, or a lot of the fancy type system
+features Rust has, or pointers. I'm not even going to *say* the words "heap" or
+"stack" or "allocate" --- if it wouldn't matter in Python or JavaScript or
+Ruby, it's out of scope here.
+
+Next slide: Who is this talk for?
 
 ---
 
@@ -88,6 +268,11 @@ Next slide: Who is this talk for?
   - Null/undefined errors
   - Runtime type errors
   - Poor documentation
+  - Fragmented ecosystem / inconsistent tooling
+
+Notes: In particular, I want to talk to programmers who are already comfortable
+in dynamic scripting languages who are beginning to feel some of the downsides
+of working in those languages.
 
 ---
 
@@ -536,6 +721,11 @@ OPTIONS:
                              an `api_key` field
 ```
 
+Notes: We get a lot of perks from <crate structopt>, including the great
+generated help message.
+
+Next slide: Argument typo help.
+
 ---
 
 ```shell-session
@@ -550,11 +740,11 @@ USAGE:
 For more information try --help
 ```
 
+Notes: <crate structopt> even helps us with typos by default.
+
 ---
 
-```rust left
-use eyre::WrapErr;
-
+```rust left no-line-numbers [1-8|3,5]
 fn main() -> eyre::Result<()> {
     let opt = Opt::from_args();
     let config_json = File::open(&opt.config)?;
@@ -565,11 +755,48 @@ fn main() -> eyre::Result<()> {
 }
 ```
 
-Notes: <crate eyre>
+Notes: The next thing I want to do is add some error reporting, so we don't
+have to unwrap everything and cause panics. <crate eyre> gives us the
+beautifully-formatted error messages I showed off at the beginning of the talk,
+and has a ton of functionality we won't explore here.
+
+Now, we're handling this errors with the "try" operator, spelled `?`. That's a
+pretty simple but important bit of syntax sugar.
+
+Next slide: Syntax sugar for `?`.
 
 ---
 
-```rust no-line-numbers left [6-11,14]
+```rust left no-line-numbers [4-7,9-12]
+fn main() -> eyre::Result<()> {
+    let opt = Opt::from_args();
+    let config_json =
+        match File::open(&opt.config) {
+            Ok(file) => file,
+            Err(err) => return Err(err.into()),
+        };
+    let config: OpenWeatherConfig =
+        match serde_json::from_reader(&config_json) {
+            Ok(config) => config,
+            Err(err) => return Err(err.into()),
+        };
+    println!("Config: {:#?}", config);
+    Ok(())
+}
+```
+
+Notes: The `?`s are transformed into roughly these match statements; if we have
+an `Ok` value, we take that value and use it. Otherwise, we return the `Err`
+value from the whole function --- we just bubble up the error to the caller.
+It's a little bit like throwing an exception, but we don't quit an arbitrary
+series of functions --- we only go up one layer, and the type system doesn't
+let us ignore it.
+
+Next slide: `WrapErr` and context.
+
+---
+
+```rust no-line-numbers left [1,6-11,14]
 use eyre::WrapErr;
 
 fn main() -> eyre::Result<()> {
@@ -589,6 +816,15 @@ fn main() -> eyre::Result<()> {
 }
 ```
 
+Notes: Using the `?` operator again, we're going to use the `wrap_err` methods
+from <crate eyre>'s `WrapErr` trait to attach context to our errors. We just
+write a bit about what we were doing that might have caused an error, and then
+that string will get displayed if the error report is printed. It's a pretty
+simple step --- provided you do it from the start --- and it makes debugging a
+*lot* easier.
+
+Next slide: Error report examples.
+
 ---
 
 ```shell-session
@@ -605,6 +841,16 @@ Caused by:
     trailing comma at line 3 column 1
 ```
 
+Notes: Here we can try to use a nonexistent file or an invalid file for our
+config file and we can see the error messages we get.
+
+These are pretty simple, but they're especially useful when we have a bunch of
+layers of error context to figure out what we did wrong --- and unlike
+exceptions in a lot of languages, we don't just get an enormous unreadable
+stack trace by default.
+
+Next slide: Using `reqwest` for HTTP requests.
+
 ---
 
 ```rust
@@ -620,6 +866,11 @@ fn get_weather(
         .send()
 }
 ```
+
+Notes: Now we're going to use the <crate reqwest> library to make a simple call
+to the [openweathermap.org] API.
+
+Next slide: Making the call and printing the result.
 
 ---
 
@@ -646,6 +897,11 @@ Response: Response {
 }
 ```
 
+Notes: We can see when we pretty-print the `Response` object, we get all the
+fields we might expect --- headers, a status code, and so on.
+
+Next slide: Extracting the response text.
+
 ---
 
 ```rust left
@@ -661,6 +917,12 @@ println!("{}", String::from_utf8_lossy(&*bytes));
 307.42,"temp_min":307.59,"temp_max":309.82,"pressure":1010,
 "humidity":37},"visibility":10000,"wind":{"speed":6.2, ...
 ```
+
+Notes: We can also print the response text, which is this big minified JSON
+blob. We're going to deserialize that, too, but first let's clean up our
+interface to the [openweathermap.org] API.
+
+Next slide: Including a `Client` in the deserialized config.
 
 ---
 

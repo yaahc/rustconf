@@ -52,7 +52,162 @@ everyone" to and focusing on reliability and productivity. But a lot of the
 documentation has lagged behind and still assumes that new Rust programmers
 already know C++ or something similar.</p>
 <p>So I want to introduce the rest of us to Rust.</p>
-<div class="next-slide"><p>Next slide: Who is this talk for?</p></div>
+<div class="next-slide"><p>Next slide: What can Rust do for you?</p></div>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+</div>
+</div></section>
+<section class="title-card" data-state="peach"><div class="slide-wrapper">
+<h2>What can Rust <br/> do for you?</h2>
+<aside class="notes"><p>TODO</p>
+<!-- Next slide: Who is this talk for? -->
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<pre><code class="language-plain left">rustconf-code 0.1.0
+A command-line interface to the openweathermap.org API
+
+USAGE:
+    rustconf-code [OPTIONS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -c, --config &lt;config&gt;    Config filename; a JSON file with
+                             an `api_key` field
+                             [default: openweather_api.json]
+</code></pre>
+<aside class="notes"><p>Rust can do command-line argument parsing...</p>
+<div class="next-slide"><p>Next slide: that's generated from a struct.</p></div>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<pre><code class="language-rust left" data-noescape="">use <a href="https://docs.rs/structopt">structopt</a>::StructOpt;
+
+/// A command-line interface to the openweathermap.org API.
+#[derive(Debug, StructOpt)]
+struct Opt {
+    /// Config filename; a JSON file with an `api_key` field.
+    #[structopt(
+        short, long, parse(from_os_str),
+        default_value = "openweather_api.json"
+    )]
+    config: PathBuf,
+}
+
+fn main() {
+  Opt::from_args();
+}
+</code></pre>
+<aside class="notes"><p>...that's generated from a type definition.</p>
+<div class="next-slide"><p>Next slide: JSON deserialization example.</p></div>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+</div>
+</div></section>
+<section class="center"><div class="slide-wrapper">
+<pre><code class="language-shell-session left">$ ./target/debug/rustconf-code --config bad-schema.json
+Error: Failed to deserialize configuration JSON
+
+Caused by:
+    invalid type: map, expected a string at line 2 column 14
+</code></pre>
+<aside class="notes"><p>Rust can give you great error reports for complex errors...</p>
+<div class="next-slide"><p>Next slide: …while automatically deserializing JSON to a custom type.</p></div>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<pre><code class="language-rust left" data-noescape="">use <a href="https://docs.rs/serde">serde</a>::Deserialize;
+use <a href="https://docs.rs/eyre">eyre</a>::WrapErr;
+
+#[derive(Deserialize, Debug, Clone)]
+struct Config {
+    api_key: String,
+}
+
+fn main() -&gt; eyre::Result&lt;()&gt; {
+    let opt = Opt::from_args();
+    let config_json = File::open(&amp;opt.config)?;
+    let config: OpenWeather = serde_json::from_reader(
+        &amp;config_json,
+    )
+    .wrap_err("Failed to deserialize configuration JSON")?;
+}
+</code></pre>
+<aside class="notes"><p>...while automatically deserializing a JSON blob to a custom type.</p>
+<div class="next-slide"><p>Next slide: Pretty test diffs.</p></div>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper"><pre class="term">running 1 test
+test tests::str_test ... <span style="color: #CC0000">FAILED</span>
+
+failures:
+---- tests::str_test stdout ----
+thread 'tests::str_test' panicked at
+'assertion failed: `(left == right)`
+
+<b>Diff</b> <span style="color: #CC0000">&lt; left</span> / <span style="color: #4E9A06">right &gt;</span> :
+<span style="color: #CC0000">&lt;"Hello, RustConf!"</span>
+<span style="color: #4E9A06">&gt;"Hello, RustConf</span><span style="background-color:#005F00"><span style="color: #4E9A06"><b> 2020</b></span></span><span style="color: #4E9A06">!"</span>
+
+', src/main.rs:11:9
+
+test result: <span style="color: #CC0000">FAILED</span>. 0 passed; 1 failed; 0 ignored;
+0 measured; 0 filtered out
+</pre>
+<aside class="notes"><p>Rust can output fancy test diffs...</p>
+<p>Next slide: <code>pretty_assertions</code> code.</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+</div>
+</div></section>
+<section class="center"><div class="slide-wrapper">
+<pre><code class="language-rust left" data-noescape="">#[cfg(test)]
+mod tests {
+    use <a href="https://docs.rs/pretty_assertions">pretty_assertions</a>::assert_eq;
+
+    #[test]
+    fn str_test() {
+        assert_eq!("Hello, RustConf!", "Hello, RustConf 2020!");
+    }
+}
+</code></pre>
+<aside class="notes"><p>...with a one-line import that integrates with the default test framework.</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+</div>
+</div></section>
+<section class="title-card" data-state="teal"><div class="slide-wrapper">
+<h2>(And a lot more)</h2>
+<aside class="notes"><p>Rust can do a lot more, too. But I don't just want to list random Rust
+features for 30 minutes.</p>
+<div class="next-slide"><p>Next slide: What is this talk?</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
@@ -61,7 +216,17 @@ already know C++ or something similar.</p>
 </div></section>
 <section class="title-card"><div class="slide-wrapper">
 <h2>What is this talk?</h2>
-</div><div class="slide-footer">
+<aside class="notes"><p>Before I figured out Rust, I was primarily a Python programmer. I found
+— and still find – a lot of Rust documentation aimed more at C++ programmers
+than Python programmers. I've never really understood memory management, which
+means that I don't feel comfortable writing C++ and I don't understand that
+sort of documentation.</p>
+<p>I also used to struggle to figure out how Rust would be used for actually
+<em>doing</em> the things I wanted to do — writing user-level applications.</p>
+<p>So we're going to write a non-trivial Rust program together, and see how we can
+solve a lot of common problems in a Rust-y way.</p>
+<div class="next-slide"><p>Next slide: What is this talk <em>not</em>?</p></div>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
@@ -69,7 +234,17 @@ already know C++ or something similar.</p>
 </div></section>
 <section class="title-card" data-state="purple"><div class="slide-wrapper">
 <h2>What is this talk <em>not</em>?</h2>
-</div><div class="slide-footer">
+<aside class="notes"><p>There's a lot of stuff that isn't a high priority to me as a Python
+programmer in Rust, that I'm going to pretty much skip entirely.</p>
+<p>We're not going to optimize anything, because the totally naive program we're
+going to write takes 1/10th of a second to run, which is almost entirely
+waiting on some network requests.</p>
+<p>We're not going to talk about macros, or a lot of the fancy type system
+features Rust has, or pointers. I'm not even going to <em>say</em> the words "heap" or
+"stack" or "allocate" — if it wouldn't matter in Python or JavaScript or
+Ruby, it's out of scope here.</p>
+<div class="next-slide"><p>Next slide: Who is this talk for?</p></div>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
@@ -86,10 +261,14 @@ etc.</li>
 <li class="fragment">Null/undefined errors</li>
 <li class="fragment">Runtime type errors</li>
 <li class="fragment">Poor documentation</li>
+<li class="fragment">Fragmented ecosystem / inconsistent tooling</li>
 </ul>
 </li>
 </ul>
-</div><div class="slide-footer">
+<aside class="notes"><p>In particular, I want to talk to programmers who are already comfortable
+in dynamic scripting languages who are beginning to feel some of the downsides
+of working in those languages.</p>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
@@ -174,7 +353,7 @@ check out the documentation for <code>RngCore</code>.</li>
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Getting started</h2>
-<pre><code class="language-rust no-line-numbers" data-line-numbers="1-10|1|3-10|4|5-9|5|8">use std::env;
+<pre><code class="language-rust no-line-numbers" data-line-numbers="1-10|1|3-10|4|5-9|5|8" data-noescape="">use <a href="https://docs.rs/std">std</a>::env;
 
 fn main() {
     let user = env::var("USER").unwrap();
@@ -372,7 +551,7 @@ make a request, and then we print out the response text.</p>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-rust no-line-numbers left" data-line-numbers="1-15|4|5-6|7-13">use serde_json::Value;
+<pre><code class="language-rust no-line-numbers left" data-line-numbers="1-15|4|5-6|7-13" data-noescape="">use <a href="https://docs.rs/serde_json">serde_json</a>::Value;
 
 fn main() {
     let api_key_json = include_str!("../openweather_api.json");
@@ -531,7 +710,10 @@ OPTIONS:
     -c, --config &lt;config&gt;    Config filename; a JSON file with
                              an `api_key` field
 </code></pre>
-</div><div class="slide-footer">
+<aside class="notes"><p>We get a lot of perks from <a href="https://docs.rs/structopt"><code>structopt</code></a>, including the great
+generated help message.</p>
+<div class="next-slide"><p>Next slide: Argument typo help.</p></div>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
@@ -548,16 +730,15 @@ USAGE:
 
 For more information try --help
 </code></pre>
-</div><div class="slide-footer">
+<aside class="notes"><p><a href="https://docs.rs/structopt"><code>structopt</code></a> even helps us with typos by default.</p>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-rust left">use eyre::WrapErr;
-
-fn main() -&gt; eyre::Result&lt;()&gt; {
+<pre><code class="language-rust left no-line-numbers" data-line-numbers="1-8|3,5" data-noescape="">fn main() -&gt; eyre::Result&lt;()&gt; {
     let opt = Opt::from_args();
     let config_json = File::open(&amp;opt.config)?;
     let config: OpenWeatherConfig =
@@ -566,7 +747,13 @@ fn main() -&gt; eyre::Result&lt;()&gt; {
     Ok(())
 }
 </code></pre>
-<aside class="notes"><p><a href="https://docs.rs/eyre"><code>eyre</code></a></p>
+<aside class="notes"><p>The next thing I want to do is add some error reporting, so we don't
+have to unwrap everything and cause panics. <a href="https://docs.rs/eyre"><code>eyre</code></a> gives us the
+beautifully-formatted error messages I showed off at the beginning of the talk,
+and has a ton of functionality we won't explore here.</p>
+<p>Now, we're handling this errors with the "try" operator, spelled <code>?</code>. That's a
+pretty simple but important bit of syntax sugar.</p>
+<div class="next-slide"><p>Next slide: Syntax sugar for <code>?</code>.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
@@ -574,7 +761,37 @@ fn main() -&gt; eyre::Result&lt;()&gt; {
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-rust no-line-numbers left left" data-line-numbers="6-11,14">use eyre::WrapErr;
+<pre><code class="language-rust left no-line-numbers" data-line-numbers="4-7,9-12" data-noescape="">fn main() -&gt; eyre::Result&lt;()&gt; {
+    let opt = Opt::from_args();
+    let config_json =
+        match File::open(&amp;opt.config) {
+            Ok(file) =&gt; file,
+            Err(err) =&gt; return Err(err.into()),
+        };
+    let config: OpenWeatherConfig =
+        match serde_json::from_reader(&amp;config_json) {
+            Ok(config) =&gt; config,
+            Err(err) =&gt; return Err(err.into()),
+        };
+    println!("Config: {:#?}", config);
+    Ok(())
+}
+</code></pre>
+<aside class="notes"><p>The <code>?</code>s are transformed into roughly these match statements; if we have
+an <code>Ok</code> value, we take that value and use it. Otherwise, we return the <code>Err</code>
+value from the whole function — we just bubble up the error to the caller.
+It's a little bit like throwing an exception, but we don't quit an arbitrary
+series of functions — we only go up one layer, and the type system doesn't
+let us ignore it.</p>
+<p>Next slide: <code>WrapErr</code> and context.</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<pre><code class="language-rust no-line-numbers left" data-line-numbers="1,6-11,14" data-noescape="">use <a href="https://docs.rs/eyre">eyre</a>::WrapErr;
 
 fn main() -&gt; eyre::Result&lt;()&gt; {
     let opt = Opt::from_args();
@@ -592,7 +809,14 @@ fn main() -&gt; eyre::Result&lt;()&gt; {
     Ok(())
 }
 </code></pre>
-</div><div class="slide-footer">
+<aside class="notes"><p>Using the <code>?</code> operator again, we're going to use the <code>wrap_err</code> methods
+from <a href="https://docs.rs/eyre"><code>eyre</code></a>'s <code>WrapErr</code> trait to attach context to our errors. We just
+write a bit about what we were doing that might have caused an error, and then
+that string will get displayed if the error report is printed. It's a pretty
+simple step — provided you do it from the start — and it makes debugging a
+<em>lot</em> easier.</p>
+<div class="next-slide"><p>Next slide: Error report examples.</p></div>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
@@ -611,7 +835,14 @@ Error: Failed to deserialize JSON
 Caused by:
     trailing comma at line 3 column 1
 </code></pre>
-</div><div class="slide-footer">
+<aside class="notes"><p>Here we can try to use a nonexistent file or an invalid file for our
+config file and we can see the error messages we get.</p>
+<p>These are pretty simple, but they're especially useful when we have a bunch of
+layers of error context to figure out what we did wrong — and unlike
+exceptions in a lot of languages, we don't just get an enormous unreadable
+stack trace by default.</p>
+<div class="next-slide"><p>Next slide: Using <code>reqwest</code> for HTTP requests.</p></div>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
@@ -630,7 +861,10 @@ fn get_weather(
         .send()
 }
 </code></pre>
-</div><div class="slide-footer">
+<aside class="notes"><p>Now we're going to use the <a href="https://docs.rs/reqwest"><code>reqwest</code></a> library to make a simple call
+to the <a href="https://openweathermap.org/">openweathermap.org</a> API.</p>
+<div class="next-slide"><p>Next slide: Making the call and printing the result.</p></div>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
@@ -656,14 +890,17 @@ Response: Response {
     },
 }
 </code></pre>
-</div><div class="slide-footer">
+<aside class="notes"><p>We can see when we pretty-print the <code>Response</code> object, we get all the
+fields we might expect — headers, a status code, and so on.</p>
+<div class="next-slide"><p>Next slide: Extracting the response text.</p></div>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-rust left">let res = get_weather(&amp;config.api_key)?;
+<pre><code class="language-rust left" data-noescape="">let res = get_weather(&amp;config.api_key)?;
 let bytes = res.bytes()?;
 println!("{}", String::from_utf8_lossy(&amp;*bytes));
 </code></pre>
@@ -673,7 +910,11 @@ println!("{}", String::from_utf8_lossy(&amp;*bytes));
 307.42,"temp_min":307.59,"temp_max":309.82,"pressure":1010,
 "humidity":37},"visibility":10000,"wind":{"speed":6.2, ...
 </code></pre>
-</div><div class="slide-footer">
+<aside class="notes"><p>We can also print the response text, which is this big minified JSON
+blob. We're going to deserialize that, too, but first let's clean up our
+interface to the <a href="https://openweathermap.org/">openweathermap.org</a> API.</p>
+<div class="next-slide"><p>Next slide: Including a <code>Client</code> in the deserialized config.</p></div>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
@@ -725,7 +966,7 @@ using before, without even a constructor method.</p>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-rust no-line-numbers left" data-line-numbers="1-10|3|2,6">impl OpenWeather {
+<pre><code class="language-rust no-line-numbers left" data-line-numbers="1-10|3|2,6" data-noescape="">impl OpenWeather {
     fn get&lt;Response: DeserializeOwned&gt;(
         &amp;self,
         endpoint: &amp;str,
@@ -787,7 +1028,7 @@ copied from the <a href="https://openweathermap.org/">openweathermap.org</a> API
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-rust no-line-numbers left" data-line-numbers="1-9|11-17">impl OpenWeather {
+<pre><code class="language-rust no-line-numbers left" data-line-numbers="1-9|11-17" data-noescape="">impl OpenWeather {
     fn onecall(&amp;self) -&gt; eyre::Result&lt;OneCall&gt; {
         self.get(
             "onecall",

@@ -421,7 +421,7 @@
   display: none;
 }
 
-.reveal-viewport.peach .title-card > .slide-wrapper, .reveal-viewport.peach .title-card > .slide-wrapper h1, .reveal-viewport.peach .title-card > .slide-wrapper h2, .reveal-viewport.peach .title-card > .slide-wrapper h3, .reveal-viewport.peach .title-card > .slide-wrapper h4, .reveal-viewport.peach .title-card > .slide-wrapper h5, .reveal-viewport.peach .title-card > .slide-wrapper h6, .reveal-viewport.purple .title-card > .slide-wrapper, .reveal-viewport.purple .title-card > .slide-wrapper h1, .reveal-viewport.purple .title-card > .slide-wrapper h2, .reveal-viewport.purple .title-card > .slide-wrapper h3, .reveal-viewport.purple .title-card > .slide-wrapper h4, .reveal-viewport.purple .title-card > .slide-wrapper h5, .reveal-viewport.purple .title-card > .slide-wrapper h6 {
+.reveal-viewport.peach .title-card > .slide-wrapper, .reveal-viewport.peach .title-card > .slide-wrapper h1, .reveal-viewport.peach .title-card > .slide-wrapper h2, .reveal-viewport.peach .title-card > .slide-wrapper h3, .reveal-viewport.peach .title-card > .slide-wrapper h4, .reveal-viewport.peach .title-card > .slide-wrapper h5, .reveal-viewport.peach .title-card > .slide-wrapper h6, .reveal-viewport.purple .title-card > .slide-wrapper, .reveal-viewport.purple .title-card > .slide-wrapper h1, .reveal-viewport.purple .title-card > .slide-wrapper h2, .reveal-viewport.purple .title-card > .slide-wrapper h3, .reveal-viewport.purple .title-card > .slide-wrapper h4, .reveal-viewport.purple .title-card > .slide-wrapper h5, .reveal-viewport.purple .title-card > .slide-wrapper h6, .reveal-viewport.teal .title-card > .slide-wrapper, .reveal-viewport.teal .title-card > .slide-wrapper h1, .reveal-viewport.teal .title-card > .slide-wrapper h2, .reveal-viewport.teal .title-card > .slide-wrapper h3, .reveal-viewport.teal .title-card > .slide-wrapper h4, .reveal-viewport.teal .title-card > .slide-wrapper h5, .reveal-viewport.teal .title-card > .slide-wrapper h6, .reveal-viewport.orange .title-card > .slide-wrapper, .reveal-viewport.orange .title-card > .slide-wrapper h1, .reveal-viewport.orange .title-card > .slide-wrapper h2, .reveal-viewport.orange .title-card > .slide-wrapper h3, .reveal-viewport.orange .title-card > .slide-wrapper h4, .reveal-viewport.orange .title-card > .slide-wrapper h5, .reveal-viewport.orange .title-card > .slide-wrapper h6, .reveal-viewport.yellow .title-card > .slide-wrapper, .reveal-viewport.yellow .title-card > .slide-wrapper h1, .reveal-viewport.yellow .title-card > .slide-wrapper h2, .reveal-viewport.yellow .title-card > .slide-wrapper h3, .reveal-viewport.yellow .title-card > .slide-wrapper h4, .reveal-viewport.yellow .title-card > .slide-wrapper h5, .reveal-viewport.yellow .title-card > .slide-wrapper h6, .reveal-viewport.green .title-card > .slide-wrapper, .reveal-viewport.green .title-card > .slide-wrapper h1, .reveal-viewport.green .title-card > .slide-wrapper h2, .reveal-viewport.green .title-card > .slide-wrapper h3, .reveal-viewport.green .title-card > .slide-wrapper h4, .reveal-viewport.green .title-card > .slide-wrapper h5, .reveal-viewport.green .title-card > .slide-wrapper h6 {
   color: #0d0911;
 }
 
@@ -431,6 +431,26 @@
 
 .reveal-viewport.purple {
   background-color: #ab94bf;
+}
+
+.reveal-viewport.teal {
+  background-color: #5ead9d;
+}
+
+.reveal-viewport.orange {
+  background-color: #f3b773;
+}
+
+.reveal-viewport.yellow {
+  background-color: #f1df8d;
+}
+
+.reveal-viewport.green {
+  background-color: #69a05c;
+}
+
+.reveal-viewport.ruby {
+  background-color: #b53f28;
 }
 
 .reveal > .speaker-notes::before {

@@ -58,7 +58,7 @@ class RevealTweaks:
                 # This lets us preserve the class list from the markdown source.
                 # For classes with an `=` (key=val), we set the corresponding element attribute.
                 # For a class starting with `[`, we do the highlight line numbers thing.
-                new_class = []
+                new_classes = []
                 class_list = html.unescape(classes[0]).split("\U00101312")
                 for class_ in class_list:
                     if class_.startswith("["):
@@ -67,8 +67,8 @@ class RevealTweaks:
                         name, val = class_.split("=", maxsplit=1)
                         class_[name] = val
                     else:
-                        new_class.append(class_)
-                code["class"] = " ".join(new_class)
+                        new_classes.append(class_)
+                code["class"] = new_classes
 
             max_line_len = max(map(len, code.string.splitlines()))
             if max_line_len > 50:
@@ -195,7 +195,7 @@ class RevealTweaks:
             prepend_class(icon.name, icon)
 
             delete_attrs = []
-            for name, val in icon.attrs.items():
+            for name in icon.attrs.keys():
                 if name.startswith("fa"):
                     prepend_class(name, icon)
                     delete_attrs.append(name)
