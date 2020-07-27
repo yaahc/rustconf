@@ -19,14 +19,23 @@
 <h1>Error Handling Isn't All About Errors</h1>
 <p><span class="author">Jane Lusby</span></p>
 <p><i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a></p>
+<p>Slide Template by Rebecca Turner <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo/">becca.ooo</a></p>
 <aside class="notes"><p>Hello and welcome to my talk, error handling isn't all about errors.</p>
+<div class="next-slide"><p>Next slide: Let me start by introducing myself…</p></div>
 
 </aside></div></section>
 <section class="center"><div class="slide-wrapper">
 <h2>About Me</h2>
-<aside class="notes"><p>I am the author of eyre, a fork of anyhow with support for customized
-error reports, and color-eyre, which provides a custom panic hook and a
-custom eyre report hook and lets you construct error reports like this.</p>
+<aside class="notes"><p>My name is Jane Lusby. On the internet I go by Yaah or Yaahc. I've
+been writing rust for two and a half years though I was only recently hired
+to do so professionally, by The Zcash Foundation. I got into error handling
+on accident, it started as a yak shave when I wanted to open source a library
+I wrote for work but I wasn't happy with the error handling and decided to
+fix it up first.</p>
+<p>That yak shave ended with me writing eyre, a fork of anyhow with support for
+customized error report hooks, and color-eyre, which provides a custom panic
+hook and a custom eyre report hook and lets you construct error reports like
+this.</p>
 <div class="next-slide"><p>Next slide: Show the various usage examples from <code>color-eyre</code>.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
@@ -51,7 +60,8 @@ Error:
 Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</pre>
-</div><div class="slide-footer">
+<aside class="notes"><p>this is the basic usage example, with an error section, a spantrace section which, if you're not familiar with tracing is this extremely cool backtrace-like type of tracing spans..., a suggestion, and an env setting section.</p>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
@@ -70,7 +80,8 @@ Run with RUST_BACKTRACE=full to include source snippets.</pre>
   <font color="#34E2E2">                      ⋮ 10 frames hidden ⋮                       </font>
 // ...
 Run with RUST_BACKTRACE=full to include source snippets.</pre>
-<aside class="notes"><div class="next-slide"><p>Next slide: we can also filter our backtrace frames, note that here there are 10 frames hidden after main...</p></div>
+<aside class="notes"><p>we can pretty print backtraces and hide unimportant frames, here you can see...</p>
+<div class="next-slide"><p>Next slide: we can also filter our backtrace frames, note that here there are 10 frames hidden after main…</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
@@ -110,7 +121,9 @@ Stderr:
       at <font color="#75507B">examples/custom_section.rs</font>:<font color="#75507B">58</font>
    2: <font color="#F15D22">custom_section::read_config</font>
       at <font color="#75507B">examples/custom_section.rs</font>:<font color="#75507B">63</font></pre>
-<aside class="notes"><p>We will dig into this example more later...</p>
+<aside class="notes"><p>We can add custom sections, here you can see I've added the section
+for Stderr</p>
+<div class="next-slide"><p>Next slide: We will dig into this example more later…</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
@@ -151,11 +164,12 @@ Location: <font color="#75507B">examples/panic_hook.rs</font>:<font color="#7550
 Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</pre>
-<aside class="notes"><p>I'm giving this talk to share what I learned in the process of
-developing eyre and how it has changed how I look at error handling and error
-reporting.</p>
-<div class="next-slide"><p>Next slide: But before we get into the details of reporting lets first cover
-error handling at large.</p></div>
+<aside class="notes"><p>And we can be consistent when reporting, here you can see a panic
+that produces almost identical output to our Eyre Reports.</p>
+<p>Now, I'm not giving this talk to talk about eyre.</p>
+<div class="next-slide"><p>Next slide: I'm giving this talk to share what I learned in that yak shave to
+fix the error handling in my library, and how it has changed how I look at
+error handling and error reporting.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
@@ -179,8 +193,8 @@ error handling at large.</p></div>
 error handling is made more confusing by people try to simplify it, because,
 among other things, error handling is annoying. I worry that the fuzziness
 between these different responsibilities makes it hard for people to infer
-what tools they should be using when "handling errors".</p>
-<div class="next-slide"><p>Next slide: Okay now talk about fundamentals..</p></div>
+what tools they should be using when "handling errors". My hope is that by breaking error handling into it's component parts we can make it easier to understand and explain.</p>
+<div class="next-slide"><p>Next slide: So let's start with the fundamentals. Note, this bit is taken almost word for word from The Rust Book's chapter on error handling.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
@@ -190,8 +204,8 @@ what tools they should be using when "handling errors".</p>
 <section class="title-card" data-state="purple"><div class="slide-wrapper">
 <h1>Recoverable<br/> vs<br/> Non-Recoverable</h1>
 <aside class="notes"><p>The Rust model for errors distinguishes between two classes of errors.</p>
-<p>Recoverable errors are errors you can reasonably expect to occur during execution of…, can be handled, or reported.</p>
-<p>Unrecoverable errors are bugs, can’t be handled, only reported before exiting the program / thread</p>
+<p>Recoverable errors are errors you can reasonably expect to occur during execution of…, can be reacted to, or reported.</p>
+<p>Unrecoverable errors are bugs, like index out of bounds. can’t be reacted to, only reported before exiting the program / thread</p>
 <p>Most languages dont distinguish between these kinds of errors</p>
 <p>C++ has exceptions</p>
 <p>Rust doesnt</p>
@@ -213,7 +227,8 @@ what tools they should be using when "handling errors".</p>
     );
 }
 </code></pre>
-<aside class="notes"><p>Unrecoverable errors in rust are created via the <code>panic!</code> macro. Here we can see an example of an index out of bounds error. NEXT SLIDE</p>
+<aside class="notes"><p>Unrecoverable errors in rust are created via the <code>panic!</code> macro. Here we can see an example of an index out of bounds error.</p>
+<div class="next-slide"><p>Next slide: Only input is an error message and optional some context</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
@@ -222,7 +237,7 @@ what tools they should be using when "handling errors".</p>
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Panic</h2>
-<pre><code class="language-rust" data-line-numbers="4" data-noescape="">// if the index is past the end of the slice
+<pre><code class="language-rust" data-line-numbers="4|5-6" data-noescape="">// if the index is past the end of the slice
 } else if self.end &gt; slice.len() {
     panic!(
         "index {} out of range for slice of length {}",
@@ -231,13 +246,9 @@ what tools they should be using when "handling errors".</p>
     );
 }
 </code></pre>
-
-<ul>
-<li class="fragment">Only input is an error message and optional some context</li>
-<li class="fragment">Reporting and default context gathering done by panic hook</li>
-<li class="fragment">Cleans up either by unwinding or aborting</li>
-</ul>
-<aside class="notes"><p>Mention it can be typed but its out of the scope of this talk</p>
+<aside class="notes"><p>Reporting and default context gathering done by panic hook</p>
+<p>once its done printing the report the panic handler cleans up either by unwinding or aborting</p>
+<div class="next-slide"><p>Next slide: Rust models recoverable errors with the enum <code>Result&lt;T, E&gt;</code>.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
@@ -246,17 +257,31 @@ what tools they should be using when "handling errors".</p>
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Result</h2>
-<pre><code class="language-rust" data-noescape="">enum Result&lt;T, E&gt; {
+<pre><code class="language-rust" data-line-numbers="2-7|3-4|5-6" data-noescape="">enum Result&lt;T, E&gt; {
     /// Contains the success value
     Ok(T),
     /// Contains the error value
     Err(E),
 }
 </code></pre>
-<aside class="notes"><p>Rust models recoverable errors with <code>Result&lt;T, E&gt;</code>. There’s very little syntax sugar involved for recoverable errors in rust, they’re just values and they’re implemented as a library feature.</p>
-<p>You use result for functions where you want to return either a value or an error</p>
-<p>When you want to return an error you change the return type</p>
-<p>The big advantage of using enums is we must handle all errors.</p>
+<aside class="notes"><p>This enum has two variants,</p>
+<p>This is used to combine two return types in one and assign meaning to each possibility.</p>
+<p>This enum concisely describes whether and how errors are returned.</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>Result</h2>
+<pre><code class="language-rust" data-line-numbers="" data-noescape="">match result {
+    Ok(success) =&gt; println!("we got the value {}!", success),
+    Err(error) =&gt; println!("uh oh we got an error: {}", error),
+}
+</code></pre>
+<aside class="notes"><p>The big advantage of using enums is we must handle all errors.</p>
+<div class="next-slide"><p>Next slide: next is the try trait and operator…</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
@@ -274,9 +299,9 @@ what tools they should be using when "handling errors".</p>
 
 let config = get_config()?;
 </code></pre>
-<aside class="notes"><p>The try trait models fallible operations
-Result is a “Try Type”
-Abstraction over error propagation</p>
+<aside class="notes"><p>The try trait models fallible operations and as its currently implemented it basically just means "this type is like Result".</p>
+<p>Indeed, Result is type that implements the Try trait, as does Option, and other some combinations thereof.</p>
+<p>Abstraction over error propagation</p>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
@@ -287,11 +312,14 @@ Abstraction over error propagation</p>
 <h2>The Error Trait</h2>
 
 <ul>
-<li class="fragment">Handling for an open set of errors</li>
-<li class="fragment">Reporting for all errors</li>
-<li class="fragment">limited amount of context is accessible</li>
+<li class="fragment">Representing an open set of errors</li>
+<li class="fragment">Reacting to specific errors in an open set.</li>
+<li class="fragment">Reporting Interface for all errors</li>
 </ul>
-</div><div class="slide-footer">
+<aside class="notes"><p>fills three roles</p>
+<p>Represent them by converting them to a dyn Error trait object. You can then later react to specific errors by downcasting back to the original type, rather than using match as you would with enums.</p>
+<div class="next-slide"><p>Next slide: Now, what do I mean by this?</p></div>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
@@ -299,6 +327,89 @@ Abstraction over error propagation</p>
 </div></section>
 <section class="title-card" data-state="purple"><div class="slide-wrapper">
 <h1>The error trait provides an interface <em>for</em> reporters.</h1>
+<aside class="notes"><div class="next-slide"><p>Next slide: It lets reporters access context about errors that were captured <em>for</em> the final report.</p></div>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>The Error Trait</h2>
+
+<ul>
+<li class="fragment">Error Message via <code>Display</code></li>
+<li class="fragment">Cause via <code>source()</code> function if one exists</li>
+<li class="fragment">Backtrace via <code>backtrace()</code> function if one was captured</li>
+</ul>
+<aside class="notes"><p>This includes...</p>
+<div class="next-slide"><p>Next slide: In other languages there is no distinction between errors and reporters, and this is largely due the lack of an equivalent to the Error Trait.</p></div>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>The Error Trait</h2>
+<pre><code>trait GoError {
+    fn msg(&amp;self) -&gt; String;
+}
+
+trait CppError {
+    fn msg(&amp;self) -&gt; &amp;'spooky str;
+}
+</code></pre>
+<aside class="notes"><p>The error trait equivalent in other languages is often quite simple, just a single fn to grab the error message.</p>
+<p>These interfaces force you to either include your source error, your
+backtrace, and any other information you care about in your error message or
+to avoid using the provided interface all together.</p>
+<p>In rust we don't have to combine our messages all into one, in fact, you're
+encouraged not to. Including a source error's message in your <code>Display</code>
+implementation and returning it as your source via the Error trait is
+essentially a bug, and it forces reporters to duplicate information when they
+print out the chain of error messages.</p>
+<div class="next-slide"><p>Next slide: By separating the source and the error message we move the
+responsibility of formatting away from the errors themselves, making it
+easier to get fancy.</p></div>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>The Error Trait</h2>
+<pre class="term"><font color="#CC0000">ERROR</font> <b>read_config</b>:<b>read_file{</b>path="fake_file"<b>}</b>: Error: Unable
+to read config: No such file or directory (os error 2)
+
+// vs
+
+Error:
+   0: <font color="#F15D22">Unable to read config</font>
+   1: <font color="#F15D22">No such file or directory (os error 2)</font>
+
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ SPANTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   0: <font color="#F15D22">usage::read_file</font> with <font color="#34E2E2">path="fake_file"</font>
+      at <font color="#75507B">examples/usage.rs</font>:<font color="#75507B">52</font>
+   1: <font color="#F15D22">usage::read_config</font>
+      at <font color="#75507B">examples/usage.rs</font>:<font color="#75507B">58</font></pre>
+<aside class="notes"><p>In rust we can have the same error print to a log as one line, but the
+screen as many.</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>The Error Trait is restrictive</h2>
+
+<ul>
+<li class="fragment">Can only represent errors with a single source</li>
+<li class="fragment">Can only access 3 forms of context</li>
+</ul>
 </div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
@@ -330,17 +441,17 @@ Abstraction over error propagation</p>
 </li>
 <li class="fragment">Matching and Reacting
 <ul>
-<li class="fragment"><code>match</code> and <code>downcast</code></li>
+<li class="fragment"><code>match</code> or <code>downcast</code></li>
 </ul>
 </li>
 <li class="fragment">Discarding
 <ul>
-<li class="fragment">explicit drop</li>
+<li class="fragment"><code>drop</code> or <code>unwrap</code></li>
 </ul>
 </li>
 <li class="fragment">Reporting
 <ul>
-<li class="fragment">Reporting types</li>
+<li class="fragment">Reporting types and hook</li>
 </ul>
 </li>
 </ul>
@@ -393,11 +504,10 @@ Unrecoverable
 <li class="fragment"><strong>Error Report</strong>: Printed representation of an error and all of its associated context</li>
 </ul>
 <aside class="notes"><p>This is in the context of reporting, we will no longer talk about handling.</p>
-<p>This gets to the goal of this talk, the relationship and difference between
-errors and context. Errors describe what went wrong, context helps you figure
-out the why, and it's my opinion that keeping these two concepts in mind when
-designing your error handling is an important step in designing clean error
-reporting.</p>
+<p>This gets to the other goal of this talk, clarifying the relationship and
+difference between errors and context. Errors describe what went wrong,
+context helps you figure out the why, and it's my opinion that keeping these
+two concepts in mind is very important when designing your error reporting.</p>
 <p>How about an example? Let's dig into error reporting by recreating the
 custom_section example from the beginning of the talk. NEXT SLIDE</p>
 </aside></div><div class="slide-footer">
@@ -491,9 +601,9 @@ Command:
         .arg("cat")
         .output2()?;
 
+
     Ok(())
 }
-
 </code></pre>
 </div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
@@ -619,6 +729,18 @@ Stderr:
 <ul>
 <li>Reporters usually impl <code>From&lt;E: Error&gt;</code> and <em>don't</em> impl <code>Error</code></li>
 <li>Prints report via <code>Debug</code> trait</li>
+</ul>
+</div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>Library vs Application</h2>
+<ul>
+<li>Library =&gt; error defining libraries</li>
+<li>Application =&gt; adhoc error defining + error reporting libraries</li>
 </ul>
 </div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>

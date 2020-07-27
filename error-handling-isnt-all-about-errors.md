@@ -4,7 +4,11 @@
 
 <fab fa-twitter> [@yaahc_] / [yaah.dev]
 
+Slide Template by Rebecca Turner <fab fa-twitter> [@16kbps] / [becca.ooo]
+
 Notes: Hello and welcome to my talk, error handling isn't all about errors.
+
+Next slide: Let me start by introducing myself...
 
 <slide-footer>
 <left>Jane Lusby</left>
@@ -15,6 +19,8 @@ Notes: Hello and welcome to my talk, error handling isn't all about errors.
 
 [@yaahc_]: https://twitter.com/yaahc_
 [yaah.dev]: https://yaah.dev/
+[@16kbps]: https://twitter.com/16kbps
+[becca.ooo]: https://becca.ooo/
 
 ---
 
@@ -22,9 +28,17 @@ Notes: Hello and welcome to my talk, error handling isn't all about errors.
 
 ## About Me
 
-Notes: I am the author of eyre, a fork of anyhow with support for customized
-error reports, and color-eyre, which provides a custom panic hook and a
-custom eyre report hook and lets you construct error reports like this.
+Notes: My name is Jane Lusby. On the internet I go by Yaah or Yaahc. I've
+been writing rust for two and a half years though I was only recently hired
+to do so professionally, by The Zcash Foundation. I got into error handling
+on accident, it started as a yak shave when I wanted to open source a library
+I wrote for work but I wasn't happy with the error handling and decided to
+fix it up first.
+
+That yak shave ended with me writing eyre, a fork of anyhow with support for
+customized error report hooks, and color-eyre, which provides a custom panic
+hook and a custom eyre report hook and lets you construct error reports like
+this.
 
 Next slide: Show the various usage examples from `color-eyre`.
 
@@ -48,6 +62,8 @@ Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</pre>
 
+Notes: this is the basic usage example, with an error section, a spantrace section which, if you're not familiar with tracing is this extremely cool backtrace-like type of tracing spans..., a suggestion, and an env setting section.
+
 ---
 
 
@@ -65,7 +81,9 @@ Run with RUST_BACKTRACE=full to include source snippets.</pre>
 // ...
 Run with RUST_BACKTRACE=full to include source snippets.</pre>
 
-Notes: Next slide: we can also filter our backtrace frames, note that here there are 10 frames hidden after main...
+Notes: we can pretty print backtraces and hide unimportant frames, here you can see...
+
+Next slide: we can also filter our backtrace frames, note that here there are 10 frames hidden after main...
 
 ---
 
@@ -100,7 +118,10 @@ Stderr:
    2: <font color="#F15D22">custom_section::read_config</font>
       at <font color="#75507B">examples/custom_section.rs</font>:<font color="#75507B">63</font></pre>
 
-Notes: We will dig into this example more later...
+Notes: We can add custom sections, here you can see I've added the section
+for Stderr
+
+Next slide: We will dig into this example more later...
 
 ---
 
@@ -136,13 +157,14 @@ Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</pre>
 
+Notes: And we can be consistent when reporting, here you can see a panic
+that produces almost identical output to our Eyre Reports.
 
-Notes: I'm giving this talk to share what I learned in the process of
-developing eyre and how it has changed how I look at error handling and error
-reporting.
+Now, I'm not giving this talk to talk about eyre.
 
-Next slide: But before we get into the details of reporting lets first cover
-error handling at large.
+Next slide: I'm giving this talk to share what I learned in that yak shave to
+fix the error handling in my library, and how it has changed how I look at
+error handling and error reporting.
 
 ---
 
@@ -166,9 +188,10 @@ The breakdown here gets to the goal of my talk. I have a theory that
 error handling is made more confusing by people try to simplify it, because,
 among other things, error handling is annoying. I worry that the fuzziness
 between these different responsibilities makes it hard for people to infer
-what tools they should be using when "handling errors".
+what tools they should be using when "handling errors". My hope is that by breaking error handling into it's component parts we can make it easier to understand and explain.
 
-Next slide: Okay now talk about fundamentals..
+Next slide: So let's start with the fundamentals. Note, this bit is taken almost word for word from The Rust Book's chapter on error handling.
+
 
 ---
 
@@ -178,9 +201,9 @@ Next slide: Okay now talk about fundamentals..
 
 Notes: The Rust model for errors distinguishes between two classes of errors.
 
-Recoverable errors are errors you can reasonably expect to occur during execution of..., can be handled, or reported.
+Recoverable errors are errors you can reasonably expect to occur during execution of..., can be reacted to, or reported.
 
-Unrecoverable errors are bugs, can’t be handled, only reported before exiting the program / thread
+Unrecoverable errors are bugs, like index out of bounds. can’t be reacted to, only reported before exiting the program / thread
 
 Most languages dont distinguish between these kinds of errors
 
@@ -205,13 +228,15 @@ Rust has panic for unrecoverable errors and result recoverable errors
 }
 ```
 
-Notes: Unrecoverable errors in rust are created via the `panic!` macro. Here we can see an example of an index out of bounds error. NEXT SLIDE
+Notes: Unrecoverable errors in rust are created via the `panic!` macro. Here we can see an example of an index out of bounds error.
+
+Next slide: Only input is an error message and optional some context
 
 ---
 
 ## Panic
 
-```rust [4]
+```rust [4|5-6]
 // if the index is past the end of the slice
 } else if self.end > slice.len() {
     panic!(
@@ -222,19 +247,17 @@ Notes: Unrecoverable errors in rust are created via the `panic!` macro. Here we 
 }
 ```
 
-<list fragments>
+Notes: Reporting and default context gathering done by panic hook
 
-- Only input is an error message and optional some context
-- Reporting and default context gathering done by panic hook
-- Cleans up either by unwinding or aborting
+once its done printing the report the panic handler cleans up either by unwinding or aborting
 
-Notes: Mention it can be typed but its out of the scope of this talk
+Next slide: Rust models recoverable errors with the enum `Result<T, E>`.
 
 ---
 
 ## Result
 
-```rust
+```rust [2-7|3-4|5-6]
 enum Result<T, E> {
     /// Contains the success value
     Ok(T),
@@ -243,13 +266,26 @@ enum Result<T, E> {
 }
 ```
 
-Notes: Rust models recoverable errors with `Result<T, E>`. There’s very little syntax sugar involved for recoverable errors in rust, they’re just values and they’re implemented as a library feature.
+Notes: This enum has two variants,
 
-You use result for functions where you want to return either a value or an error
+This is used to combine two return types in one and assign meaning to each possibility.
 
-When you want to return an error you change the return type
+This enum concisely describes whether and how errors are returned.
 
-The big advantage of using enums is we must handle all errors.
+---
+
+## Result
+
+```rust []
+match result {
+    Ok(success) => println!("we got the value {}!", success),
+    Err(error) => println!("uh oh we got an error: {}", error),
+}
+```
+
+Notes: The big advantage of using enums is we must handle all errors.
+
+Next slide: next is the try trait and operator...
 
 ---
 
@@ -266,8 +302,10 @@ let config = match get_config() {
 let config = get_config()?;
 ```
 
-Notes: The try trait models fallible operations
-Result is a “Try Type”
+Notes: The try trait models fallible operations and as its currently implemented it basically just means "this type is like Result".
+
+Indeed, Result is type that implements the Try trait, as does Option, and other some combinations thereof.
+
 Abstraction over error propagation
 
 ---
@@ -276,15 +314,99 @@ Abstraction over error propagation
 
 <list fragments>
 
-- Handling for an open set of errors
-- Reporting for all errors
-- limited amount of context is accessible
+- Representing an open set of errors
+- Reacting to specific errors in an open set.
+- Reporting Interface for all errors
+
+Notes: fills three roles
+
+Represent them by converting them to a dyn Error trait object. You can then later react to specific errors by downcasting back to the original type, rather than using match as you would with enums.
+
+Next slide: Now, what do I mean by this?
 
 ---
 
 <slide class=title-card data-state=purple>
 
 # The error trait provides an interface _for_ reporters.
+
+Notes: Next slide: It lets reporters access context about errors that were captured _for_ the final report.
+
+---
+
+## The Error Trait
+
+<list fragments>
+
+- Error Message via `Display`
+- Cause via `source()` function if one exists
+- Backtrace via `backtrace()` function if one was captured
+
+Notes: This includes...
+
+Next slide: In other languages there is no distinction between errors and reporters, and this is largely due the lack of an equivalent to the Error Trait.
+
+---
+
+## The Error Trait
+
+```
+trait GoError {
+    fn msg(&self) -> String;
+}
+
+trait CppError {
+    fn msg(&self) -> &'spooky str;
+}
+```
+
+Notes: The error trait equivalent in other languages is often quite simple, just a single fn to grab the error message.
+
+These interfaces force you to either include your source error, your
+backtrace, and any other information you care about in your error message or
+to avoid using the provided interface all together.
+
+In rust we don't have to combine our messages all into one, in fact, you're
+encouraged not to. Including a source error's message in your `Display`
+implementation and returning it as your source via the Error trait is
+essentially a bug, and it forces reporters to duplicate information when they
+print out the chain of error messages.
+
+Next slide: By separating the source and the error message we move the
+responsibility of formatting away from the errors themselves, making it
+easier to get fancy.
+
+---
+
+## The Error Trait
+
+<pre class=term><font color="#CC0000">ERROR</font> <b>read_config</b>:<b>read_file{</b>path=&quot;fake_file&quot;<b>}</b>: Error: Unable
+to read config: No such file or directory (os error 2)
+
+// vs
+
+Error:
+   0: <font color="#F15D22">Unable to read config</font>
+   1: <font color="#F15D22">No such file or directory (os error 2)</font>
+
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ SPANTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   0: <font color="#F15D22">usage::read_file</font> with <font color="#34E2E2">path=&quot;fake_file&quot;</font>
+      at <font color="#75507B">examples/usage.rs</font>:<font color="#75507B">52</font>
+   1: <font color="#F15D22">usage::read_config</font>
+      at <font color="#75507B">examples/usage.rs</font>:<font color="#75507B">58</font></pre>
+
+Notes: In rust we can have the same error print to a log as one line, but the
+screen as many.
+
+---
+
+## The Error Trait is restrictive
+
+<list fragments>
+
+- Can only represent errors with a single source
+- Can only access 3 forms of context
 
 ---
 
@@ -309,11 +431,11 @@ Abstraction over error propagation
 - Propagating
   - `?`
 - Matching and Reacting
-  - `match` and `downcast`
+  - `match` or `downcast`
 - Discarding
-  - explicit drop
+  - `drop` or `unwrap`
 - Reporting
-  - Reporting types
+  - Reporting types and hook
 
 </div>
 
@@ -351,11 +473,10 @@ Notes: Okay so now we’ve covered the fundamentals, you know how to handle erro
 
 Notes: This is in the context of reporting, we will no longer talk about handling.
 
-This gets to the goal of this talk, the relationship and difference between
-errors and context. Errors describe what went wrong, context helps you figure
-out the why, and it's my opinion that keeping these two concepts in mind when
-designing your error handling is an important step in designing clean error
-reporting.
+This gets to the other goal of this talk, clarifying the relationship and
+difference between errors and context. Errors describe what went wrong,
+context helps you figure out the why, and it's my opinion that keeping these
+two concepts in mind is very important when designing your error reporting.
 
 How about an example? Let's dig into error reporting by recreating the
 custom_section example from the beginning of the talk. NEXT SLIDE
@@ -442,9 +563,9 @@ fn main() -> Result<(), eyre::Report> {
         .arg("cat")
         .output2()?;
 
+
     Ok(())
 }
-
 ```
 
 ---
@@ -545,6 +666,13 @@ Stderr:
 
 - Reporters usually impl `From<E: Error>` and _don't_ impl `Error`
 - Prints report via `Debug` trait
+
+---
+
+## Library vs Application
+
+- Library => error defining libraries
+- Application => adhoc error defining + error reporting libraries
 
 ---
 
