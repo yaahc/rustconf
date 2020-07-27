@@ -150,7 +150,7 @@ class RevealTweaks:
 
             for p in notes.find_all("p", recursive=False):
                 for s in p.stripped_strings:
-                    if s.startswith("Next slide: "):
+                    if s.startswith("Next slide:"):
                         wrapper = self.soup.new_tag("div")
                         wrapper["class"] = "next-slide"
                         p.wrap(wrapper)

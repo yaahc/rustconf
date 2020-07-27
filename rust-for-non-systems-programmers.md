@@ -7,6 +7,8 @@
 Notes: Hey folks, my name is Rebecca Turner and I'm going to tell you why you
 should be writing non-systems code in Rust.
 
+Next slide: Why this talk?
+
 [@16kbps]: https://twitter.com/16kbps
 [becca.ooo]: https://becca.ooo/
 
@@ -26,6 +28,8 @@ should be writing non-systems code in Rust.
 Notes: I'm a non-systems programmer, and I really like Rust. But if you
 looked at the [rust-lang.org] website before 2019, that might not make
 sense to you.
+
+Next slide: Screenshot of [rust-lang.org] in 2018.
 
 [rust-lang.org]: https://rust-lang.org/
 
@@ -70,9 +74,10 @@ Next slide: What can Rust do for you?
 
 ## What can Rust <br> do for you?
 
-Notes: TODO
+Notes: Before we get too involved, let's get a quick feel for some of the
+things Rust makes strikingly easy.
 
-<!-- Next slide: Who is this talk for? -->
+Next slide: Command-line help messages.
 
 ---
 
@@ -205,6 +210,8 @@ mod tests {
 
 Notes: ...with a one-line import that integrates with the default test framework.
 
+Next slide: (And more.)
+
 ---
 
 <slide class=title-card data-state=teal>
@@ -273,6 +280,8 @@ Next slide: Who is this talk for?
 Notes: In particular, I want to talk to programmers who are already comfortable
 in dynamic scripting languages who are beginning to feel some of the downsides
 of working in those languages.
+
+Next slide: Why do I like Rust?
 
 ---
 
@@ -445,7 +454,7 @@ Notes: ...although, we might not really expect an empty variable.
 
 Also, invalid UTF-8 will crash the whole program.
 
-Next slide: `Result`
+Next slide: The `Result` type.
 
 ---
 
@@ -537,8 +546,6 @@ Next slide: Minimal API call with OpenWeather.
 
 ---
 
-## Simple API call with [openweathermap.org]
-
 ```python
 import json
 
@@ -564,6 +571,8 @@ Here's a simple call of their API; we load the API key from a JSON file, we
 make a request, and then we print out the response text.
 
 Let's work on recreating this in Rust.
+
+Next slide: Reading the API key from JSON.
 
 ---
 
@@ -670,7 +679,7 @@ Notes: Now when we run this, we get some nice pretty-printed debug output by def
 
 That's not my actual API key, by the way. Don't worry.
 
-Next slide: <crate structopt>.
+Next slide: Adding the <crate structopt> crate.
 
 ---
 
@@ -741,6 +750,8 @@ For more information try --help
 ```
 
 Notes: <crate structopt> even helps us with typos by default.
+
+Next slide: Adding <crate eyre>.
 
 ---
 
@@ -1000,6 +1011,8 @@ An `impl` block lets us put methods on types.
    parameter from <crate serde_json>`::from_reader` so that we can deserialize
    any type we define.
 
+Next slide: API response struct definitions.
+
 ---
 
 ```rust
@@ -1058,6 +1071,8 @@ Notes:
 2. And then, of course, we can use the new method in our `main` to get the
    forecast data as a richly-typed struct.
 
+Next slide: `TempDifference`
+
 ---
 
 ```
@@ -1115,6 +1130,10 @@ println!(
 
 Notes: And then we can print all this information out, and we're done!
 
+Next slide: Running the final program.
+
+<!-- have a receipt printer video...? -->
+
 ---
 
 ```shell-session
@@ -1137,8 +1156,17 @@ with Rust --- and what Rust can do for you. There's so many features and tools
 I wanted to talk about that I didn't have time for --- adding methods to
 foreign types, type-safe numbers and unit conversions.
 
+Next slide: **None.**
+
 ---
 
-## Thanks for watching!
+<slide no-footer data-state=ruby>
 
-<!-- have a receipt printer video...? -->
+# Rust <div class=small>for</div> Non-Systems Programmers
+
+<span class=author>Rebecca Turner</span>
+
+<fab fa-twitter> [@16kbps] / [becca.ooo]
+
+Notes: Thanks so much for listening, and I hope you do some amazing things with
+Rust!

@@ -336,9 +336,9 @@ impl<'a> Iterator for MappedParser<'a> {
                 ret
             }
             Event::Text(text) => {
-                if self.started_paragraph && text.starts_with("Notes: ") {
+                if self.started_paragraph && text.starts_with("Notes:") {
                     self.lookahead = Some(Event::Text(
-                        text.strip_prefix("Notes: ").unwrap().to_owned().into(),
+                        text.strip_prefix("Notes:").unwrap().to_owned().into(),
                     ));
                     self.has_notes = true;
                     Event::Html(r#"</p><aside class="notes"><p>"#.into())

@@ -331,7 +331,7 @@
   font-size: 0.6em;
   line-height: 1;
 }
-.reveal > .slides span.author {
+.reveal > .slides span.author, .reveal > .slides .small {
   color: #f5a78f;
 }
 .reveal > .slides h2 {
@@ -451,6 +451,9 @@
 
 .reveal-viewport.ruby {
   background-color: #b53f28;
+}
+.reveal-viewport.ruby .reveal, .reveal-viewport.ruby span.author, .reveal-viewport.ruby .small {
+  color: #f1df8d;
 }
 
 .reveal > .speaker-notes::before {
