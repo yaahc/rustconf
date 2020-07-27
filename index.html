@@ -3,7 +3,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1" name="viewport"/>
 
-    <title>Rust for Non-Systems Programmers</title>
+    <title>Error Handling Isn't All About Errors</title>
 
     <link href="dist/reset.css" rel="stylesheet"/>
     <link href="dist/reveal.css" rel="stylesheet"/>
@@ -16,656 +16,622 @@
     <div class="reveal">
         <div class="slides">
             <section><div class="slide-wrapper">
-<h1>Rust <div class="small">for</div> Non-Systems Programmers</h1>
-<p><span class="author">Rebecca Turner</span></p>
-<p><i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo/">becca.ooo</a></p>
-<aside class="notes"><p>Hey folks, my name is Rebecca Turner and I'm going to tell you why you
-should be writing non-systems code in Rust.</p>
+<h1>Error Handling Isn't All About Errors</h1>
+<p><span class="author">Jane Lusby</span></p>
+<p><i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a></p>
+<aside class="notes"><p>Hello and welcome to my talk, error handling isn't all about errors.</p>
 
 </aside></div></section>
-<section class="title-card" data-state="purple"><div class="slide-wrapper">
-<h2>Why this talk?</h2>
-<aside class="notes"><p>I'm a non-systems programmer, and I really like Rust. But if you
-looked at the <a href="https://rust-lang.org/">rust-lang.org</a> website before 2019, that might not make
-sense to you.</p>
+<section class="center"><div class="slide-wrapper">
+<h2>About Me</h2>
+<aside class="notes"><p>I am the author of eyre, a fork of anyhow with support for customized
+error reports, and color-eyre, which provides a custom panic hook and a
+custom eyre report hook and lets you construct error reports like this.</p>
+<div class="next-slide"><p>Next slide: Show the various usage examples from <code>color-eyre</code>.</p></div>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
-<section class="image-slide"><div class="slide-wrapper">
-<img alt='A screenshot of the rust-lang.org website in late 2018. The headline reads "Rust is a systems programming languaeg that runs blazingly fast, prevents segfaults, and guarantees thread safety."' src="img/rust-2018-11-30.png"/>
-<aside class="notes"><p>Here's the <a href="https://rust-lang.org/">rust-lang.org</a> website at the end of 2018, right before
-they rolled out the new site. The headline emphasizes systems programming,
-speed, and memory safety — all things I don't directly care about that much.</p>
-<div class="next-slide"><p>Next slide: Compare that with the new website.</p></div>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
-</div>
-</div></section>
-<section class="image-slide"><div class="slide-wrapper">
-<img alt='A screenshot of the rust-lang.org website in mid-2020. The headline reads "A language empowering everyone to build reliable and efficient software." and sections under "Why Rust?" emphasize performance, reliability, and productivity.' src="img/rust-2020-07-19.png"/>
-<aside class="notes"><p>And here's the same website today in mid-2020. Now we're "empowering
-everyone" to and focusing on reliability and productivity. But a lot of the
-documentation has lagged behind and still assumes that new Rust programmers
-already know C++ or something similar.</p>
-<p>So I want to introduce the rest of us to Rust.</p>
-<div class="next-slide"><p>Next slide: Who is this talk for?</p></div>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
-</div>
-</div></section>
-<section><div class="slide-wrapper">
-<h2>Who is this talk for?</h2>
+<section><div class="slide-wrapper"><pre class="term"><font color="#CC0000"><b>❯</b></font> cargo run --example usage
+Error:
+   0: <font color="#F15D22">Unable to read config</font>
+   1: <font color="#F15D22">No such file or directory (os error 2)</font>
 
-<ul>
-<li class="fragment">Programmers comfortable in dynamic languages like Python, JavaScript, Ruby,
-etc.</li>
-<li class="fragment">Who are tired of some of the problems with those languages:
-<ul>
-<li class="fragment">Null/undefined errors</li>
-<li class="fragment">Runtime type errors</li>
-<li class="fragment">Poor documentation</li>
-</ul>
-</li>
-</ul>
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ SPANTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   0: <font color="#F15D22">usage::read_file</font> with <font color="#34E2E2">path="fake_file"</font>
+      at <font color="#75507B">examples/usage.rs</font>:<font color="#75507B">32</font>
+   1: <font color="#F15D22">usage::read_config</font>
+      at <font color="#75507B">examples/usage.rs</font>:<font color="#75507B">38</font>
+
+<font color="#34E2E2">Suggestion</font>: try using a file that exists next time
+
+Backtrace omitted.
+Run with RUST_BACKTRACE=1 environment variable to display it.
+Run with RUST_BACKTRACE=full to include source snippets.</pre>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
-<h2>Why do I like Rust?</h2>
-<aside class="notes"><p>I have ADHD, and it varies from person to person but one area I really
-struggle with is <a href="https://en.wikipedia.org/wiki/Working_memory"><em>working memory</em></a>, which is roughly how much
-information you can hold in your head at once. And as an engineer, that means
-that I can't hold much of the program concept in my mind while I work.</p>
-<p>It's really important that I have a powerful compiler, linters, and tests
-because otherwise I have no way of knowing that the program's correct — and
-I also really need type annotations and autocompletion to remember which
-operations are supported on which variables.</p>
-<p>Rust <em>really shines</em> in all of these areas. I work <em>with</em> the compiler to
-check my work. And it helps me feel a lot more confident that my programs do
-what I think they do.</p>
-<div class="next-slide"><p>Next slide: Tooling.</p></div>
+<section><div class="slide-wrapper"><pre class="term"><font color="#CC0000"><b>❯</b></font> RUST_BACKTRACE=1 cargo run --example usage
+// ...
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ BACKTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  <font color="#34E2E2">                       ⋮ 5 frames hidden ⋮                       </font>
+   6: <font color="#F15D22">usage::read_file</font><font color="#88807C">::h10b2389c2b814452</font>
+      at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/usage.rs</font>:<font color="#75507B">35</font>
+   7: <font color="#F15D22">usage::read_config</font><font color="#88807C">::hf7150b146edb25d9</font>
+      at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/usage.rs</font>:<font color="#75507B">40</font>
+   8: <font color="#F15D22">usage::main</font><font color="#88807C">::hc3df11a6ea0d044d</font>
+      at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/usage.rs</font>:<font color="#75507B">11</font>
+  <font color="#34E2E2">                      ⋮ 10 frames hidden ⋮                       </font>
+// ...
+Run with RUST_BACKTRACE=full to include source snippets.</pre>
+<aside class="notes"><div class="next-slide"><p>Next slide: we can also filter our backtrace frames, note that here there are 10 frames hidden after main...</p></div>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper"><pre class="term"><font color="#CC0000"><b>❯</b></font> RUST_BACKTRACE=1 cargo run --example custom_filter
+// ...
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ BACKTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  <font color="#34E2E2">                       ⋮ 5 frames hidden ⋮                       </font>
+   6: <font color="#F15D22">custom_filter::read_file</font><font color="#88807C">::h0afee8fe0960bf02</font>
+      at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/custom_filter.rs</font>:<font color="#75507B">53</font>
+   7: <font color="#F15D22">custom_filter::read_config</font><font color="#88807C">::h6622065848c69b29</font>
+      at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/custom_filter.rs</font>:<font color="#75507B">58</font>
+  <font color="#34E2E2">                      ⋮ 11 frames hidden ⋮                       </font>
+// ...
+Run with RUST_BACKTRACE=full to include source snippets.</pre>
+</div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper"><pre class="term"><font color="#CC0000"><b>❯</b></font> cargo run --example custom_section
+Error:
+   0: <font color="#F15D22">Unable to read config</font>
+   1: <font color="#F15D22">cmd exited with non-zero status code</font>
+
+Stderr:
+   cat: fake_file: No such file or directory
+
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ SPANTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   0: <font color="#F15D22">custom_section::output2</font> with <font color="#34E2E2">self="cat" "fake_file"</font>
+      at <font color="#75507B">examples/custom_section.rs</font>:<font color="#75507B">14</font>
+   1: <font color="#F15D22">custom_section::read_file</font> with <font color="#34E2E2">path="fake_file"</font>
+      at <font color="#75507B">examples/custom_section.rs</font>:<font color="#75507B">58</font>
+   2: <font color="#F15D22">custom_section::read_config</font>
+      at <font color="#75507B">examples/custom_section.rs</font>:<font color="#75507B">63</font></pre>
+<aside class="notes"><p>We will dig into this example more later...</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper"><pre class="term"><font color="#CC0000"><b>❯</b></font> cargo run --example multiple_errors
+Error:
+   0: <font color="#F15D22">encountered multiple errors</font>
+
+Error:
+   0: <font color="#F15D22">The task could not be completed</font>
+   1: <font color="#F15D22">The task you ran encountered an error</font>
+
+Error:
+   0: <font color="#F15D22">The machine is unreachable</font>
+   1: <font color="#F15D22">The machine you're connecting to is actively on fire</font>
+
+Error:
+   0: <font color="#F15D22">The file could not be parsed</font>
+   1: <font color="#F15D22">The file you're parsing is literally written in c++ instead of rust, what the hell</font></pre>
+</div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper"><pre class="term"><font color="#CC0000"><b>❯</b></font> cargo run --example panic_hook
+<font color="#CC0000">The application panicked (crashed).</font>
+Message:  <font color="#06989A">some real basic stuff went wrong</font>
+Location: <font color="#75507B">examples/panic_hook.rs</font>:<font color="#75507B">14</font>
+
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ SPANTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   0: <font color="#F15D22">panic_hook::do_thing</font> with <font color="#34E2E2">thing=42</font>
+      at <font color="#75507B">examples/panic_hook.rs</font>:<font color="#75507B">12</font>
+
+Backtrace omitted.
+Run with RUST_BACKTRACE=1 environment variable to display it.
+Run with RUST_BACKTRACE=full to include source snippets.</pre>
+<aside class="notes"><p>I'm giving this talk to share what I learned in the process of
+developing eyre and how it has changed how I look at error handling and error
+reporting.</p>
+<div class="next-slide"><p>Next slide: But before we get into the details of reporting lets first cover
+error handling at large.</p></div>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<h2>Tooling</h2>
+<h2>What Is Error Handling?</h2>
 
 <ul>
-<li class="fragment">Documentation: <a href="https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html">rustdoc</a> (API docs) and <a href="https://rust-lang.github.io/mdBook/">mdBook</a> (long-form guides)</li>
-<li class="fragment">Language servers: <a href="official">rls</a> and <a href="community">rust-analyzer</a></li>
-<li class="fragment">Package manager, build system: <a href="https://doc.rust-lang.org/book/ch01-03-hello-cargo.html">Cargo</a></li>
+<li class="fragment"><del>Annoying</del></li>
+<li class="fragment">Defining errors</li>
+<li class="fragment">Propagating errors and gathering context</li>
+<li class="fragment">Reacting to specific errors</li>
+<li class="fragment">Discarding errors</li>
+<li class="fragment">Reporting errors and gathered context</li>
 </ul>
-<aside class="notes"><p>Before we get started, I want to point out a few of the tools that
-making writing Rust easy and fun.</p>
-<ul>
-<li>rustdoc compiles <code>///</code> doc comments written in Markdown to webpages —
-complete with search, links, and more.</li>
-<li>mdBook is used for writing longer-form narrative-style documentation; the
-Rust Book and more are written with mdBook and serve as companions to the
-rustdoc documentation.</li>
-<li>Two very good language servers provide autocompletion, definition-jumping,
-quick fixes, and more.</li>
-<li>Cargo is a package manager and build system, integrating with the crates.io
-package repository.</li>
-</ul>
-<div class="next-slide"><p>Next slide: A bit more on documentation.</p></div>
+<aside class="notes"><p>A lot of things, when you zoom in close</p>
+<p>don't mention the annoying, just keep going</p>
+<p>The breakdown here gets to the goal of my talk. I have a theory that
+error handling is made more confusing by people try to simplify it, because,
+among other things, error handling is annoying. I worry that the fuzziness
+between these different responsibilities makes it hard for people to infer
+what tools they should be using when "handling errors".</p>
+<div class="next-slide"><p>Next slide: Okay now talk about fundamentals..</p></div>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
-<section class="image-slide"><div class="slide-wrapper">
-<h2>Documentation</h2>
-<iframe class="main" importance="low" loading="lazy" src="https://docs.rs/rand/0.7.3/rand/"></iframe>
-<aside class="notes"><p>Here's the generated documentation for the <a href="https://docs.rs/rand/"><code>rand</code></a> crate, which you can
-find at <a href="https://docs.rs/rand/">docs.rs/rand</a>.</p>
+<section class="title-card" data-state="purple"><div class="slide-wrapper">
+<h1>Recoverable<br/> vs<br/> Non-Recoverable</h1>
+<aside class="notes"><p>The Rust model for errors distinguishes between two classes of errors.</p>
+<p>Recoverable errors are errors you can reasonably expect to occur during execution of…, can be handled, or reported.</p>
+<p>Unrecoverable errors are bugs, can’t be handled, only reported before exiting the program / thread</p>
+<p>Most languages dont distinguish between these kinds of errors</p>
+<p>C++ has exceptions</p>
+<p>Rust doesnt</p>
+<p>Rust has panic for unrecoverable errors and result recoverable errors</p>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<h2>Getting started</h2>
-<pre><code class="language-rust no-line-numbers" data-line-numbers="1-10|1|3-10|4|5-9|5|8" data-noescape="">use <a href="https://docs.rs/std">std</a>::env;
-
-fn main() {
-    let user = env::var("USER").unwrap();
-    if user == "becca" {
-        println!("Hello, Rebecca!");
-    } else {
-        println!("Hello, {}!", user);
-    }
+<h2>Panic</h2>
+<pre><code class="language-rust" data-line-numbers="" data-noescape="">// if the index is past the end of the slice
+} else if self.end &gt; slice.len() {
+    panic!(
+        "index {} out of range for slice of length {}",
+        self.end,
+        slice.len()
+    );
 }
 </code></pre>
-<aside class="notes"><p>Here's a pretty simple rust program, just to show off a bit of syntax.</p>
-<ol>
-<li>
-<p>The <code>use</code> statement imports names from libraries. <code>::</code> is used as a path
-separator / namespacing operator.</p>
-</li>
-<li>
-<p>Next, we define a function with the <code>fn</code> keyword; The function named
-<code>main</code> is the entry point.</p>
-</li>
-<li>
-<p>We call the <code>var</code> function in the <code>env</code> module, and assign the value it
-returns to <code>user</code>; Rust figures out the type for us.</p>
-<p><code>env::var</code> returns a <code>Result</code>, so we have to unwrap it, which will crash
-if there's an error.</p>
-</li>
-<li>
-<p>Next, we have an <code>if</code> statement, which has braces but no parenthesis.</p>
-</li>
-<li>
-<p>Note that we're also comparing strings with <code>==</code> — rust has operator overloading!</p>
-</li>
-<li>
-<p>Finally, we have this <code>println!</code> macro — the <code>!</code> means it's a macro, and
-the string literal there is actually turned into a series of formatting
-instructions at compile time so we don't waste time parsing at runtime.</p>
-</li>
-</ol>
-<p>Next slide: <code>cargo build</code>.</p>
+<aside class="notes"><p>Unrecoverable errors in rust are created via the <code>panic!</code> macro. Here we can see an example of an index out of bounds error. NEXT SLIDE</p>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
-<section class="center"><div class="slide-wrapper">
-<pre><code class="language-shell-session">$ cargo build
-   Compiling rustconf-code v0.1.0 (~/rustconf/rustconf-code)
-    Finished dev [unoptimized + debuginfo] target(s) in 0.17s
+<section><div class="slide-wrapper">
+<h2>Panic</h2>
+<pre><code class="language-rust" data-line-numbers="4" data-noescape="">// if the index is past the end of the slice
+} else if self.end &gt; slice.len() {
+    panic!(
+        "index {} out of range for slice of length {}",
+        self.end,
+        slice.len()
+    );
+}
 </code></pre>
-<aside class="notes"><p>We can run <code>cargo build</code> to compile the program.</p>
-<div class="next-slide"><p>Next slide: running the program.</p></div>
+
+<ul>
+<li class="fragment">Only input is an error message and optional some context</li>
+<li class="fragment">Reporting and default context gathering done by panic hook</li>
+<li class="fragment">Cleans up either by unwinding or aborting</li>
+</ul>
+<aside class="notes"><p>Mention it can be typed but its out of the scope of this talk</p>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
-<section class="center"><div class="slide-wrapper">
-<pre><code class="language-shell-session">$ ./target/debug/rustconf-code
-Hello, Rebecca!
-$ USER=nell ./target/debug/rustconf-code
-Hello, nell!
-</code></pre>
-<aside class="notes"><p>And then we can run it, and it does what we expect.</p>
-<div class="next-slide"><p>Next slide: …although, we might not really expect an empty variable.</p></div>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
-</div>
-</div></section>
-<section class="center"><div class="slide-wrapper">
-<pre><code class="language-shell-session no-line-numbers" data-line-numbers="1-2|3-7">$ env USER= ./target/debug/rustconf-code
-Hello, !
-$ env USER="$(printf '\xc3\x28')" ./target/debug/rustconf-code
-thread 'main' panicked at 'called `Result::unwrap()` on an
-`Err` value: NotUnicode("\xC3(")', src/main.rs:4:16
-note: run with `RUST_BACKTRACE=1` environment variable to display
-a backtrace
-</code></pre>
-<aside class="notes"><p>...although, we might not really expect an empty variable.</p>
-<p>Also, invalid UTF-8 will crash the whole program.</p>
-<p>Next slide: <code>Result</code></p>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
-</div>
-</div></section>
-<section class="center"><div class="slide-wrapper">
+<section><div class="slide-wrapper">
+<h2>Result</h2>
 <pre><code class="language-rust" data-noescape="">enum Result&lt;T, E&gt; {
+    /// Contains the success value
     Ok(T),
+    /// Contains the error value
     Err(E),
 }
 </code></pre>
-<aside class="notes"><p><code>Result</code> is an <code>enum</code> — what functional programmers call a sum type.
-While a tuple has a value from any number of different types at the same time, a
-sum type has a value from <em>one</em> of a number of different types.</p>
-<p><code>Result</code> is generic, so for any types <code>T</code> and <code>E</code>, we have a type <code>Result&lt;T, E&gt;</code> which can be <em>either</em> an <code>Ok</code> value of type <code>T</code> or an <code>Err</code> value of type
-<code>E</code>; that's pretty much equivalent to a function returning <code>T</code> or throwing an
-exception <code>E</code>.</p>
-<div class="next-slide"><p>Next slide: gracefully handling errors with <code>match</code>.</p></div>
+<aside class="notes"><p>Rust models recoverable errors with <code>Result&lt;T, E&gt;</code>. There’s very little syntax sugar involved for recoverable errors in rust, they’re just values and they’re implemented as a library feature.</p>
+<p>You use result for functions where you want to return either a value or an error</p>
+<p>When you want to return an error you change the return type</p>
+<p>The big advantage of using enums is we must handle all errors.</p>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-rust" data-noescape="">use <a href="https://docs.rs/std">std</a>::env;
+<h2>Try and <code>?</code></h2>
+<pre><code class="language-rust left" data-line-numbers="1-4|8" data-noescape="">let config = match get_config() {
+    Ok(success_value) =&gt; success_value,
+    Err(error_value) =&gt; return Err(Error::from(error_value)),
+};
 
-fn main() {
-    let user = env::var("USER");
-    match user {
-        Ok(user) =&gt; {
-            if user == "becca" {
-                println!("Hello, Rebecca!");
-            } else {
-                println!("Hello, {}!", user);
-            }
+// vs
+
+let config = get_config()?;
+</code></pre>
+<aside class="notes"><p>The try trait models fallible operations
+Result is a “Try Type”
+Abstraction over error propagation</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>The Error Trait</h2>
+
+<ul>
+<li class="fragment">Handling for an open set of errors</li>
+<li class="fragment">Reporting for all errors</li>
+<li class="fragment">limited amount of context is accessible</li>
+</ul>
+</div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section class="title-card" data-state="purple"><div class="slide-wrapper">
+<h1>The error trait provides an interface <em>for</em> reporters.</h1>
+</div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper"><style>
+.container{
+    display: flex;
+}
+.col{
+    flex: 1;
+}
+</style>
+<div class="container">
+<div class="col">
+ Recoverable
+
+<ul>
+<li class="fragment">Defining
+<ul>
+<li class="fragment">types and traits</li>
+</ul>
+</li>
+<li class="fragment">Propagating
+<ul>
+<li class="fragment"><code>?</code></li>
+</ul>
+</li>
+<li class="fragment">Matching and Reacting
+<ul>
+<li class="fragment"><code>match</code> and <code>downcast</code></li>
+</ul>
+</li>
+<li class="fragment">Discarding
+<ul>
+<li class="fragment">explicit drop</li>
+</ul>
+</li>
+<li class="fragment">Reporting
+<ul>
+<li class="fragment">Reporting types</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="col">
+Unrecoverable
+
+<ul>
+<li class="fragment">Defining
+<ul>
+<li class="fragment"><code>panic!</code></li>
+</ul>
+</li>
+<li class="fragment">Propagating
+<ul>
+<li class="fragment">builtin</li>
+</ul>
+</li>
+<li class="fragment">Matching and Reacting
+<ul>
+<li class="fragment">pls don’t</li>
+</ul>
+</li>
+<li class="fragment">Discarding
+<ul>
+<li class="fragment"><code>catch_unwind</code></li>
+</ul>
+</li>
+<li class="fragment">Reporting
+<ul>
+<li class="fragment">panic hook</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<aside class="notes"><p>Okay so now we’ve covered the fundamentals, you know how to handle errors of both types, so let’s get back and start digging into the differences between errors, context, and reports.</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>Definitions</h2>
+
+<ul>
+<li class="fragment"><strong>Error</strong>: A description of why an operation failed</li>
+<li class="fragment"><strong>Context</strong>: Any information relevant to an error or an error report that is not itself an error</li>
+<li class="fragment"><strong>Error Report</strong>: Printed representation of an error and all of its associated context</li>
+</ul>
+<aside class="notes"><p>This is in the context of reporting, we will no longer talk about handling.</p>
+<p>This gets to the goal of this talk, the relationship and difference between
+errors and context. Errors describe what went wrong, context helps you figure
+out the why, and it's my opinion that keeping these two concepts in mind when
+designing your error handling is an important step in designing clean error
+reporting.</p>
+<p>How about an example? Let's dig into error reporting by recreating the
+custom_section example from the beginning of the talk. NEXT SLIDE</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<pre><code class="language-rust" data-line-numbers="1-3|5|7|9-10|12|13|15" data-noescape="">trait CommandExt {
+    fn output2(&amp;mut self) -&gt; Result&lt;String, eyre::Report&gt;;
+}
+
+impl CommandExt for std::process::Command {
+    fn output2(&amp;mut self) -&gt; Result&lt;String, eyre::Report&gt; {
+        let output = self.output()?;
+
+        let stdout = String::from_utf8_lossy(&amp;output.stdout)
+            .into_owned();
+
+        if !output.status.success() {
+            Err(eyre!("command exited unsuccessfully"))
+        } else {
+            Ok(stdout)
         }
-        Err(_) =&gt; println!("I couldn't figure out who you are!"),
     }
 }
 </code></pre>
-<aside class="notes"><p>One way we can deal with that error is by matching on it, which is a
-little bit like a type-safe <code>isinstance</code> check. Here, we just handle an error
-by printing a simple message.</p>
-<div class="next-slide"><p>Next slide: showing what happens when we run it.</p></div>
+<aside class="notes"><p>lets start with a customized version of <code>Command::output</code> that reports
+better errors and converts stdout to a String on success.</p>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
-<section class="center"><div class="slide-wrapper">
-<pre><code class="language-shell-session">$ env USER="$(printf '\xc3\x28')" ./target/debug/rustconf-code
-I couldn't figure out who you are!
-</code></pre>
-<aside class="notes"><p>Now, when we run our program, we print an error message instead of
-crashing. We'll talk about some other ways to handle errors as we go, but for the
-definitive rundown check out Jane Ludsby's talk <a href="https://rustconf.com/schedule/error-handling-isn-t-all-about-errors">"Error Handling Isn't All
-About Errors"</a>.</p>
-<p>But this talk is about Rust's value as a practical programming language,
-which means doing more than writing "Hello, world!"s. So lets write a program
-in Rust and explore some of the ways the language helps us out.</p>
-<div class="next-slide"><p>Next slide: receipt printer, weather program overview.</p></div>
+<section><div class="slide-wrapper"><pre class="term"><font color="#CC0000"><b>❯</b></font> cargo run
+Error:
+   0: <font color="#F15D22">command exited unsuccessfully</font></pre>
+<aside class="notes"><p>This is an Error.</p>
+<p>okay, thats not very helpful, also I didn't even tell you what command I was running</p>
 </aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
-</div>
-</div></section>
-<section class="image-slide"><div class="slide-wrapper">
-<img alt='A Star TSP100 Eco futurePRNT 72mm receipt printer, powered on with a printed receipt showing the RustConf homepage reading "Beaming to screens across the globe"' src="img/receipt-printer.jpg"/>
-<aside class="notes"><p>I have this receipt printer hooked up to my computer, and it's super fun
-to play with — there's no ink, so paper is incredibly cheap, and they're
-designed for restaurants and retail, so they're incredibly durable.</p>
-<p>I always forget to check the weather in the morning, so I want to write a
-program I can set to run before I wake up that tells me the weather, and how
-it'll feel compared to the previous day.</p>
-<div class="next-slide"><p>Next slide: Minimal API call with OpenWeather.</p></div>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<h2>Simple API call with <a href="https://openweathermap.org/">openweathermap.org</a></h2>
-<pre><code class="language-python">import json
+<pre><code class="language-rust" data-line-numbers="8|11" data-noescape="">impl CommandExt for std::process::Command {
+    fn output2(&amp;mut self) -&gt; Result&lt;String, eyre::Report&gt; {
+        let output = self.output()?;
 
-import requests
+        let stdout = String::from_utf8_lossy(&amp;output.stdout).into_owned();
 
-with open("openweather_api.json") as f:
-    api_key_obj = json.load(f)
-    api_key = api_key_obj["api_key"]
-    res = requests.get(
-        "https://api.openweathermap.org/data/2.5/weather",
-        params={"q": "Waltham,MA,US", "appid": api_key},
-    )
-    print(res.text)
-</code></pre>
-<aside class="notes"><p>Weather APIs come and go, but right now
-<a href="https://openweathermap.org/">OpenWeather</a> is providing decent data for free — even if
-the default units are Kelvins.</p>
-<p>Here's a simple call of their API; we load the API key from a JSON file, we
-make a request, and then we print out the response text.</p>
-<p>Let's work on recreating this in Rust.</p>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
-</div>
-</div></section>
-<section><div class="slide-wrapper">
-<pre><code class="language-rust no-line-numbers" data-line-numbers="1-15|4|5-6|7-13" data-noescape="">use <a href="https://docs.rs/serde_json">serde_json</a>::Value;
+        if !output.status.success() {
+            let cmd = format!("{:?}", self);
 
-fn main() {
-    let api_key_json = include_str!("../openweather_api.json");
-    let api_key_obj: Value =
-        serde_json::from_str(api_key_json).unwrap();
-    let api_key = api_key_obj
-        .as_object()
-        .unwrap()
-        .get("api_key")
-        .unwrap()
-        .as_str()
-        .unwrap();
-    println!("API key is {}", api_key);
+            Err(eyre!("command exited unsuccessfully"))
+                .section(cmd.header("Command:"))
+        } else {
+            Ok(stdout)
+        }
+    }
 }
-</code></pre>
-<aside class="notes"><p>Here's a start at a line-by-line conversion of that program.</p>
-<ol>
-<li>
-<p>We're using <code>include_str!</code> here which actually reads a file as UTF-8 at
-<em>compile time</em> — we'll work on opening files in a bit, but this works well
-enough, end this is very much a "the perfect is the enemy of the good" talk.</p>
-</li>
-<li>
-<p>Next, we use <code>serde_json</code> to parse that string into a JSON value.</p>
-</li>
-<li>
-<p>Then, we get the <code>api_key</code> key out of the object as a string. Each time
-we assert something about the type of a value in this object, we need to
-unwrap it, because we might <em>not</em> have a value of the type we want, so we
-need to deal with that somehow.</p>
-<p>Note that this isn't entirely unique to Rust, though — our
-Python program would also crash if <code>api_key_obj</code> wasn't a JSON object, or if
-it didn't have a key named <code>api_key</code>, or if the value to that key wasn't a
-string. But Rust makes us be explicit about it.</p>
-<p>That's not entirely a bad thing — it helps us figure out where errors
-could happen — but it is awfully verbose and painful to write.</p>
-<p>Fortunately, there's a better way.</p>
-</li>
-</ol>
-<p>Next slide: <code>Deserialize</code> derive.</p>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
-</div>
-</div></section>
-<section><div class="slide-wrapper">
-<pre><code class="language-rust" data-noescape="">use <a href="https://docs.rs/serde">serde</a>::Deserialize;
-
-#[derive(Debug, Clone, Deserialize)]
-struct OpenWeatherConfig {
-    api_key: String,
-}
-</code></pre>
-<aside class="notes"><p>Here, we're declaring a struct, which is roughly a class, in the sense
-of a blob of data with named fields and methods. Then, we <em>derive</em> some traits
-for it. Traits are what Python programmers sometimes call protocols, or what
-Java calls interfaces. Here, <code>Debug</code> lets us pretty-print the struct's data,
-<code>Clone</code> lets us deeply copy it, and <code>Deserialize</code> lets us deserialize it from
-JSON — or, with other serde libraries, XML, YAML, TOML, Protobufs, and more.</p>
-<div class="next-slide"><p>Next slide: Using the <code>Deserialize</code> implementation with <code>serde_json</code>.</p></div>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
-</div>
-</div></section>
-<section><div class="slide-wrapper">
-<pre><code class="language-rust" data-noescape="">use <a href="https://docs.rs/serde">serde</a>::Deserialize;
-
-fn main() {
-    let config_json = include_str!("../openweather_api.json");
-    let config: OpenWeatherConfig =
-        serde_json::from_str(config_json).unwrap();
-    println!("{:?}", config);
-}
-</code></pre>
-<aside class="notes"><p>Here's what deserializing to a value looks like. Note that we don't need
-to explicitly construct our <code>OpenWeatherConfig</code> object — that, along with
-parsing the JSON, matching up keys to fields, and recursively constructing
-other <code>Deserialize</code>able values, is handled by <code>serde</code> and <code>serde_json</code>.</p>
-<div class="next-slide"><p>Next slide: Running this example.</p></div>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
-</div>
-</div></section>
-<section><div class="slide-wrapper">
-<pre><code class="language-shell-session">$ cat openweather_api.json
-{
-  "api_key": "1b13e6aa173ce14137a50095476e653c"
-}
-
-$ cargo run
-    Finished dev [unoptimized + debuginfo] target(s) in 0.05s
-     Running `target/debug/rustconf-code`
-OpenWeatherConfig {
-    api_key: "1b13e6aa173ce14137a50095476e653c"
-}
-</code></pre>
-<aside class="notes"><p>Now when we run this, we get some nice pretty-printed debug output by default.</p>
-<p>That's not my actual API key, by the way. Don't worry.</p>
-<p>Next slide: <code>structopt</code>.</p>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
-</div>
-</div></section>
-<section><div class="slide-wrapper">
-<pre><code class="language-rust" data-noescape="">use <a href="https://docs.rs/std">std</a>::path::PathBuf;
-
-use <a href="https://docs.rs/structopt">structopt</a>::StructOpt;
-
-/// A command-line interface to the openweathermap.org API.
-#[derive(Debug, StructOpt)]
-struct Opt {
-    /// Config filename; a JSON file with an `api_key` field.
-    #[structopt(short, long, parse(from_os_str))]
-    config: PathBuf,
-}
-
-fn main() {
-    let opt = Opt::from_args();
-    // ...
-}
-</code></pre>
-<aside class="notes"><p>The next change I want to make is adding <code>structopt</code>, which derives a
-command-line interface from a struct definition. Instead of declaring all our
-arguments as strings and pulling them out of an untyped hashmap, we just declare
-them as struct fields — which means we get autocompletion for our
-command-line options, along with bonuses like detecting that <code>Option</code> fields
-aren't mandatory and <code>Vec</code> fields can have multiple values.</p>
-<div class="next-slide"><p>Next slide: Generated help message.</p></div>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
-</div>
-</div></section>
-<section><div class="slide-wrapper">
-<pre><code class="language-shell-session">$ ./target/debug/rustconf-code --help
-rustconf-code 0.1.0
-A command-line interface to the openweathermap.org API
-
-USAGE:
-    rustconf-code --config &lt;config&gt;
-
-FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
-
-OPTIONS:
-    -c, --config &lt;config&gt;    Config filename; a JSON file with
-                             an `api_key` field
 </code></pre>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper"><pre class="term"><font color="#CC0000"><b>❯</b></font> cargo run
+Error:
+   0: <font color="#F15D22">command exited unsuccessfully</font>
+
+Command:
+   "git" "cat"</pre>
+<aside class="notes"><p>Here we can see why the command failed, cat isn't a real git command! It would be cool if it was though.</p>
+<p>This is context, and the whole thing is a report.</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-shell-session">$ ./target/debug/rustconf-code --confgi my-custom-file.json
-error: Found argument '--confgi' which wasn't expected, or isn't
-       valid in this context
-       Did you mean --config?
+<pre><code class="language-rust left" data-line-numbers="" data-noescape="">fn main() -&gt; Result&lt;(), eyre::Report&gt; {
+    color_eyre::install()?;
 
-USAGE:
-    rustconf-code --config &lt;config&gt;
+    let _ = std::process::Command::new("git")
+        .arg("cat")
+        .output2()?;
 
-For more information try --help
+    Ok(())
+}
+
 </code></pre>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-rust left" data-noescape="">use <a href="https://docs.rs/eyre">eyre</a>::WrapErr;
+<pre><code class="language-rust left" data-line-numbers="7" data-noescape="">fn main() -&gt; Result&lt;(), eyre::Report&gt; {
+    color_eyre::install()?;
 
-fn main() -&gt; eyre::Result&lt;()&gt; {
-    let opt = Opt::from_args();
-    let config_json = File::open(&amp;opt.config)?;
-    let config: OpenWeatherConfig =
-        serde_json::from_reader(&amp;config_json)?;
-    println!("Config: {:#?}", config);
+    let _ = std::process::Command::new("git")
+        .arg("cat")
+        .output2()?
+        .wrap_err("cat could not be got")?;
+
     Ok(())
 }
 </code></pre>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper"><pre class="term"><font color="#CC0000"><b>❯</b></font> cargo run
+Error:
+   0: <font color="#F15D22">cat could not be got</font>
+   1: <font color="#F15D22">command exited unsuccessfully</font>
+
+Command:
+   "git" "cat"
+
+</pre>
+</div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-rust no-line-numbers left" data-line-numbers="6-11,14" data-noescape="">use <a href="https://docs.rs/eyre">eyre</a>::WrapErr;
+<pre><code class="language-rust" data-line-numbers="9|13-14" data-noescape="">impl CommandExt for std::process::Command {
+    fn output2(&amp;mut self) -&gt; Result&lt;String, eyre::Report&gt; {
+        let output = self.output()?;
 
-fn main() -&gt; eyre::Result&lt;()&gt; {
-    let opt = Opt::from_args();
-    let config_json =
-        File::open(&amp;opt.config).wrap_err_with(|| {
-            format!(
-                "Failed to open config file {:?}",
-                opt.config
-            )
-        })?;
-    let config: OpenWeatherConfig =
-        serde_json::from_reader(&amp;config_json)
-            .wrap_err("Failed to deserialize JSON")?;
-    println!("Config: {:#?}", config);
-    Ok(())
+        let stdout = String::from_utf8_lossy(&amp;output.stdout).into_owned();
+
+        if !output.status.success() {
+            let cmd = format!("{:?}", self);
+            let stderr = String::from_utf8_lossy(&amp;output.stderr).into_owned();
+
+            Err(eyre!("command exited unsuccessfully"))
+                .section(cmd.header("Command:"))
+                .section(stdout.header("Stdout:"))
+                .section(stderr.header("Stderr:"))
+        } else {
+            Ok(stdout)
+        }
+    }
 }
 </code></pre>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper"><pre class="term"><font color="#4E9A06"><b>❯</b></font> cargo run
+Error:
+   0: <font color="#F15D22">cat could not be got</font>
+   1: <font color="#F15D22">command exited unsuccessfully</font>
+
+Command:
+   "git" "cat"
+
+Stderr:
+   git: 'cat' is not a git command. See 'git --help'.
+
+   The most similar commands are
+   	clean
+   	mktag
+   	stage
+   	stash
+   	tag
+   	var</pre>
+</div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-shell-session">$ ./target/debug/rustconf-code --config nonexistent-file.json
-Error: Failed to open config file "nonexistent-file.json"
+<h2>Libraries</h2>
 
-Caused by:
-    No such file or directory (os error 2)
-
-$ ./target/debug/rustconf-code --config invalid-file.json
-Error: Failed to deserialize JSON
-
-Caused by:
-    trailing comma at line 3 column 1
-</code></pre>
+<ul>
+<li class="fragment">Defining =&gt; thiserror, displaydoc, SNAFU</li>
+<li class="fragment">Defining ad-hoc errors + Reporting =&gt; anyhow, eyre</li>
+<li class="fragment">Report Hooks =&gt; color-eyre, color-backtrace, color-anyhow (soon tm)</li>
+<li class="fragment">Propagation =&gt; fehler</li>
+<li class="fragment">Context Capture =&gt; tracing-error, extracterr</li>
+</ul>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-rust" data-noescape="">use <a href="https://docs.rs/reqwest">reqwest</a>::blocking::{Client, Response};
-
-fn get_weather(
-    api_key: &amp;str,
-) -&gt; Result&lt;Response, reqwest::Error&gt; {
-    let client = Client::new();
-    client
-        .get("https://api.openweathermap.org/data/2.5/weather")
-        .query(&amp;[("q", "Waltham,MA,US"), ("appid", api_key)])
-        .send()
-}
-</code></pre>
+<h2>Common Concerns</h2>
+<ul>
+<li>Open Set vs Closed Set</li>
+<li>Stack Size</li>
+<li>Unreportable Errors</li>
+</ul>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-rust" data-noescape="">println!("Response: {:#?}", get_weather(&amp;config.api_key)?);
-</code></pre>
-<pre><code class="language-shell-session">$ cargo run
-Response: Response {
-    url: "https://api.openweathermap.org/data/2.5/weather?q=...",
-    status: 200,
-    headers: {
-        "server": "openresty",
-        "date": "Sun, 19 Jul 2020 19:30:04 GMT",
-        "content-type": "application/json; charset=utf-8",
-        "content-length": "465",
-        "connection": "keep-alive",
-        "x-cache-key": "/data/2.5/weather?q=waltham%2cma%2cus",
-        "access-control-allow-origin": "*",
-        "access-control-allow-credentials": "true",
-        "access-control-allow-methods": "GET, POST",
-    },
-}
-</code></pre>
+<h2>Reporters</h2>
+<ul>
+<li>Reporters usually impl <code>From&lt;E: Error&gt;</code> and <em>don't</em> impl <code>Error</code></li>
+<li>Prints report via <code>Debug</code> trait</li>
+</ul>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-rust" data-noescape="">let res = get_weather(&amp;config.api_key)?;
-let bytes = res.bytes()?;
-println!("{}", String::from_utf8_lossy(&amp;*bytes));
-</code></pre>
-<pre><code class="language-json">{"coord":{"lon":-71.24,"lat":42.38},"weather":[{"id":802,
-"main":"Clouds","description":"scattered clouds","icon":
-"03d"}],"base":"stations","main":{"temp":308.71,"feels_like":
-307.42,"temp_min":307.59,"temp_max":309.82,"pressure":1010,
-"humidity":37},"visibility":10000,"wind":{"speed":6.2, ...
-</code></pre>
+<h1>Fin</h1>
 </div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
+<div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
-</div>
-</div></section>
-<section><div class="slide-wrapper">
-<pre><code class="language-rust" data-noescape="">#[derive(Deserialize, Debug, Clone)]
-pub struct OneCall {
-    pub hourly: Vec&lt;Hourly&gt;,
-    pub daily: Vec&lt;Daily&gt;,
-}
-
-#[derive(Deserialize, Debug, Clone)]
-pub struct Hourly {
-    pub dt: UnixUTC,
-    pub temp: f64,
-    pub feels_like: f64,
-    pub humidity: f64,
-    pub clouds: f64,
-    pub rain: Option&lt;Rain&gt;,
-    pub snow: Option&lt;Snow&gt;,
-}
-</code></pre>
-</div><div class="slide-footer">
-<div class="slide-footer-left">Rebecca Turner</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
         </div>
@@ -693,7 +659,6 @@ pub struct Hourly {
             plugins: [RevealMarkdown, HighlightRustCompiler, HighlightShellSession, RevealHighlight, RevealNotes]
         });
     </script>
-
 
 
 </body></html>
