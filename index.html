@@ -194,7 +194,7 @@ error handling is made more confusing by people try to simplify it, because,
 among other things, error handling is annoying. I worry that the fuzziness
 between these different responsibilities makes it hard for people to infer
 what tools they should be using when "handling errors". My hope is that by breaking error handling into it's component parts we can make it easier to understand and explain.</p>
-<div class="next-slide"><p>Next slide: So let's start with the fundamentals. Note, this bit is taken almost word for word from The Rust Book's chapter on error handling.</p></div>
+<div class="next-slide"><p>Next slide: So let's start with the fundamentals. Note, this first bit is taken almost word for word from The Rust Book's chapter on error handling.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
@@ -248,7 +248,7 @@ what tools they should be using when "handling errors". My hope is that by break
 </code></pre>
 <aside class="notes"><p>Reporting and default context gathering done by panic hook</p>
 <p>once its done printing the report the panic handler cleans up either by unwinding or aborting</p>
-<div class="next-slide"><p>Next slide: Rust models recoverable errors with the enum <code>Result&lt;T, E&gt;</code>.</p></div>
+<div class="next-slide"><p>Next slide: Recoverable errors are modeled in rust with the enum <code>Result&lt;T, E&gt;</code>.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
@@ -257,7 +257,7 @@ what tools they should be using when "handling errors". My hope is that by break
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Result</h2>
-<pre><code class="language-rust" data-line-numbers="2-7|3-4|5-6" data-noescape="">enum Result&lt;T, E&gt; {
+<pre><code class="language-rust" data-line-numbers="1-6|2-3|4-5" data-noescape="">enum Result&lt;T, E&gt; {
     /// Contains the success value
     Ok(T),
     /// Contains the error value
@@ -267,6 +267,7 @@ what tools they should be using when "handling errors". My hope is that by break
 <aside class="notes"><p>This enum has two variants,</p>
 <p>This is used to combine two return types in one and assign meaning to each possibility.</p>
 <p>This enum concisely describes whether and how errors are returned.</p>
+<div class="next-slide"><p>Next slide: The big advantage of using enums is we must handle all errors.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
@@ -275,13 +276,12 @@ what tools they should be using when "handling errors". My hope is that by break
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Result</h2>
-<pre><code class="language-rust" data-line-numbers="" data-noescape="">match result {
+<pre><code class="language-rust" data-line-numbers="1-4" data-noescape="">match result {
     Ok(success) =&gt; println!("we got the value {}!", success),
     Err(error) =&gt; println!("uh oh we got an error: {}", error),
 }
 </code></pre>
-<aside class="notes"><p>The big advantage of using enums is we must handle all errors.</p>
-<div class="next-slide"><p>Next slide: next is the try trait and operator…</p></div>
+<aside class="notes"><div class="next-slide"><p>Next slide: next is the try trait and operator...</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
@@ -299,9 +299,10 @@ what tools they should be using when "handling errors". My hope is that by break
 
 let config = get_config()?;
 </code></pre>
-<aside class="notes"><p>The try trait models fallible operations and as its currently implemented it basically just means "this type is like Result".</p>
+<aside class="notes"><p>The unstable try trait models fallible operations and is currently used to define how to convert a type to and from a Result.</p>
 <p>Indeed, Result is type that implements the Try trait, as does Option, and other some combinations thereof.</p>
 <p>Abstraction over error propagation</p>
+<div class="next-slide"><p>Next slide: Next up is the error trait.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
@@ -317,17 +318,9 @@ let config = get_config()?;
 <li class="fragment">Reporting Interface for all errors</li>
 </ul>
 <aside class="notes"><p>fills three roles</p>
-<p>Represent them by converting them to a dyn Error trait object. You can then later react to specific errors by downcasting back to the original type, rather than using match as you would with enums.</p>
+<p>Represent them by converting them to a trait object.</p>
+<p>You can then later react to specific errors by downcasting back to the original type, rather than using match as you would with enums.</p>
 <div class="next-slide"><p>Next slide: Now, what do I mean by this?</p></div>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Jane Lusby</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
-</div>
-</div></section>
-<section class="title-card" data-state="purple"><div class="slide-wrapper">
-<h1>The error trait provides an interface <em>for</em> reporters.</h1>
-<aside class="notes"><div class="next-slide"><p>Next slide: It lets reporters access context about errors that were captured <em>for</em> the final report.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
@@ -338,13 +331,24 @@ let config = get_config()?;
 <h2>The Error Trait</h2>
 
 <ul>
+<li class="fragment">Backtrace via <code>backtrace()</code></li>
+<li class="fragment">Cause via <code>source()</code></li>
 <li class="fragment">Error Message via <code>Display</code></li>
-<li class="fragment">Cause via <code>source()</code> function if one exists</li>
-<li class="fragment">Backtrace via <code>backtrace()</code> function if one was captured</li>
 </ul>
-<aside class="notes"><p>This includes...</p>
-<div class="next-slide"><p>Next slide: In other languages there is no distinction between errors and reporters, and this is largely due the lack of an equivalent to the Error Trait.</p></div>
+<aside class="notes"><p>The error trait is how reporters access context that was captured for them.</p>
+<p>This includes…</p>
 </aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section class="title-card" data-state="purple"><div class="slide-wrapper">
+<h1>The error trait provides an interface <em>for</em> reporters.</h1>
+<p>Next slide: In other languages there is no distinction between errors and
+reporters, and this is largely due the lack of an equivalent to the Error
+Trait.</p>
+</div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
@@ -397,6 +401,7 @@ Error:
       at <font color="#75507B">examples/usage.rs</font>:<font color="#75507B">58</font></pre>
 <aside class="notes"><p>In rust we can have the same error print to a log as one line, but the
 screen as many.</p>
+<p>This wouldn't be possible if the error trait didn't separate context from errors.</p>
 <div class="next-slide"><p>Next slide: However, despite the fact that the error trait in rust is more flexible than most other languages, it is still restrictive in some ways.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
@@ -866,7 +871,8 @@ fn foo() -&gt; Result&lt;(), Error&gt; {
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Matching and Reacting</h2>
-</div><div class="slide-footer">
+<aside class="notes"><p>mostly handled by builtin features, match, downcast.</p>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>

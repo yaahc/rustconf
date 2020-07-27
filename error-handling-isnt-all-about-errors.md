@@ -190,7 +190,7 @@ among other things, error handling is annoying. I worry that the fuzziness
 between these different responsibilities makes it hard for people to infer
 what tools they should be using when "handling errors". My hope is that by breaking error handling into it's component parts we can make it easier to understand and explain.
 
-Next slide: So let's start with the fundamentals. Note, this bit is taken almost word for word from The Rust Book's chapter on error handling.
+Next slide: So let's start with the fundamentals. Note, this first bit is taken almost word for word from The Rust Book's chapter on error handling.
 
 
 ---
@@ -251,13 +251,13 @@ Notes: Reporting and default context gathering done by panic hook
 
 once its done printing the report the panic handler cleans up either by unwinding or aborting
 
-Next slide: Rust models recoverable errors with the enum `Result<T, E>`.
+Next slide: Recoverable errors are modeled in rust with the enum `Result<T, E>`.
 
 ---
 
 ## Result
 
-```rust [2-7|3-4|5-6]
+```rust [1-6|2-3|4-5]
 enum Result<T, E> {
     /// Contains the success value
     Ok(T),
@@ -272,20 +272,20 @@ This is used to combine two return types in one and assign meaning to each possi
 
 This enum concisely describes whether and how errors are returned.
 
+Next slide: The big advantage of using enums is we must handle all errors.
+
 ---
 
 ## Result
 
-```rust []
+```rust [1-4]
 match result {
     Ok(success) => println!("we got the value {}!", success),
     Err(error) => println!("uh oh we got an error: {}", error),
 }
 ```
 
-Notes: The big advantage of using enums is we must handle all errors.
-
-Next slide: next is the try trait and operator...
+Notes: Next slide: next is the try trait and operator...
 
 ---
 
@@ -302,11 +302,13 @@ let config = match get_config() {
 let config = get_config()?;
 ```
 
-Notes: The try trait models fallible operations and as its currently implemented it basically just means "this type is like Result".
+Notes: The unstable try trait models fallible operations and is currently used to define how to convert a type to and from a Result.
 
 Indeed, Result is type that implements the Try trait, as does Option, and other some combinations thereof.
 
 Abstraction over error propagation
+
+Next slide: Next up is the error trait.
 
 ---
 
@@ -320,17 +322,11 @@ Abstraction over error propagation
 
 Notes: fills three roles
 
-Represent them by converting them to a dyn Error trait object. You can then later react to specific errors by downcasting back to the original type, rather than using match as you would with enums.
+Represent them by converting them to a trait object.
+
+You can then later react to specific errors by downcasting back to the original type, rather than using match as you would with enums.
 
 Next slide: Now, what do I mean by this?
-
----
-
-<slide class=title-card data-state=purple>
-
-# The error trait provides an interface _for_ reporters.
-
-Notes: Next slide: It lets reporters access context about errors that were captured _for_ the final report.
 
 ---
 
@@ -338,13 +334,23 @@ Notes: Next slide: It lets reporters access context about errors that were captu
 
 <list fragments>
 
+- Backtrace via `backtrace()`
+- Cause via `source()`
 - Error Message via `Display`
-- Cause via `source()` function if one exists
-- Backtrace via `backtrace()` function if one was captured
 
-Notes: This includes...
+Notes: The error trait is how reporters access context that was captured for them.
 
-Next slide: In other languages there is no distinction between errors and reporters, and this is largely due the lack of an equivalent to the Error Trait.
+This includes...
+
+---
+
+<slide class=title-card data-state=purple>
+
+# The error trait provides an interface _for_ reporters.
+
+Next slide: In other languages there is no distinction between errors and
+reporters, and this is largely due the lack of an equivalent to the Error
+Trait.
 
 ---
 
@@ -398,6 +404,8 @@ Error:
 
 Notes: In rust we can have the same error print to a log as one line, but the
 screen as many.
+
+This wouldn't be possible if the error trait didn't separate context from errors.
 
 Next slide: However, despite the fact that the error trait in rust is more flexible than most other languages, it is still restrictive in some ways.
 
@@ -795,6 +803,8 @@ fn foo() -> Result<(), Error> {
 ---
 
 ## Matching and Reacting
+
+Notes: mostly handled by builtin features, match, downcast.
 
 ---
 
