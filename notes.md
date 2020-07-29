@@ -1,2 +1,12 @@
-- Narrative around writing the weather app rather than strict itemization
-- "As non-systems programmers, we're used to..."
+- [x] Narrative around writing the weather app rather than strict itemization
+- [ ] "As non-systems programmers, we're used to..."
+- [ ] Slower on code slides
+- [ ] Take out "before we really get started"
+- [ ] Cut the code only from the intro examples
+- [ ] Slower for that `println!` slide at the end
+- [ ] Less jargon
+  - [ ] Derive, trait
+  - [ ] type-safe `isinstance`
+- [ ] Spend a little more time with the Python program
+- [ ] `WrapErr`: "to more accurately describe what went wrong" instead of "attaching context"
+- [ ] More time on "who is this talk for"
