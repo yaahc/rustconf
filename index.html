@@ -27,7 +27,7 @@ should be writing non-systems code in Rust.</p>
 <h2>Why this talk?</h2>
 <aside class="notes"><p> I'm a non-systems programmer, and I really like Rust. But if you
 looked at the <a href="https://rust-lang.org/">rust-lang.org</a> website before 2019, that might not make
-sense to you.</p>
+a lot of sense to you.</p>
 <div class="next-slide"><p>Next slide: Screenshot of <a href="https://rust-lang.org/">rust-lang.org</a> in 2018.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</div>
@@ -49,7 +49,7 @@ speed, and memory safety — all things I don't directly care about that much.</
 </div></section>
 <section class="image-slide"><div class="slide-wrapper">
 <img alt='A screenshot of the rust-lang.org website in mid-2020. The headline reads "A language empowering everyone to build reliable and efficient software." and sections under "Why Rust?" emphasize performance, reliability, and productivity.' src="img/rust-2020-07-19.png"/>
-<aside class="notes"><p> And here's the same website today in mid-2020. Now we're "empowering
+<aside class="notes"><p> And here's the same website today in mid-2020. Now Rust is about "empowering
 everyone" to and focusing on reliability and productivity. But a lot of the
 documentation has lagged behind and still assumes that new Rust programmers
 already know C++ or something similar.</p>
@@ -469,7 +469,7 @@ exception <code>E</code>.</p>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-rust left" data-noescape="">use <a href="https://docs.rs/std">std</a>::env;
+<pre><code class="language-rust no-line-numbers left" data-line-numbers="5-14" data-noescape="">use <a href="https://docs.rs/std">std</a>::env;
 
 fn main() {
     let user = env::var("USER");
@@ -529,7 +529,7 @@ it'll feel compared to the previous day.</p>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-python left">import json
+<pre><code class="language-python no-line-numbers left" data-line-numbers="1-12|5-7|8-11|12">import json
 
 import requests
 
@@ -545,8 +545,8 @@ with open("openweather_api.json") as f:
 <aside class="notes"><p> Weather APIs come and go, but right now
 <a href="https://openweathermap.org/">OpenWeather</a> is providing decent data for free — even if
 the default units are Kelvins.</p>
-<p>Here's a simple call of their API; we load the API key from a JSON file, we
-make a request, and then we print out the response text.</p>
+<p>Here's a simple call of their API; we 1. load the API key from a JSON file, 2.
+make a request, and then 3. print out the response text.</p>
 <p>Let's work on recreating this in Rust.</p>
 <div class="next-slide"><p>Next slide: Reading the API key from JSON.</p></div>
 </aside></div><div class="slide-footer">
@@ -1181,7 +1181,7 @@ Rust!</p>
 <script>
         Reveal.initialize({
             width: 960,
-            height: 540,
+            height: 580,
             hash: true,
             controls: false,
             progress: false,

@@ -384,7 +384,7 @@
 .reveal > .slides > section > .slide-footer {
   font-size: 0.8em;
   position: absolute;
-  bottom: 0;
+  bottom: 1.5em;
   width: 100%;
   text-align: center;
   display: flex;
