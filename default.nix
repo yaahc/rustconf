@@ -5,12 +5,16 @@ let
 
   dart-sass = stdenv.mkDerivation rec {
     pname = "dart-sass";
-    version = "1.26.8";
-    src = fetchzip {
-      sha256 = "0c3mj0imd2r8hdakqzwhdds95dm1kazb8p1lva9rrj63a2zrp9lj";
+    version = "1.26.10";
+    src = fetchzip (let
+      platform = if stdenv.isDarwin then "macos-x64" else "linux-x64";
       url =
-        "https://github.com/sass/${pname}/releases/download/${version}/${pname}-${version}-linux-x64.tar.gz";
-    };
+        "https://github.com/sass/${pname}/releases/download/${version}/${pname}-${version}-${platform}.tar.gz";
+      sha256 = if stdenv.isDarwin then
+        "1kjv3r0az4bq3hlvrjz0c0jybnqyw9v50kz9ag548x6yi4r99lxx"
+      else
+        "10jvyhx0a4k4i15ay45d9m90jvr9rjm1j640qca9xr88xkw8rv9f";
+    in { inherit url sha256; });
 
     installPhase = ''
       mkdir -p $out/bin/
@@ -26,24 +30,24 @@ let
 
       mkdir -p $out/share/dart-sass
       cp src/* $out/share/dart-sass
-
+    '' + (lib.optionalString (!stdenv.isDarwin) ''
       ${patchelf}/bin/patchelf \
         --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
         $out/share/dart-sass/dart
-    '';
+    '');
   };
 
   sfz = stdenv.mkDerivation rec {
     pname = "sfz";
-    version = "0.1.0";
+    version = "0.1.1";
 
     inherit (stdenv.targetPlatform) isDarwin;
 
     src = fetchzip {
       sha256 = if isDarwin then
-        "0ndmyibdzyab50l1rczskxyf73ar6c84wg60namspcmzd9xr823q"
+        "13b730a7bj3sqr9vh9rply2jyn13jwm7qxsgrdqr4iajr2shsy87"
       else
-        "1z26ls2jq6mg8xphy6kkxnlc6qzg8iqq4nxhgrd8181hiqs99ii1";
+        "1bz1gfgl2k5kkq4jhbix7cx20c8clvc3qwiikd16nfilm0fxhds3";
       url =
         let platform = if isDarwin then "apple-darwin" else "unknown-linux-gnu";
         in "https://github.com/weihanglo/${pname}/releases/download/${version}/${pname}-${version}-x86_64-${platform}.tar.gz";

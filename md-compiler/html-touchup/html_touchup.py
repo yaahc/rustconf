@@ -272,4 +272,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except BrokenPipeError as e:
+        # When md-compiler is killed by dev.py, stdout unexpectedly closes...
+        # We can't print an informative error, either.
+        pass

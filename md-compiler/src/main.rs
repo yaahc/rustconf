@@ -1,3 +1,5 @@
+#![allow(unused_imports)]
+
 use std::ffi::{OsStr, OsString};
 use std::fs::{self, File};
 use std::io::{self, BufReader, BufWriter, Read, Write};
@@ -7,7 +9,6 @@ use std::process::{Command, Stdio};
 
 use eyre::{eyre, WrapErr};
 use handlebars::Handlebars;
-use lol_html::{element, HtmlRewriter, OutputSink, Settings};
 use pulldown_cmark::{html, CowStr, Event, Options, Parser};
 use serde::Serialize;
 use structopt::StructOpt;
