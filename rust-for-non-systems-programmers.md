@@ -27,7 +27,7 @@ Next slide: Why this talk?
 
 Notes: I'm a non-systems programmer, and I really like Rust. But if you
 looked at the [rust-lang.org] website before 2019, that might not make
-sense to you.
+a lot of sense to you.
 
 Next slide: Screenshot of [rust-lang.org] in 2018.
 
@@ -59,7 +59,7 @@ Next slide: Compare that with the new website.
 and sections under "Why Rust?" emphasize performance, reliability, and
 productivity.](img/rust-2020-07-19.png)
 
-Notes: And here's the same website today in mid-2020. Now we're "empowering
+Notes: And here's the same website today in mid-2020. Now Rust is about "empowering
 everyone" to and focusing on reliability and productivity. But a lot of the
 documentation has lagged behind and still assumes that new Rust programmers
 already know C++ or something similar.
@@ -480,7 +480,7 @@ Next slide: gracefully handling errors with `match`.
 
 ---
 
-```rust
+```rust no-line-numbers [5-14]
 use std::env;
 
 fn main() {
@@ -546,7 +546,7 @@ Next slide: Minimal API call with OpenWeather.
 
 ---
 
-```python
+```python no-line-numbers [1-12|5-7|8-11|12]
 import json
 
 import requests
@@ -567,8 +567,8 @@ Notes: Weather APIs come and go, but right now
 [OpenWeather][openweathermap.org] is providing decent data for free --- even if
 the default units are Kelvins.
 
-Here's a simple call of their API; we load the API key from a JSON file, we
-make a request, and then we print out the response text.
+Here's a simple call of their API; we 1. load the API key from a JSON file, 2.
+make a request, and then 3. print out the response text.
 
 Let's work on recreating this in Rust.
 
