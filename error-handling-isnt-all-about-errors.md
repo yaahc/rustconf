@@ -11,7 +11,7 @@ Notes: Hello and welcome to my talk, error handling isn't all about errors.
 Next slide: Let me start by introducing myself...
 
 <slide-footer>
-<left>Jane Lusby</left>
+<left>Jane Lusby (she/her)</left>
 <right>
 <fab fa-twitter> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </right>
@@ -36,39 +36,166 @@ I wrote for work but I wasn't happy with the error handling and decided to
 fix it up first.
 
 That yak shave ended with me writing eyre, a fork of anyhow with support for
-customized error report hooks, and color-eyre, which provides a custom panic
-hook and a custom eyre report hook and lets you construct error reports like
-this.
+customized error reports via a global hook, similar to panic hooks, and
+color-eyre, a library which provides custom error and panic report hooks that
+let you construct error reports like this.
+
+too fast in the beginning
+Remember to breathe
+show go and cpp original code
+pause between unrecoverable and recoverable bullet lists
+more on the application vs library
+Fill out script for all slides
+Transition from the command -> the libraries section
+polish the entire libraries section
+
 
 Next slide: Show the various usage examples from `color-eyre`.
 
 ---
 
 <pre class=term><font color="#CC0000"><b>❯</b></font> cargo run --example usage
+<font color="#333333">Error:
+   0: Unable to read config
+   1: No such file or directory (os error 2)
+
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ SPANTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   0: usage::read_file with path=&quot;fake_file&quot;
+      at examples/usage.rs:32
+   1: usage::read_config
+      at examples/usage.rs:38
+
+Suggestion: try using a file that exists next time
+
+Backtrace omitted.
+Run with RUST_BACKTRACE=1 environment variable to display it.
+Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
+
+Notes: this is the basic usage example, with an error section, a spantrace
+section which, if you're not familiar with tracing is this extremely cool
+backtrace-like type of tracing spans..., a suggestion, and an env setting
+section.
+
+---
+
+<pre class=term><font color="#333333"><b>❯</b> cargo run --example usage</font>
 Error:
    0: <font color="#F15D22">Unable to read config</font>
    1: <font color="#F15D22">No such file or directory (os error 2)</font>
+<font color="#333333">
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ SPANTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+   0: usage::read_file with path=&quot;fake_file&quot;
+      at examples/usage.rs:32
+   1: usage::read_config
+      at examples/usage.rs:38
+
+Suggestion: try using a file that exists next time
+
+Backtrace omitted.
+Run with RUST_BACKTRACE=1 environment variable to display it.
+Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
+
+Notes: this is the basic usage example, with an error section, a spantrace
+section which, if you're not familiar with tracing is this extremely cool
+backtrace-like type of tracing spans..., a suggestion, and an env setting
+section.
+
+---
+
+<pre class=term><font color="#333333"><b>❯</b> cargo run --example usage
+Error:
+   0: Unable to read config
+   1: No such file or directory (os error 2)
+</font>
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━ SPANTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
    0: <font color="#F15D22">usage::read_file</font> with <font color="#34E2E2">path=&quot;fake_file&quot;</font>
       at <font color="#75507B">examples/usage.rs</font>:<font color="#75507B">32</font>
    1: <font color="#F15D22">usage::read_config</font>
       at <font color="#75507B">examples/usage.rs</font>:<font color="#75507B">38</font>
+<font color="#333333">
+Suggestion: try using a file that exists next time
 
+Backtrace omitted.
+Run with RUST_BACKTRACE=1 environment variable to display it.
+Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
+
+---
+
+<pre class=term><font color="#333333"><b>❯</b> cargo run --example usage
+Error:
+   0: Unable to read config
+   1: No such file or directory (os error 2)
+
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ SPANTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   0: usage::read_file with path=&quot;fake_file&quot;
+      at examples/usage.rs:32
+   1: usage::read_config
+      at examples/usage.rs:38
+</font>
 <font color="#34E2E2">Suggestion</font>: try using a file that exists next time
+<font color="#333333">
+Backtrace omitted.
+Run with RUST_BACKTRACE=1 environment variable to display it.
+Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
 
+Notes: this is the basic usage example, with an error section, a spantrace
+section which, if you're not familiar with tracing is this extremely cool
+backtrace-like type of tracing spans..., a suggestion, and an env setting
+section.
+
+---
+
+<pre class=term><font color="#333333"><b>❯</b> cargo run --example usage
+Error:
+   0: Unable to read config
+   1: No such file or directory (os error 2)
+
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ SPANTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   0: usage::read_file with path=&quot;fake_file&quot;
+      at examples/usage.rs:32
+   1: usage::read_config
+      at examples/usage.rs:38
+
+Suggestion: try using a file that exists next time
+</font>
 Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</pre>
 
-Notes: this is the basic usage example, with an error section, a spantrace section which, if you're not familiar with tracing is this extremely cool backtrace-like type of tracing spans..., a suggestion, and an env setting section.
+Notes: this is the basic usage example, with an error section, a spantrace
+section which, if you're not familiar with tracing is this extremely cool
+backtrace-like type of tracing spans..., a suggestion, and an env setting
+section.
 
 ---
 
-
-<pre class=term><font color="#CC0000"><b>❯</b></font> RUST_BACKTRACE=1 cargo run --example usage
+<pre class=term><b>❯</b> RUST_BACKTRACE=1 <font color="#333333">cargo run --example usage
 // ...
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ BACKTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                         ⋮ 5 frames hidden ⋮
+   6: usage::read_file::h10b2389c2b814452
+      at /home/jlusby/git/yaahc/color-eyre/examples/usage.rs:35
+   7: usage::read_config::hf7150b146edb25d9
+      at /home/jlusby/git/yaahc/color-eyre/examples/usage.rs:40
+   8: usage::main::hc3df11a6ea0d044d
+      at /home/jlusby/git/yaahc/color-eyre/examples/usage.rs:11
+                        ⋮ 10 frames hidden ⋮
+// ...
+Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
+
+Notes: we can pretty print backtraces and hide unimportant frames, here you can see...
+
+Next slide: we can also filter our backtrace frames, note that here there are 10 frames hidden after main...
+
+---
+
+<pre class=term><b>❯</b> <font color="#333333">RUST_BACKTRACE=1 cargo run --example usage
+// ...</font>
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━ BACKTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
   <font color="#34E2E2">                       ⋮ 5 frames hidden ⋮                       </font>
    6: <font color="#F15D22">usage::read_file</font><font color="#88807C">::h10b2389c2b814452</font>
@@ -78,8 +205,8 @@ Notes: this is the basic usage example, with an error section, a spantrace secti
    8: <font color="#F15D22">usage::main</font><font color="#88807C">::hc3df11a6ea0d044d</font>
       at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/usage.rs</font>:<font color="#75507B">11</font>
   <font color="#34E2E2">                      ⋮ 10 frames hidden ⋮                       </font>
-// ...
-Run with RUST_BACKTRACE=full to include source snippets.</pre>
+<font color="#333333">// ...
+Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
 
 Notes: we can pretty print backtraces and hide unimportant frames, here you can see...
 
@@ -87,8 +214,28 @@ Next slide: we can also filter our backtrace frames, note that here there are 10
 
 ---
 
-<pre class=term><font color="#CC0000"><b>❯</b></font> RUST_BACKTRACE=1 cargo run --example custom_filter
-// ...
+<pre class=term><font color="#CC0000"><b>❯</b></font> RUST_BACKTRACE=1 cargo run --example panic_hook --no-default-features
+<font color="#CC0000">The application panicked (crashed).</font>
+Message:  <font color="#06989A">No such file or directory (os error 2)</font>
+Location: <font color="#75507B">examples/panic_hook.rs</font>:<font color="#75507B">37</font>
+
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ BACKTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  <font color="#34E2E2">                      ⋮ 13 frames hidden ⋮                       </font>
+  14: <font color="#F15D22">panic_hook::read_file</font><font color="#88807C">::h1a2c1d2710c16ca9</font>
+      at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/panic_hook.rs</font>:<font color="#75507B">37</font>
+  15: <font color="#F15D22">panic_hook::read_config</font><font color="#88807C">::h2751dcca3305a9a3</font>
+      at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/panic_hook.rs</font>:<font color="#75507B">43</font>
+  16: <font color="#F15D22">panic_hook::main</font><font color="#88807C">::h3197dc34c9c69f83</font>
+      at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/panic_hook.rs</font>:<font color="#75507B">11</font>
+  <font color="#34E2E2">                      ⋮ 10 frames hidden ⋮                       </font>
+
+Run with COLORBT_SHOW_HIDDEN=1 environment variable to disable frame filtering.
+Run with RUST_BACKTRACE=full to include source snippets.</pre>
+
+---
+
+<pre class=term><font color="#333333"><b>❯</b> RUST_BACKTRACE=1 cargo run --example custom_filter
+// ...</font>
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━ BACKTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
   <font color="#34E2E2">                       ⋮ 5 frames hidden ⋮                       </font>
    6: <font color="#F15D22">custom_filter::read_file</font><font color="#88807C">::h0afee8fe0960bf02</font>
@@ -96,27 +243,34 @@ Next slide: we can also filter our backtrace frames, note that here there are 10
    7: <font color="#F15D22">custom_filter::read_config</font><font color="#88807C">::h6622065848c69b29</font>
       at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/custom_filter.rs</font>:<font color="#75507B">58</font>
   <font color="#34E2E2">                      ⋮ 11 frames hidden ⋮                       </font>
-// ...
-Run with RUST_BACKTRACE=full to include source snippets.</pre>
+<font color="#333333">// ...
+Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
+
+Notes: And we can apply this custom filtering consistently to backtraces
+printed in both our panic reports and our error reports.
 
 ---
 
-<pre class=term><font color="#CC0000"><b>❯</b></font> cargo run --example custom_section
+<pre class=term><font color="#333333"><b>❯</b> cargo run --example custom_section
 Error:
-   0: <font color="#F15D22">Unable to read config</font>
-   1: <font color="#F15D22">cmd exited with non-zero status code</font>
+   0: the cat could not be got
+   1: cmd exited unsuccessfully
+</font>
+Command:
+   &quot;git&quot; &quot;cat&quot;
 
 Stderr:
-   cat: fake_file: No such file or directory
+   git: &apos;cat&apos; is not a git command. See &apos;git --help&apos;.
 
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ SPANTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   The most similar commands are
+   	clean
+   	mktag
+   	stage
+   	stash
+   	tag
+   	var
 
-   0: <font color="#F15D22">custom_section::output2</font> with <font color="#34E2E2">self=&quot;cat&quot; &quot;fake_file&quot;</font>
-      at <font color="#75507B">examples/custom_section.rs</font>:<font color="#75507B">14</font>
-   1: <font color="#F15D22">custom_section::read_file</font> with <font color="#34E2E2">path=&quot;fake_file&quot;</font>
-      at <font color="#75507B">examples/custom_section.rs</font>:<font color="#75507B">58</font>
-   2: <font color="#F15D22">custom_section::read_config</font>
-      at <font color="#75507B">examples/custom_section.rs</font>:<font color="#75507B">63</font></pre>
+<font color="#333333">Suggestion: Maybe that isn&apos;t what git is for...</font></pre>
 
 Notes: We can add custom sections, here you can see I've added the section
 for Stderr
@@ -141,22 +295,6 @@ Error:
    0: <font color="#F15D22">The file could not be parsed</font>
    1: <font color="#F15D22">The file you&apos;re parsing is literally written in c++ instead of rust, what the hell</font></pre>
 
----
-
-<pre class=term><font color="#CC0000"><b>❯</b></font> cargo run --example panic_hook
-<font color="#CC0000">The application panicked (crashed).</font>
-Message:  <font color="#06989A">some real basic stuff went wrong</font>
-Location: <font color="#75507B">examples/panic_hook.rs</font>:<font color="#75507B">14</font>
-
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ SPANTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-   0: <font color="#F15D22">panic_hook::do_thing</font> with <font color="#34E2E2">thing=42</font>
-      at <font color="#75507B">examples/panic_hook.rs</font>:<font color="#75507B">12</font>
-
-Backtrace omitted.
-Run with RUST_BACKTRACE=1 environment variable to display it.
-Run with RUST_BACKTRACE=full to include source snippets.</pre>
-
 Notes: And we can be consistent when reporting, here you can see a panic
 that produces almost identical output to our Eyre Reports.
 
@@ -180,18 +318,27 @@ error handling and error reporting.
 - Reporting errors and gathered context
 
 
-Notes: A lot of things, when you zoom in close
+Notes: Show the `annoying` bullet at the end of saying "What is error handling?".
 
 don't mention the annoying, just keep going
 
-The breakdown here gets to the goal of my talk. I have a theory that
-error handling is made more confusing by people try to simplify it, because,
-among other things, error handling is annoying. I worry that the fuzziness
-between these different responsibilities makes it hard for people to infer
-what tools they should be using when "handling errors". My hope is that by breaking error handling into it's component parts we can make it easier to understand and explain.
+It's lot of things, when you zoom in close. Error handling is defining errors.
+It's propagating errors and gathering context, and context I mean stuff like
+the path you tried to open or a backtrace showing where your error came from.
+It's reacting to specific errors, if the file isn't found, create the file.
+It's discarding errors, and doing so intentionally and visibly. And last but
+not least, it's reporting errors and the gathered context.
 
-Next slide: So let's start with the fundamentals. Note, this first bit is taken almost word for word from The Rust Book's chapter on error handling.
+Now, this breakdown gets to the goal of my talk. I have a theory that error
+handling is made more confusing by people try to simplify it, because, among
+other things, error handling is annoying. I worry that the fuzziness between
+these different responsibilities makes it hard for people to infer what tools
+they should be using when "handling errors". My hope is that by breaking
+error handling into it's component parts we can make it easier to understand
+and explain.
 
+Next slide: So let's start with the fundamentals. Note, this first bit is
+taken almost word for word from The Rust Book's chapter on error handling.
 
 ---
 
@@ -201,9 +348,11 @@ Next slide: So let's start with the fundamentals. Note, this first bit is taken 
 
 Notes: The Rust model for errors distinguishes between two classes of errors.
 
-Recoverable errors are errors you can reasonably expect to occur during execution of..., can be reacted to, or reported.
+Recoverable errors are errors you can reasonably expect to occur during
+execution of..., can be reacted to, or reported.
 
-Unrecoverable errors are bugs, like index out of bounds. can’t be reacted to, only reported before exiting the program / thread
+Unrecoverable errors are bugs, like index out of bounds. can’t be reacted to,
+only reported before exiting the program / thread
 
 Most languages dont distinguish between these kinds of errors
 
@@ -228,7 +377,8 @@ Rust has panic for unrecoverable errors and result recoverable errors
 }
 ```
 
-Notes: Unrecoverable errors in rust are created via the `panic!` macro. Here we can see an example of an index out of bounds error.
+Notes: Unrecoverable errors in rust are created via the `panic!` macro. Here
+we can see an example of an index out of bounds error.
 
 Next slide: Only input is an error message and optional some context
 
@@ -249,7 +399,8 @@ Next slide: Only input is an error message and optional some context
 
 Notes: Reporting and default context gathering done by panic hook
 
-once its done printing the report the panic handler cleans up either by unwinding or aborting
+once its done printing the report the panic handler cleans up either by
+unwinding the thread's stack or aborting the application all together.
 
 Next slide: Recoverable errors are modeled in rust with the enum `Result<T, E>`.
 
@@ -257,7 +408,7 @@ Next slide: Recoverable errors are modeled in rust with the enum `Result<T, E>`.
 
 ## Result
 
-```rust [1-6|2-3|4-5]
+```rust [1-6|2-3|4-5|1-6]
 enum Result<T, E> {
     /// Contains the success value
     Ok(T),
@@ -266,13 +417,15 @@ enum Result<T, E> {
 }
 ```
 
-Notes: This enum has two variants,
+Notes: This enum has two variants, Ok, which contains the value of an
+operation when it completes successfully, and Err, which contains the error
+value of an operation when it could _not_ be completed successfully.
 
-This is used to combine two return types in one and assign meaning to each possibility.
+We use Result to combine two return types in one and assign meaning to each
+possibility.
 
-This enum concisely describes whether and how errors are returned.
-
-Next slide: The big advantage of using enums is we must handle all errors.
+Next slide: The big advantage of using enums for recoverable errors is we
+must react all errors.
 
 ---
 
@@ -285,7 +438,24 @@ match result {
 }
 ```
 
-Notes: Next slide: next is the try trait and operator...
+Notes: With an enum, we cannot access the inner value without first
+accounting for all the variants it could possibly be. In addition to this,
+Rust has marked the Result enum as `#[must_use]`, which makes the compiler
+emit a warning whenever a result is discarded accidentally.
+
+Next slide: For recoverable errors rust also provides the currently unstable
+Try trait and the already stable try operator...
+
+---
+
+## Try and `?`
+
+Notes: The try trait is used to model fallible return types in rust. Indeed,
+Result is type that implements the Try trait, as does Option, and other some
+combinations thereof.
+
+Next slide: With the try trait rust is able to abstract the "propogation of
+errors" with the try operator.
 
 ---
 
@@ -302,13 +472,11 @@ let config = match get_config() {
 let config = get_config()?;
 ```
 
-Notes: The unstable try trait models fallible operations and is currently used to define how to convert a type to and from a Result.
+Notes: Here we see two equivalent code snippets. The first manually
+propagates the error using match and return. The second does the same by
+simply using the try operator to propagate the error.
 
-Indeed, Result is type that implements the Try trait, as does Option, and other some combinations thereof.
-
-Abstraction over error propagation
-
-Next slide: Next up is the error trait.
+Next slide: Finally, for recoverable errors rust also provides the error trait.
 
 ---
 
@@ -317,16 +485,20 @@ Next slide: Next up is the error trait.
 <list fragments>
 
 - Representing an open set of errors
-- Reacting to specific errors in an open set.
+- Reacting to specific errors in an open set
 - Reporting Interface for all errors
 
-Notes: fills three roles
+Notes: The error trait fills three roles in rust.
 
-Represent them by converting them to a trait object.
+First, it lets us represent an open set of errors by converting any type that
+implements the error trait into an error trait object.
 
-You can then later react to specific errors by downcasting back to the original type, rather than using match as you would with enums.
+Second, it lets us then react to specific errors by letting us try to downcast them
+back to their original type safely, rather than using match as we would with enums.
 
-Next slide: Now, what do I mean by this?
+Finally, it provides a reporting interface for all errors.
+
+Next slide: Now, what do I mean by reporting interface?
 
 ---
 
@@ -338,7 +510,8 @@ Next slide: Now, what do I mean by this?
 - Cause via `source()`
 - Error Message via `Display`
 
-Notes: The error trait is how reporters access context that was captured for them.
+Notes: The error trait is how reporters access context that was captured for
+them.
 
 This includes...
 
@@ -348,8 +521,8 @@ This includes...
 
 # The error trait provides an interface _for_ reporters.
 
-Next slide: In other languages there is no distinction between errors and
-reporters, and this is largely due the lack of an equivalent to the Error
+Notes: Next slide: In other languages there is no distinction between errors
+and reporters, and this is largely due the lack of an equivalent to the Error
 Trait.
 
 ---
@@ -366,7 +539,8 @@ trait CppError {
 }
 ```
 
-Notes: The error trait equivalent in other languages is often quite simple, just a single fn to grab the error message.
+Notes: The error trait equivalent in other languages is often quite simple,
+just a single fn to grab the error message.
 
 These interfaces force you to either include your source error, your
 backtrace, and any other information you care about in your error message or
@@ -407,7 +581,8 @@ screen as many.
 
 This wouldn't be possible if the error trait didn't separate context from errors.
 
-Next slide: However, despite the fact that the error trait in rust is more flexible than most other languages, it is still restrictive in some ways.
+Next slide: However, despite the fact that the error trait in rust is more
+flexible than most other languages, it is still restrictive in some ways.
 
 ---
 
@@ -418,7 +593,8 @@ Next slide: However, despite the fact that the error trait in rust is more flexi
 - Can only represent errors with a single source
 - Can only access 3 forms of context
 
-Notes: Can't return types like SpanTrace without using hacks based on downcast to work around the error trait.
+Notes: Can't return types like SpanTrace without using hacks based on
+downcast to work around the error trait.
 
 Error return traces
 
@@ -473,7 +649,13 @@ Unrecoverable
 
 </div>
 
-Notes: Okay so now we’ve covered the fundamentals, you know how to handle errors of both types, so let’s get back and start digging into the differences between errors, context, and reports.
+Notes: Okay so now we’ve covered the fundamentals, you know all the tools the
+language and standard library give you to work with different kinds of
+errors.
+
+Next slide: So next let’s dig into my favorite part of error handling, error
+reporting, and how it fits into the bigger picture, starting with some
+definitions...
 
 ---
 
@@ -485,15 +667,17 @@ Notes: Okay so now we’ve covered the fundamentals, you know how to handle erro
 - **Context**: Any information relevant to an error or an error report that is not itself an error
 - **Error Report**: Printed representation of an error and all of its associated context
 
-Notes: This is in the context of reporting, we will no longer talk about handling.
+Notes: In the context of error reporting an error is ..., context is ..., and an error report is the ...
 
-This gets to the other goal of this talk, clarifying the relationship and
-difference between errors and context. Errors describe what went wrong,
-context helps you figure out the why, and it's my opinion that keeping these
-two concepts in mind is very important when designing your error reporting.
+This gets to the other goal of this talk, clarifying the relationship between
+errors and context. Errors describe what went wrong, context helps you figure
+out why, and it's my opinion that keeping these two concepts separate leads
+to more readable error reports and that adding just a little context can take
+your error reports from somewhat servicable to oddly satisfying.
 
-How about an example? Let's dig into error reporting by recreating the
-custom_section example from the beginning of the talk. NEXT SLIDE
+I think the best way to explain what I mean will be with an example, so let's
+dig into error reporting by recreating the custom_section example from the
+beginning of the talk. NEXT SLIDE
 
 ---
 
@@ -509,10 +693,10 @@ impl CommandExt for std::process::Command {
         let stdout = String::from_utf8_lossy(&output.stdout)
             .into_owned();
 
-        if !output.status.success() {
-            Err(eyre!("command exited unsuccessfully"))
-        } else {
+        if output.status.success() {
             Ok(stdout)
+        } else {
+            Err(eyre!("command exited unsuccessfully"))
         }
     }
 }
@@ -521,6 +705,7 @@ impl CommandExt for std::process::Command {
 Notes: lets start with a customized version of `Command::output` that reports
 better errors and converts stdout to a String on success.
 
+Next slide: lets run it...
 
 ---
 
@@ -528,30 +713,36 @@ better errors and converts stdout to a String on success.
 Error:
    0: <font color="#F15D22">command exited unsuccessfully</font></pre>
 
-Notes: This is an Error.
-
-okay, thats not very helpful, also I didn't even tell you what command I was running
+Notes: We got our error report with our error message, cool! But also not
+very helpful, I didn't even tell you what command I was running. Lets figure
+that out next.
 
 ---
 
-```rust [8|11]
+```rust [10|13]
 impl CommandExt for std::process::Command {
     fn output2(&mut self) -> Result<String, eyre::Report> {
         let output = self.output()?;
 
         let stdout = String::from_utf8_lossy(&output.stdout).into_owned();
 
-        if !output.status.success() {
+        if output.status.success() {
+            Ok(stdout)
+        } else {
             let cmd = format!("{:?}", self);
 
             Err(eyre!("command exited unsuccessfully"))
                 .section(cmd.header("Command:"))
-        } else {
-            Ok(stdout)
         }
     }
 }
 ```
+
+Notes: Header takes a type that implements display and prefixes the header
+before printing it, and section takes a type that implements display and
+prints it after the chain of errors.
+
+Next slide: so lets see how this changes things...
 
 ---
 
@@ -563,9 +754,14 @@ Command:
    &quot;git&quot; &quot;cat&quot;</pre>
 
 
-Notes: Here we can see why the command failed, cat isn't a real git command! It would be cool if it was though.
+Notes: Here we can see why the command failed, cat isn't a real git command!
+It would be cool if it was though.
 
 This is context, and the whole thing is a report.
+
+Next slide: Now, this error isn't very descriptive. Sure, it describes what
+went wrong, but it is far too generic. Let's go ahead and define a new error
+with a more descriptive error message to wrap our source error.
 
 ---
 
@@ -590,18 +786,23 @@ fn main() -> Result<(), eyre::Report> {
 
     let _ = std::process::Command::new("git")
         .arg("cat")
-        .output2()?
-        .wrap_err("cat could not be got")?;
+        .output2()
+        .wrap_err("the cat could not be got")?;
 
     Ok(())
 }
 ```
 
+Notes: This function takes a Result and an arg that implements Display, and
+if the Result is the `Err` variant it creates a new error, using the arg as
+the error message and the old error as the source. It then returns this new
+error as an eyre::Report.
+
 ---
 
 <pre class=term><font color="#CC0000"><b>❯</b></font> cargo run
 Error:
-   0: <font color="#F15D22">cat could not be got</font>
+   0: <font color="#F15D22">the cat could not be got</font>
    1: <font color="#F15D22">command exited unsuccessfully</font>
 
 Command:
@@ -611,23 +812,21 @@ Command:
 
 ---
 
-```rust [9|13-14]
-impl CommandExt for std::process::Command {
-    fn output2(&mut self) -> Result<String, eyre::Report> {
-        let output = self.output()?;
+```rust [7-9|13-14]
+        let stdout = String...
 
-        let stdout = String::from_utf8_lossy(&output.stdout).into_owned();
-
-        if !output.status.success() {
+        if output.status.success() {
+            Ok(stdout)
+        } else {
             let cmd = format!("{:?}", self);
-            let stderr = String::from_utf8_lossy(&output.stderr).into_owned();
+            let stderr =
+                String::from_utf8_lossy(&output.stderr)
+                    .into_owned();
 
             Err(eyre!("command exited unsuccessfully"))
                 .section(cmd.header("Command:"))
                 .section(stdout.header("Stdout:"))
                 .section(stderr.header("Stderr:"))
-        } else {
-            Ok(stdout)
         }
     }
 }
@@ -637,7 +836,7 @@ impl CommandExt for std::process::Command {
 
 <pre class=term><font color="#4E9A06"><b>❯</b></font> cargo run
 Error:
-   0: <font color="#F15D22">cat could not be got</font>
+   0: <font color="#F15D22">the cat could not be got</font>
    1: <font color="#F15D22">command exited unsuccessfully</font>
 
 Command:
@@ -655,9 +854,15 @@ Stderr:
    	var</pre>
 
 Notes: And finally we have an error report including all the context we need
-to pinpoint what went wrong.
+to pinpoint what went wrong _and_ why.
 
-Hopefully this makes it clear how benefitial it can be to keep errors and context separate.
+Hopefully this makes it clear how benefitial just a little context can be for
+error reports.
+
+Next slide: so by now you should know all the tools built into the language,
+and have an idea of how to combine them to write error reports. So lets look
+at the ecosystem at large to see what open source libraries we can use to
+help us with these 5 forms of error handling.
 
 ---
 
@@ -849,6 +1054,35 @@ let foo_error = report.downcast_ref::<FooError>().unwrap();
 
 - Library => error defining libraries
 - Application => adhoc error defining + error reporting libraries
+
+Notes: What parts of error handling do you need as a library developer? You
+probably don't know, because you're not the one handling errors as a library
+developer. Libraries usually create and return errors for applications to
+react to or report. This means we need errors that are maximally flexible, so
+we need something users can match and react too, that means either an enum or
+a dyn Error with downcast. We also want an error that can be wrapped by other
+errors easily, which means we want to impl the Error trait on our error type,
+so that rules out `Box<dyn Error>`, finally we want to be able to report it,
+so we should impl the Error trait. All of this means we need to define
+errors, which we can do with types and traits, either by hand or with helper
+libraries like `thiserror` or `SNAFU`.
+
+I tend to go with the implemented by hand option in libraries that I expect
+other ppl to use, because proc macros can add a lot of time to your build,
+but in my applications I tend to use thiserror for convenience.
+
+So what does that mean for applications? We need to be able to handle lots of
+error types, so we probably want open set error handling, that means box<dyn
+Error> or a reporter like `eyre` or `anyhow`. We also need to be able to
+create errors that we handle, if they're handled immediately we probably
+don't need to introduce much at all, we could just impl an enum and handle it
+and not bother with the error trait or anything. If we need to create an
+error that will just be reported we don't need types or handling, so we can
+use ad-hoc error construction, which makes reporters a better option than a
+simple Box. And we probably need more tools for debugging our errors, so we
+want a featureful error reporter that captures enough context to help us
+debug our applications, so we might want a custom report hook like
+`color-eyre` and maybe some tracing integration with `tracing-error`.
 
 ---
 
