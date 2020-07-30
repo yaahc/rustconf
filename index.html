@@ -273,7 +273,7 @@ Ruby, it's out of scope here.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="30"><div class="slide-wrapper">
 <h2>Who is this talk for?</h2>
 
 <ul>
@@ -302,7 +302,7 @@ of working in those languages.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section class="title-card" data-state="peach"><div class="slide-wrapper">
+<section class="title-card" data-state="peach" data-timing="45"><div class="slide-wrapper">
 <h2>Why do I like Rust?</h2>
 <aside class="notes"><p> I have ADHD, and it varies from person to person but one area I really
 struggle with is <a href="https://en.wikipedia.org/wiki/Working_memory"><em>working memory</em></a>, which is roughly how much
@@ -326,7 +326,7 @@ what I think they do.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="60"><div class="slide-wrapper">
 <h2>Tooling</h2>
 
 <ul>
@@ -358,7 +358,7 @@ package repository.</li>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section class="image-slide"><div class="slide-wrapper">
+<section class="image-slide" data-timing="45"><div class="slide-wrapper">
 <h2>Documentation</h2>
 <div class="r-stack">
 <iframe class="main" data-fragment-index="0" importance="low" loading="lazy" src="https://docs.rs/rand/0.7.3/rand/"></iframe>
@@ -391,7 +391,7 @@ check out the documentation for <code>RngCore</code>.</li>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="80"><div class="slide-wrapper">
 <h2>Getting started</h2>
 <pre><code class="language-rust no-line-numbers" data-line-numbers="1-10|1|3-10|4|5-9|5|8" data-noescape="">use <a href="https://docs.rs/std">std</a>::env;
 
@@ -443,12 +443,14 @@ instructions at compile time so we don't waste time parsing at runtime.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section class="center"><div class="slide-wrapper">
+<section class="center" data-timing="5"><div class="slide-wrapper">
 <pre><code class="language-shell-session left">$ cargo build
    Compiling rustconf-code v0.1.0 (~/rustconf/rustconf-code)
     Finished dev [unoptimized + debuginfo] target(s) in 0.17s
 </code></pre>
 <aside class="notes"><p> We can run <code>cargo build</code> to compile the program.</p>
+<!-- `cargo build` writes output to `target/debug`, so we can run our program from -->
+<!-- there. We can also use `cargo run` to compile and immediately run a program. -->
 <div class="next-slide"><p>Next slide: running the program.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
@@ -460,7 +462,7 @@ instructions at compile time so we don't waste time parsing at runtime.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section class="center"><div class="slide-wrapper">
+<section class="center" data-timing="5"><div class="slide-wrapper">
 <pre><code class="language-shell-session">$ ./target/debug/rustconf-code
 Hello, Rebecca!
 $ USER=nell ./target/debug/rustconf-code
@@ -478,7 +480,7 @@ Hello, nell!
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section class="center"><div class="slide-wrapper">
+<section class="center" data-timing="15"><div class="slide-wrapper">
 <pre><code class="language-shell-session no-line-numbers left" data-line-numbers="1-2|3-7">$ env USER= ./target/debug/rustconf-code
 Hello, !
 $ env USER="$(printf '\xc3\x28')" ./target/debug/rustconf-code
@@ -487,8 +489,9 @@ thread 'main' panicked at 'called `Result::unwrap()` on an
 note: run with `RUST_BACKTRACE=1` environment variable to display
 a backtrace
 </code></pre>
-<aside class="notes"><p> …although, we might not really expect an empty variable.</p>
-<p>Also, invalid UTF-8 will crash the whole program.</p>
+<aside class="notes"><p> …although, if the <code>USER</code> environment variable is empty, it might be a
+bit confusing, and if <code>USER</code> contains invalid UTF-8, it'll crash the whole
+program.</p>
 <div class="next-slide"><p>Next slide: The <code>Result</code> type.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
@@ -500,18 +503,16 @@ a backtrace
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section class="center"><div class="slide-wrapper">
+<section class="center" data-timing="25"><div class="slide-wrapper">
 <pre><code class="language-rust" data-noescape="">enum Result&lt;T, E&gt; {
     Ok(T),
     Err(E),
 }
 </code></pre>
-<aside class="notes"><p> <code>Result</code> is an <code>enum</code> — what functional programmers call a sum type.
-While a tuple has a value from any number of different types at the same time, a
-sum type has a value from <em>one</em> of a number of different types.</p>
-<p><code>Result</code> is generic, so for any types <code>T</code> and <code>E</code>, we have a type <code>Result&lt;T, E&gt;</code> which can be <em>either</em> an <code>Ok</code> value of type <code>T</code> or an <code>Err</code> value of type
-<code>E</code>; that's pretty much equivalent to a function returning <code>T</code> or throwing an
-exception <code>E</code>.</p>
+<aside class="notes"><p> <code>Result</code> is an <code>enum</code>, which is a type that can be <em>one</em> of a number of
+different things. It's also a generic type, so we can pick any two types <code>T</code>
+and <code>E</code> and use a <code>Result</code> type which can be either an <code>Ok</code> variant containing
+a <code>T</code> value or an <code>Err</code> variant containing an <code>E</code> value.</p>
 <div class="next-slide"><p>Next slide: gracefully handling errors with <code>match</code>.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
@@ -523,7 +524,7 @@ exception <code>E</code>.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="20"><div class="slide-wrapper">
 <pre><code class="language-rust no-line-numbers left" data-line-numbers="5-14" data-noescape="">use <a href="https://docs.rs/std">std</a>::env;
 
 fn main() {
@@ -540,9 +541,9 @@ fn main() {
     }
 }
 </code></pre>
-<aside class="notes"><p> One way we can deal with that error is by matching on it, which is a
-little bit like a type-safe <code>isinstance</code> check. Here, we just handle an error
-by printing a simple message.</p>
+<aside class="notes"><p> One way we can deal with that error is by matching on it, which is a bit
+like an <code>isinstance</code> check. Here, we'll just handle an error by printing a
+simple message.</p>
 <div class="next-slide"><p>Next slide: showing what happens when we run it.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
@@ -554,14 +555,14 @@ by printing a simple message.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section class="center"><div class="slide-wrapper">
+<section class="center" data-timing="30"><div class="slide-wrapper">
 <pre><code class="language-shell-session left">$ env USER="$(printf '\xc3\x28')" ./target/debug/rustconf-code
 I couldn't figure out who you are!
 </code></pre>
-<aside class="notes"><p> Now, when we run our program, we print an error message instead of
-crashing. We'll talk about some other ways to handle errors as we go, but for the
-definitive rundown check out Jane Ludsby's talk <a href="https://rustconf.com/schedule/error-handling-isn-t-all-about-errors">"Error Handling Isn't All
-About Errors"</a>.</p>
+<aside class="notes"><p> Now, when we run our program with invalid data, we print an error
+message instead of crashing. We'll talk about some other ways to handle errors
+as we go, but for the definitive rundown check out Jane Ludsby's talk <a href="https://rustconf.com/schedule/error-handling-isn-t-all-about-errors">"Error
+Handling Isn't All About Errors"</a>.</p>
 <p>But this talk is about Rust's value as a practical programming language,
 which means doing more than writing "Hello, world!"s. So lets write a program
 in Rust and explore some of the ways the language helps us out.</p>
@@ -576,7 +577,7 @@ in Rust and explore some of the ways the language helps us out.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section class="image-slide"><div class="slide-wrapper">
+<section class="image-slide" data-timing="25"><div class="slide-wrapper">
 <img alt='A Star TSP100 Eco futurePRNT 72mm receipt printer, powered on with a printed receipt showing the RustConf homepage reading "Beaming to screens across the globe"' src="img/receipt-printer.jpg"/>
 <aside class="notes"><p> I have this receipt printer hooked up to my computer, and it's super fun
 to play with — there's no ink, so paper is incredibly cheap, and they're
@@ -595,7 +596,7 @@ it'll feel compared to the previous day.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="35"><div class="slide-wrapper">
 <pre><code class="language-python no-line-numbers left" data-line-numbers="1-12|5-7|8-11|12">import json
 
 import requests
@@ -626,7 +627,7 @@ make a request, and then 3. print out the response text.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="80"><div class="slide-wrapper">
 <pre><code class="language-rust no-line-numbers left" data-line-numbers="1-15|4|5-6|7-13" data-noescape="">use <a href="https://docs.rs/serde_json">serde_json</a>::Value;
 
 fn main() {
@@ -704,7 +705,7 @@ Protobufs, and more.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="20"><div class="slide-wrapper">
 <pre><code class="language-rust left" data-noescape="">use <a href="https://docs.rs/serde">serde</a>::Deserialize;
 
 fn main() {
@@ -729,7 +730,7 @@ other <code>Deserialize</code>able values, is handled by <a href="https://docs.r
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="10"><div class="slide-wrapper">
 <pre><code class="language-shell-session left">$ cat openweather_api.json
 {
   "api_key": "1b13e6aa173ce14137a50095476e653c"
@@ -755,7 +756,7 @@ OpenWeatherConfig {
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="30"><div class="slide-wrapper">
 <pre><code class="language-rust left" data-noescape="">use <a href="https://docs.rs/std">std</a>::path::PathBuf;
 
 use <a href="https://docs.rs/structopt">structopt</a>::StructOpt;
@@ -790,7 +791,7 @@ fields aren't mandatory and <code>Vec</code> fields can have multiple values.</p
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="8"><div class="slide-wrapper">
 <pre><code class="language-shell-session left">$ ./target/debug/rustconf-code --help
 rustconf-code 0.1.0
 A command-line interface to the openweathermap.org API
@@ -819,7 +820,7 @@ generated help message.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="8"><div class="slide-wrapper">
 <pre><code class="language-shell-session left">$ ./target/debug/rustconf-code --confgi my-custom-file.json
 error: Found argument '--confgi' which wasn't expected, or isn't
        valid in this context
@@ -842,7 +843,7 @@ For more information try --help
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="25"><div class="slide-wrapper">
 <pre><code class="language-rust left no-line-numbers" data-line-numbers="1-8|3,5" data-noescape="">fn main() -&gt; eyre::Result&lt;()&gt; {
     let opt = Opt::from_args();
     let config_json = File::open(&amp;opt.config)?;
@@ -853,11 +854,13 @@ For more information try --help
 }
 </code></pre>
 <aside class="notes"><p> The next thing I want to do is add some error reporting, so we don't
-have to unwrap everything and cause panics. <a href="https://docs.rs/eyre"><code>eyre</code></a> gives us the
-beautifully-formatted error messages I showed off at the beginning of the talk,
-and has a ton of functionality we won't explore here.</p>
-<p>Now, we're handling this errors with the "try" operator, spelled <code>?</code>. That's a
-pretty simple but important bit of syntax sugar.</p>
+have to unwrap everything and cause panics when something fails. The <a href="https://docs.rs/eyre"><code>eyre</code></a> crate gives us the beautifully-formatted error messages I showed off at
+the beginning of the talk, and has a ton of other functionality we won't
+explore here.</p>
+<ol>
+<li>Now, we can handle errors with the <code>?</code> operator, which is a pretty simple but
+important bit of syntax sugar.</li>
+</ol>
 <div class="next-slide"><p>Next slide: Syntax sugar for <code>?</code>.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
@@ -869,7 +872,7 @@ pretty simple but important bit of syntax sugar.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="35"><div class="slide-wrapper">
 <pre><code class="language-rust left no-line-numbers" data-line-numbers="4-7,9-12" data-noescape="">fn main() -&gt; eyre::Result&lt;()&gt; {
     let opt = Opt::from_args();
     let config_json =
@@ -903,7 +906,7 @@ let us ignore it.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="30"><div class="slide-wrapper">
 <pre><code class="language-rust no-line-numbers left" data-line-numbers="1,6-11,14" data-noescape="">use <a href="https://docs.rs/eyre">eyre</a>::WrapErr;
 
 fn main() -&gt; eyre::Result&lt;()&gt; {
@@ -939,7 +942,7 @@ simple step — provided you do it from the start — and it makes debugging a
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="25"><div class="slide-wrapper">
 <pre><code class="language-shell-session left">$ ./target/debug/rustconf-code --config nonexistent-file.json
 Error: Failed to open config file "nonexistent-file.json"
 
@@ -969,7 +972,7 @@ stack trace by default.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="15"><div class="slide-wrapper">
 <pre><code class="language-rust left" data-noescape="">use <a href="https://docs.rs/reqwest">reqwest</a>::blocking::{Client, Response};
 
 fn get_weather(
@@ -984,6 +987,8 @@ fn get_weather(
 </code></pre>
 <aside class="notes"><p> Now we're going to use the <a href="https://docs.rs/reqwest"><code>reqwest</code></a> library to make a simple call
 to the <a href="https://openweathermap.org/">openweathermap.org</a> API.</p>
+<p>We create an HTTP client object, call the <code>get</code> method with the endpoint URL,
+add some query parameters, and send the request.</p>
 <div class="next-slide"><p>Next slide: Making the call and printing the result.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
@@ -995,7 +1000,7 @@ to the <a href="https://openweathermap.org/">openweathermap.org</a> API.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="10"><div class="slide-wrapper">
 <pre><code class="language-rust left" data-noescape="">println!("Response: {:#?}", get_weather(&amp;config.api_key)?);
 </code></pre>
 <pre><code class="language-shell-session left">$ cargo run
@@ -1028,7 +1033,7 @@ fields we might expect — headers, a status code, and so on.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="20"><div class="slide-wrapper">
 <pre><code class="language-rust left" data-noescape="">let res = get_weather(&amp;config.api_key)?;
 let bytes = res.bytes()?;
 println!("{}", String::from_utf8_lossy(&amp;*bytes));
@@ -1053,7 +1058,7 @@ interface to the <a href="https://openweathermap.org/">openweathermap.org</a> AP
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="25"><div class="slide-wrapper">
 <pre><code class="language-rust" data-noescape="">use <a href="https://docs.rs/reqwest">reqwest</a>::blocking::Client;
 use <a href="https://docs.rs/serde">serde</a>::Deserialize;
 
@@ -1084,7 +1089,7 @@ config file.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="10"><div class="slide-wrapper">
 <pre><code class="language-rust left" data-noescape="">fn main() -&gt; eyre::Result&lt;()&gt; {
     // ...
     let config: OpenWeather = serde_json::from_reader(

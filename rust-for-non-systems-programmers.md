@@ -247,6 +247,8 @@ Next slide: Who is this talk for?
 
 ---
 
+<slide data-timing=30>
+
 ## Who is this talk for?
 
 <list fragments>
@@ -267,7 +269,7 @@ Next slide: Why do I like Rust?
 
 ---
 
-<slide class=title-card data-state=peach>
+<slide class=title-card data-state=peach data-timing=45>
 
 ## Why do I like Rust?
 
@@ -290,6 +292,8 @@ Next slide: Tooling.
 [mem]: https://en.wikipedia.org/wiki/Working_memory
 
 ---
+
+<slide data-timing=60>
 
 ## Tooling
 
@@ -323,7 +327,7 @@ Next slide: A bit more on documentation.
 
 ---
 
-<slide class=image-slide>
+<slide class=image-slide data-timing=45>
 
 ## Documentation
 
@@ -354,6 +358,8 @@ Next slide: Hello, world!
 [`rand`]: https://docs.rs/rand/
 
 ---
+
+<slide data-timing=80>
 
 ## Getting started
 
@@ -391,7 +397,7 @@ Next slide: `cargo build`.
 
 ---
 
-<slide class=center>
+<slide class=center data-timing=5>
 
 ```shell-session
 $ cargo build
@@ -401,11 +407,14 @@ $ cargo build
 
 Notes: We can run `cargo build` to compile the program.
 
+<!-- `cargo build` writes output to `target/debug`, so we can run our program from -->
+<!-- there. We can also use `cargo run` to compile and immediately run a program. -->
+
 Next slide: running the program.
 
 ---
 
-<slide class=center>
+<slide class=center data-timing=5>
 
 ```shell-session
 $ ./target/debug/rustconf-code
@@ -420,7 +429,7 @@ Next slide: ...although, we might not really expect an empty variable.
 
 ---
 
-<slide class=center>
+<slide class=center data-timing=15>
 
 ```shell-session no-line-numbers [1-2|3-7]
 $ env USER= ./target/debug/rustconf-code
@@ -432,15 +441,15 @@ note: run with `RUST_BACKTRACE=1` environment variable to display
 a backtrace
 ```
 
-Notes: ...although, we might not really expect an empty variable.
-
-Also, invalid UTF-8 will crash the whole program.
+Notes: ...although, if the `USER` environment variable is empty, it might be a
+bit confusing, and if `USER` contains invalid UTF-8, it'll crash the whole
+program.
 
 Next slide: The `Result` type.
 
 ---
 
-<slide class=center>
+<slide class=center data-timing=25>
 
 ```rust
 enum Result<T, E> {
@@ -449,18 +458,16 @@ enum Result<T, E> {
 }
 ```
 
-Notes: `Result` is an `enum` --- what functional programmers call a sum type.
-While a tuple has a value from any number of different types at the same time, a
-sum type has a value from *one* of a number of different types.
-
-`Result` is generic, so for any types `T` and `E`, we have a type `Result<T,
-E>` which can be *either* an `Ok` value of type `T` or an `Err` value of type
-`E`; that's pretty much equivalent to a function returning `T` or throwing an
-exception `E`.
+Notes: `Result` is an `enum`, which is a type that can be *one* of a number of
+different things. It's also a generic type, so we can pick any two types `T`
+and `E` and use a `Result` type which can be either an `Ok` variant containing
+a `T` value or an `Err` variant containing an `E` value.
 
 Next slide: gracefully handling errors with `match`.
 
 ---
+
+<slide data-timing=20>
 
 ```rust no-line-numbers [5-14]
 use std::env;
@@ -480,25 +487,25 @@ fn main() {
 }
 ```
 
-Notes: One way we can deal with that error is by matching on it, which is a
-little bit like a type-safe `isinstance` check. Here, we just handle an error
-by printing a simple message.
+Notes: One way we can deal with that error is by matching on it, which is a bit
+like an `isinstance` check. Here, we'll just handle an error by printing a
+simple message.
 
 Next slide: showing what happens when we run it.
 
 ---
 
-<slide class=center>
+<slide class=center data-timing=30>
 
 ```shell-session
 $ env USER="$(printf '\xc3\x28')" ./target/debug/rustconf-code
 I couldn't figure out who you are!
 ```
 
-Notes: Now, when we run our program, we print an error message instead of
-crashing. We'll talk about some other ways to handle errors as we go, but for the
-definitive rundown check out Jane Ludsby's talk ["Error Handling Isn't All
-About Errors"][jane-errors].
+Notes: Now, when we run our program with invalid data, we print an error
+message instead of crashing. We'll talk about some other ways to handle errors
+as we go, but for the definitive rundown check out Jane Ludsby's talk ["Error
+Handling Isn't All About Errors"][jane-errors].
 
 But this talk is about Rust's value as a practical programming language,
 which means doing more than writing "Hello, world!"s. So lets write a program
@@ -510,7 +517,7 @@ Next slide: receipt printer, weather program overview.
 
 ---
 
-<slide class=image-slide>
+<slide class=image-slide data-timing=25>
 
 ![A Star TSP100 Eco futurePRNT 72mm receipt printer, powered on with a
 printed receipt showing the RustConf homepage reading "Beaming to screens
@@ -527,6 +534,8 @@ it'll feel compared to the previous day.
 Next slide: Minimal API call with OpenWeather.
 
 ---
+
+<slide data-timing=35>
 
 ```python no-line-numbers [1-12|5-7|8-11|12]
 import json
@@ -557,6 +566,8 @@ Let's work on recreating this in Rust.
 Next slide: Reading the API key from JSON.
 
 ---
+
+<slide data-timing=80>
 
 ```rust no-line-numbers [1-15|4|5-6|7-13]
 use serde_json::Value;
@@ -622,6 +633,8 @@ Next slide: Using the `Deserialize` implementation with <crate serde_json>.
 
 ---
 
+<slide data-timing=20>
+
 ```rust
 use serde::Deserialize;
 
@@ -642,6 +655,8 @@ Next slide: Running this example.
 
 
 ---
+
+<slide data-timing=10>
 
 ```shell-session
 $ cat openweather_api.json
@@ -664,6 +679,8 @@ That's not my actual API key, by the way. Don't worry.
 Next slide: Adding the <crate structopt> crate.
 
 ---
+
+<slide data-timing=30>
 
 ```rust
 use std::path::PathBuf;
@@ -695,6 +712,8 @@ Next slide: Generated help message.
 
 ---
 
+<slide data-timing=8>
+
 ```shell-session
 $ ./target/debug/rustconf-code --help
 rustconf-code 0.1.0
@@ -719,6 +738,8 @@ Next slide: Argument typo help.
 
 ---
 
+<slide data-timing=8>
+
 ```shell-session
 $ ./target/debug/rustconf-code --confgi my-custom-file.json
 error: Found argument '--confgi' which wasn't expected, or isn't
@@ -737,6 +758,8 @@ Next slide: Adding <crate eyre>.
 
 ---
 
+<slide data-timing=25>
+
 ```rust left no-line-numbers [1-8|3,5]
 fn main() -> eyre::Result<()> {
     let opt = Opt::from_args();
@@ -749,16 +772,19 @@ fn main() -> eyre::Result<()> {
 ```
 
 Notes: The next thing I want to do is add some error reporting, so we don't
-have to unwrap everything and cause panics. <crate eyre> gives us the
-beautifully-formatted error messages I showed off at the beginning of the talk,
-and has a ton of functionality we won't explore here.
+have to unwrap everything and cause panics when something fails. The <crate
+eyre> crate gives us the beautifully-formatted error messages I showed off at
+the beginning of the talk, and has a ton of other functionality we won't
+explore here.
 
-Now, we're handling this errors with the "try" operator, spelled `?`. That's a
-pretty simple but important bit of syntax sugar.
+1. Now, we can handle errors with the `?` operator, which is a pretty simple but
+   important bit of syntax sugar.
 
 Next slide: Syntax sugar for `?`.
 
 ---
+
+<slide data-timing=35>
 
 ```rust left no-line-numbers [4-7,9-12]
 fn main() -> eyre::Result<()> {
@@ -788,6 +814,8 @@ let us ignore it.
 Next slide: `WrapErr` and context.
 
 ---
+
+<slide data-timing=30>
 
 ```rust no-line-numbers left [1,6-11,14]
 use eyre::WrapErr;
@@ -820,6 +848,8 @@ Next slide: Error report examples.
 
 ---
 
+<slide data-timing=25>
+
 ```shell-session
 $ ./target/debug/rustconf-code --config nonexistent-file.json
 Error: Failed to open config file "nonexistent-file.json"
@@ -846,6 +876,8 @@ Next slide: Using `reqwest` for HTTP requests.
 
 ---
 
+<slide data-timing=15>
+
 ```rust
 use reqwest::blocking::{Client, Response};
 
@@ -863,9 +895,14 @@ fn get_weather(
 Notes: Now we're going to use the <crate reqwest> library to make a simple call
 to the [openweathermap.org] API.
 
+We create an HTTP client object, call the `get` method with the endpoint URL,
+add some query parameters, and send the request.
+
 Next slide: Making the call and printing the result.
 
 ---
+
+<slide data-timing=10>
 
 ```rust
 println!("Response: {:#?}", get_weather(&config.api_key)?);
@@ -897,6 +934,8 @@ Next slide: Extracting the response text.
 
 ---
 
+<slide data-timing=20>
+
 ```rust left
 let res = get_weather(&config.api_key)?;
 let bytes = res.bytes()?;
@@ -918,6 +957,8 @@ interface to the [openweathermap.org] API.
 Next slide: Including a `Client` in the deserialized config.
 
 ---
+
+<slide data-timing=25>
 
 ```rust
 use reqwest::blocking::Client;
@@ -944,6 +985,8 @@ config file.
 Next slide: Deserializing `OpenWeather` from a reader.
 
 ---
+
+<slide data-timing=10>
 
 ```rust
 fn main() -> eyre::Result<()> {
