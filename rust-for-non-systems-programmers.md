@@ -1,33 +1,42 @@
+<slide data-timing=15>
+
 # Rust <div class=small>for</div> Non-Systems Programmers
 
-<span class=author>Rebecca Turner</span>
+<span class=author>Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</span>
 
 <fab fa-twitter> [@16kbps] / [becca.ooo]
 
-Notes: Hey folks, my name is Rebecca Turner and I'm going to tell you why you
-should be writing non-systems code in Rust.
+<slide-footer>
+  <left>
+    Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
+  </left>
+  <right>
+    <fab fa-twitter>
+    <a href="https://twitter.com/16kbps">@16kbps</a>
+    / <a href="https://becca.ooo">becca.ooo</a>
+  </right>
+</slide-footer>
+
+Notes: Hey folks, my name is Rebecca Turner, I use [she/her] pronouns, and I'm
+going to be talking about Rust for non-systems programmers.
 
 Next slide: Why this talk?
 
 [@16kbps]: https://twitter.com/16kbps
 [becca.ooo]: https://becca.ooo/
-
-<slide-footer>
-<left>Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</left>
-<right>
-<fab fa-twitter> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo">becca.ooo</a>
-</right>
-</slide-footer>
+[she/her]: https://pronoun.is/she/her/
 
 ---
 
-<slide class=title-card>
+<slide class=title-card data-timing=15>
 
 ## Why this talk?
 
-Notes: I'm a non-systems programmer, and I really like Rust. But if you
-looked at the [rust-lang.org] website before 2019, that might not make
-a lot of sense to you.
+Notes: I'm a non-systems programmer --- before learning Rust, I mostly wrote
+Python --- and now Rust is pretty much my favorite language.
+
+But if you looked at the [rust-lang.org] website before 2019, that might not
+make a lot of sense to you.
 
 Next slide: Screenshot of [rust-lang.org] in 2018.
 
@@ -35,7 +44,7 @@ Next slide: Screenshot of [rust-lang.org] in 2018.
 
 ---
 
-<slide class=image-slide>
+<slide class=image-slide data-timing=17>
 
 ![A screenshot of the rust-lang.org website in late 2018. The headline reads
 "Rust is a systems programming language that runs blazingly fast,
@@ -52,7 +61,7 @@ Next slide: Compare that with the new website.
 
 ---
 
-<slide class=image-slide>
+<slide class=image-slide data-timing=25>
 
 ![A screenshot of the rust-lang.org website in mid-2020. The headline reads
 "A language empowering everyone to build reliable and efficient software."
@@ -60,11 +69,30 @@ and sections under "Why Rust?" emphasize performance, reliability, and
 productivity.](img/rust-2020-07-19.png)
 
 Notes: And here's the same website today in mid-2020. Now Rust is about "empowering
-everyone" to and focusing on reliability and productivity. But a lot of the
-documentation has lagged behind and still assumes that new Rust programmers
-already know C++ or something similar.
+everyone to build reliable and efficent software," and the website focuses on
+reliability and productivity. But a lot of the documentation has lagged behind
+and still assumes that new Rust programmers already know C++ or something
+similar.
 
-So I want to introduce the rest of us to Rust.
+Next slide: "I don't understand Rust" tweet
+
+---
+
+<tweet>
+  hi my names rebecca and i still dont understand rust
+  <date>10:12 AM · May 1, 2017</date>
+  <likes>2</likes>
+</tweet>
+
+Notes: That made it really hard for me to learn Rust. I've never really
+understood memory management, so a lot of the documentation was pretty
+inaccessible to me. I struggled to figure out how Rust would be used to
+actually write meaningful programs --- I'd get caught up on error handling.
+
+So we're going to write a non-trivial Rust program together, and see how we can
+solve a lot of common problems in a Rust-y way.
+
+<!-- So I want to introduce the rest of us to Rust. -->
 
 Next slide: What can Rust do for you?
 
@@ -74,12 +102,14 @@ Next slide: What can Rust do for you?
 
 ## What can Rust <br> do for you?
 
-Notes: Before we get too involved, let's get a quick feel for some of the
+Notes: Before we start writing code, let's take a quick look at some of the
 things Rust makes strikingly easy.
 
 Next slide: Command-line help messages.
 
 ---
+
+<slide data-timing=8>
 
 ```plain
 rustconf-code 0.1.0
@@ -98,38 +128,31 @@ OPTIONS:
                              [default: openweather_api.json]
 ```
 
-Notes: Rust can do command-line argument parsing...
-
-Next slide: that's generated from a struct.
+Notes: Rust can do command-line argument parsing generated from a type definition...
 
 ---
 
-```rust
-use structopt::StructOpt;
+<slide data-timing=9>
 
-/// A command-line interface to the openweathermap.org API.
-#[derive(Debug, StructOpt)]
-struct Opt {
-    /// Config filename; a JSON file with an `api_key` field.
-    #[structopt(
-        short, long, parse(from_os_str),
-        default_value = "openweather_api.json"
-    )]
-    config: PathBuf,
-}
+<pre class="term"><span class=hljs-keyword>$</span> <span class=hljs-title>./target/debug/rustconf-code --confiig cfg.json</span>
+<span style="color: #CC0000"><b>error:</b></span> Found argument '<span style="color: #C4A000">--confiig</span>' which wasn't expected,
+       or isn't valid in this context
+       Did you mean <span style="color: #4E9A06">--config</span>?
 
-fn main() {
-  Opt::from_args();
-}
-```
+USAGE:
+    rustconf-code --config &lt;config&gt;
 
-Notes: ...that's generated from a type definition.
+For more information try <span style="color: #4E9A06">--help</span>
+</pre>
+
+Notes: ...with automatic typo-correction, while generating tab-completion
+scripts and man pages at compile-time.
 
 Next slide: JSON deserialization example.
 
 ---
 
-<slide class=center>
+<slide class=center data-timing=10>
 
 ```shell-session left
 $ ./target/debug/rustconf-code --config bad-schema.json
@@ -139,36 +162,14 @@ Caused by:
     invalid type: map, expected a string at line 2 column 14
 ```
 
-Notes: Rust can give you great error reports for complex errors...
-
-Next slide: ...while automatically deserializing JSON to a custom type.
-
----
-
-```rust left
-use serde::Deserialize;
-use eyre::WrapErr;
-
-#[derive(Deserialize, Debug, Clone)]
-struct Config {
-    api_key: String,
-}
-
-fn main() -> eyre::Result<()> {
-    let opt = Opt::from_args();
-    let config_json = File::open(&opt.config)?;
-    let config: OpenWeather = serde_json::from_reader(
-        &config_json,
-    )
-    .wrap_err("Failed to deserialize configuration JSON")?;
-}
-```
-
-Notes: ...while automatically deserializing a JSON blob to a custom type.
+Notes: Rust can give you great error reports for complex errors while
+automatically deserializing JSON to a custom type.
 
 Next slide: Pretty test diffs.
 
 ---
+
+<slide data-timing=8>
 
 <pre class=term>running 1 test
 test tests::str_test ... <span style="color: #CC0000">FAILED</span>
@@ -188,38 +189,19 @@ test result: <span style="color: #CC0000">FAILED</span>. 0 passed; 1 failed; 0 i
 0 measured; 0 filtered out
 </pre>
 
-Notes: Rust can output fancy test diffs...
-
-Next slide: `pretty_assertions` code.
-
----
-
-<slide class=center>
-
-```rust
-#[cfg(test)]
-mod tests {
-    use pretty_assertions::assert_eq;
-
-    #[test]
-    fn str_test() {
-        assert_eq!("Hello, RustConf!", "Hello, RustConf 2020!");
-    }
-}
-```
-
-Notes: ...with a one-line import that integrates with the default test framework.
+Notes: And Rust can output fancy test diffs with a one-line import that
+integrates with the default test framework.
 
 Next slide: (And more.)
 
 ---
 
-<slide class=title-card data-state=teal>
+<slide class=title-card data-state=teal data-timing=8>
 
 ## (And a lot more)
 
-Notes: Rust can do a lot more, too. But I don't just want to list random Rust
-features for 30 minutes.
+Notes: Rust can do a whole lot more, too. But I don't want to just list random
+Rust features for 30 minutes.
 
 Next slide: What is this talk?
 
@@ -1147,6 +1129,10 @@ that's about the same as yesterday.
 
 ---
 
+## TODO: Receipt printer video
+
+---
+
 <slide class=title-card data-state=purple>
 
 ## This is only a taste
@@ -1160,11 +1146,11 @@ Next slide: **None.**
 
 ---
 
-<slide no-footer data-state=ruby>
+<slide no-footer>
 
 # Rust <div class=small>for</div> Non-Systems Programmers
 
-<span class=author>Rebecca Turner</span>
+<span class=author>Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</span>
 
 <fab fa-twitter> [@16kbps] / [becca.ooo]
 

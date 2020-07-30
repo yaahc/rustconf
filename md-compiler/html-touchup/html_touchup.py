@@ -4,7 +4,7 @@ import sys
 from copy import copy
 from dataclasses import dataclass
 from functools import cached_property
-from typing import Iterator
+from typing import Iterator, Dict, Union
 
 from bs4 import BeautifulSoup, Tag
 
@@ -35,6 +35,19 @@ class RevealTweaks:
     def from_file(cls, fh) -> "RevealTweaks":
         soup = BeautifulSoup(fh.read(), "html.parser")
         return cls(soup)
+
+    def tag(self, name: str, attrs: Dict[str, str], *children: Union[Tag, str]) -> Tag:
+        if "." in name:
+            name, classes = name.split(".", maxsplit=1)
+            classes = classes.replace(".", " ")
+        else:
+            classes = ""
+
+        ret = self.soup.new_tag(name)
+        ret.attrs.update(attrs)
+        ret["class"] = classes
+        ret.extend(child for child in children if child is not None)
+        return ret
 
     @cached_property
     def reveal_root(self) -> Tag:
@@ -246,7 +259,99 @@ class RevealTweaks:
             code.wrap(a)
             crate.unwrap()
 
+    def tweets(self):
+        for tweet in self.reveal_root.find_all("tweet"):
+            username = (
+                username.extract().string.strip()
+                if (username := tweet.find("user"))
+                else "16kbps"
+            )
+
+            display_name = (
+                display_name.extract().string.strip()
+                if (display_name := tweet.find("name"))
+                else "rebecca"
+            )
+
+            date = tweet.find("date").extract().string.strip()
+            likes = (
+                likes.extract().string.strip()
+                if (likes := tweet.find("likes"))
+                else None
+            )
+            retweets = (
+                retweets.extract().string.strip()
+                if (retweets := tweet.find("retweets"))
+                else None
+            )
+            image = tweet.find("img")
+
+            tweet_text = list(tweet.contents)
+            if image:
+                tweet_text.append(image)
+
+            ret = self.tag(
+                "div.tweet",
+                {},
+                self.tag(
+                    "div.tweet-inner",
+                    {},
+                    self.tag(
+                        "div.user",
+                        {},
+                        self.tag(
+                            "div.col-left",
+                            {},
+                            self.tag(
+                                "img",
+                                {
+                                    "src": f"img/twitter-{username}.jpg",
+                                    "alt": f"Twitter user @{username}'s avatar",
+                                },
+                            ),
+                        ),
+                        self.tag(
+                            "div.col-right",
+                            {},
+                            self.tag("div.display-name", {}, display_name),
+                            self.tag("div.username", {}, f"@{username}"),
+                        ),
+                    ),
+                    self.tag("div.tweet-main", {}, *tweet_text),
+                    self.tag("div.date", {}, date),
+                    self.tag(
+                        "div.interactions",
+                        {},
+                        self.tag(
+                            "span.item",
+                            {},
+                            self.tag("span.number", {}, retweets),
+                            self.tag(
+                                "span.label",
+                                {},
+                                "Retweets" if retweets != "1" else "Retweet",
+                            ),
+                        )
+                        if retweets
+                        else None,
+                        self.tag(
+                            "span.item",
+                            {},
+                            self.tag("span.number", {}, likes),
+                            self.tag(
+                                "span.label", {}, "Likes" if likes != "1" else "Like"
+                            ),
+                        )
+                        if likes
+                        else None,
+                    ) if likes or retweets else None,
+                ),
+            )
+
+            tweet.replace_with(ret)
+
     def process(self) -> BeautifulSoup:
+        self.tweets()
         self.crate_links()
         self.font_awesome()
         self.process_code()

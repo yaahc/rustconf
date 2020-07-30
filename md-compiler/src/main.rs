@@ -310,6 +310,13 @@ impl<'a> MappedParser<'a> {
     }
 }
 
+fn fake_smartypants<S: AsRef<str>>(text: S) -> String {
+    text.as_ref()
+        .replace("---", "—")
+        .replace("--", "–")
+        .replace("...", "…")
+}
+
 impl<'a> Iterator for MappedParser<'a> {
     type Item = Event<'a>;
 
@@ -339,19 +346,14 @@ impl<'a> Iterator for MappedParser<'a> {
             Event::Text(text) => {
                 if self.started_paragraph && text.starts_with("Notes:") {
                     self.lookahead = Some(Event::Text(
-                        text.strip_prefix("Notes:").unwrap().to_owned().into(),
+                        fake_smartypants(text.strip_prefix("Notes:").unwrap()).into(),
                     ));
                     self.has_notes = true;
                     Event::Html(r#"</p><aside class="notes"><p>"#.into())
                 } else if self.in_code {
                     Event::Text(text)
                 } else {
-                    Event::Text(
-                        text.replace("---", "—")
-                            .replace("--", "–")
-                            .replace("...", "…")
-                            .into(),
-                    )
+                    Event::Text(fake_smartypants(text).into())
                 }
             }
             Event::Start(Tag::CodeBlock(CodeBlockKind::Fenced(header))) => {

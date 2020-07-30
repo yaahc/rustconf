@@ -13,7 +13,7 @@ let
       sha256 = if stdenv.isDarwin then
         "1kjv3r0az4bq3hlvrjz0c0jybnqyw9v50kz9ag548x6yi4r99lxx"
       else
-        "10jvyhx0a4k4i15ay45d9m90jvr9rjm1j640qca9xr88xkw8rv9f";
+        "1jh96rh6i99qa4pmcvbl7hk5znkkrq4nfl8vgmgb9i8kwcg9dfhw";
     in { inherit url sha256; });
 
     installPhase = ''
@@ -47,7 +47,7 @@ let
       sha256 = if isDarwin then
         "13b730a7bj3sqr9vh9rply2jyn13jwm7qxsgrdqr4iajr2shsy87"
       else
-        "1bz1gfgl2k5kkq4jhbix7cx20c8clvc3qwiikd16nfilm0fxhds3";
+        "1mvdndb0vdyzxh8sv0sc2qv6rsv5gqgc3600cacr9rf78285ay1i";
       url =
         let platform = if isDarwin then "apple-darwin" else "unknown-linux-gnu";
         in "https://github.com/weihanglo/${pname}/releases/download/${version}/${pname}-${version}-x86_64-${platform}.tar.gz";

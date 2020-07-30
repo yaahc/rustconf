@@ -14,7 +14,8 @@ RED = "\x1b[91m"
 GREEN = "\x1b[92m"
 CYAN = "\x1b[96m"
 
-INFO = f"{BOLD}{GREEN}"
+GOOD = f"{BOLD}{GREEN}"
+INFO = f"{BOLD}{CYAN}"
 ERROR = f"{BOLD}{RED}"
 
 
@@ -35,9 +36,13 @@ async def run(program: str, *args: str):
     try:
         rc = await proc.wait()
     except asyncio.CancelledError:
-        print(f"{ERROR}Quitting `{program} {' '.join(args)}`{RESET}")
-        proc.terminate()
-        await proc.wait()
+        print(f"{INFO}Quitting `{program} {' '.join(args)}`{RESET}")
+        try:
+            proc.terminate()
+            await proc.wait()
+        except ProcessLookupError:
+            # who cares!
+            pass
         raise
 
     if rc != 0:
@@ -96,6 +101,8 @@ async def amain(args):
         await gather
     except ValueError as e:
         print(ERROR + " ".join(map(str, e.args)) + RESET)
+    except KeyboardInterrupt:
+        print(f"{INFO}Received ^C. Quitting.")
         gather.cancel()
 
 

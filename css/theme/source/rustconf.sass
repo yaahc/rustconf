@@ -137,9 +137,8 @@ $heading4Size: 1.0em
   &.orange,
   &.yellow,
   &.green
-    & .title-card > .slide-wrapper
-      &, h1, h2, h3, h4, h5, h6
-        color: $c-black
+    &, h1, h2, h3, h4, h5, h6, a
+      color: $c-black
 
 .reveal-viewport.peach
   background-color: $c-peach
@@ -153,11 +152,27 @@ $heading4Size: 1.0em
 .reveal-viewport.orange
   background-color: $c-orange
 
+  .reveal,
+  span.author
+    color: $c-blue
+
+  .small,
+  a
+    color: $c-blue-light
+
 .reveal-viewport.yellow
   background-color: $c-yellow
 
 .reveal-viewport.green
   background-color: $c-green
+
+  .reveal,
+  span.author
+    color: $c-black
+
+  .small,
+  a
+    color: $c-blue
 
 .reveal-viewport.ruby
   background-color: $c-ruby
@@ -179,6 +194,64 @@ $heading4Size: 1.0em
   .next-slide
     font-style: italic
 
-section.has-light-background
-  &, h1, h2, h3, h4, h5, h6
-    color: #222
+
+.tweet
+  font-family: sans-serif
+  width: 600px
+  margin: auto
+  text-align: left
+  background-color: rgb(21, 32, 43)
+  color: #fff
+  padding: 1em
+  border-radius: 0.5em
+
+  .user,
+  .tweet-main
+    margin-bottom: 0.5em
+
+  .interactions > .item > .number,
+  .user .display-name
+    color: #fff
+    font-weight: bold
+
+  .interactions > .item
+    margin-right: 1em
+
+  .interactions > .item > .number
+    margin-right: 0.25em
+
+  .user,
+  .date,
+  .interactions
+    color: rgb(136, 153, 166)
+    font-size: 0.7em
+
+  .date,
+  .interactions
+    padding-top: 0.5em
+
+  .interactions
+    border-top: 2px solid rgb(56, 68, 77)
+
+  .date
+    padding-bottom: 0.5em
+
+  .user
+    display: flex
+
+    img
+      max-width: 2.5em
+      border-radius: 50%
+      position: relative
+      top: 0.25em
+      margin: 0
+
+    .col-left
+      margin-right: 0.5em
+
+    .col-right
+      margin-top: 0.15em
+
+  // .user > .display-name,
+  // .user > .username
+  //   xxx
