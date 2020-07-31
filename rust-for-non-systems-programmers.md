@@ -1005,6 +1005,8 @@ Next slide: `impl OpenWeather`.
 
 ---
 
+<slide data-timing=60>
+
 ```rust no-line-numbers [1-10|3|2,6]
 impl OpenWeather {
     fn get<Response: DeserializeOwned>(
@@ -1020,9 +1022,9 @@ impl OpenWeather {
 ```
 
 Notes: Now, to make our API a bit cleaner, let's start implementing methods.
-This gives us something that looks a lot like the classes we're familiar with
---- Rust doesn't have inheritance or subtyping, although generic functions and
-traits get us pretty close.
+This gives us something that looks a lot like the classes we may have used in
+other languages, and although Rust doesn't have inheritance or subtyping,
+generic functions and traits can get us pretty close.
 
 An `impl` block lets us put methods on types.
 
@@ -1039,6 +1041,8 @@ An `impl` block lets us put methods on types.
 Next slide: API response struct definitions.
 
 ---
+
+<slide data-timing=10>
 
 ```rust
 #[derive(Deserialize, Debug, Clone)]
@@ -1066,6 +1070,8 @@ Next slide: `OpenWeather::onecall` method and use.
 
 ---
 
+<slide data-timing=45>
+
 ```rust no-line-numbers [1-9|11-17]
 impl OpenWeather {
     fn onecall(&self) -> eyre::Result<OneCall> {
@@ -1087,20 +1093,21 @@ fn main() -> eyre::Result<()> {
 
 Notes:
 
-1. Then we can define a helper method to make that request directly. Note that
-   we don't need to annotate that `self.get` should be used with the generic
-   type parameter `Response` as `OneCall` --- the Rust compiler is smart enough
-   to figure out that because we're returning the result of `self.get` from
-   `OpenWeather::onecall`, `Response` can *only* possibly be `OneCall`.
+1. Then, we can define a helper method to make that request directly. Note that
+   we don't need to annotate the generic types for the `self.get` call, though
+   we can if we want --- the compiler is smart enough to figure out what the
+   type parameter needs to be from the return type of `self.get` on its own.
 
-2. And then, of course, we can use the new method in our `main` to get the
+2. And then we can use the new method in our `main` function to get the
    forecast data as a richly-typed struct.
 
 Next slide: `TempDifference`
 
 ---
 
-```
+<slide data-timing=15>
+
+```rust
 #[derive(Debug, PartialEq)]
 enum TempDifference {
     MuchColder,
@@ -1115,11 +1122,172 @@ Notes: One thing I want from my forecast is to tell me if today is going to be
 warmer or colder than yesterday. So I'll create a `TempDifference` enum, and
 then a helper method to get the appropriate `TempDifference` for two floats.
 
+
+---
+
+```rust
+impl TempDifference {
+    fn from(from: f64, to: f64) -> Self {
+        let delta = to - from;
+        match delta {
+            _ if delta >  10.0 => TempDifference::MuchWarmer,
+            _ if delta >   5.0 => TempDifference::Warmer,
+            _ if delta < -10.0 => TempDifference::MuchColder,
+            _ if delta <  -5.0 => TempDifference::Colder,
+            _ => TempDifference::Same,
+        }
+    }
+}
+```
+
+Notes: Here's that constructor function, which takes two floats, calculates
+their difference, and matches them to the correct `TempDifference` variant.
+
+---
+
+```rust no-line-numbers [1-13|1|3|5-12|7-10]
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_tempdiff() {
+        assert_eq!(
+            TempDifference::from(50.0, 69.0),
+            TempDifference::MuchWarmer
+        );
+        // And so on, but these slides are small...
+    }
+}
+```
+
+Notes: I'm *really bad* at arithmetic stuff like this, so I want to write a few
+tests to make sure I got the subtraction order and everything right.
+
+1. The `#[cfg(test)]` attribute means the entire `test` module is conditionally
+   compiled, so our tests don't get lumped in to our other builds.
+2. We have to import the functions and values from the parent module --- that
+   is, the rest of the file --- explicitly.
+3. Then, a test is a function annotated with the `#[test]` attribute.
+4. Finally, we can write asserts with the `assert!` and `assert_eq!` macros.
+
+---
+
+<pre class="term"><span class=hljs-keyword>$</span> <span class=hljs-title>cargo test</span>
+<span style="color: #4E9A06"><b>    Finished</b></span> test [unoptimized + debuginfo] target(s)
+             in 0.04s
+<span style="color: #4E9A06"><b>     Running</b></span> target/debug/deps/rustconf_code-affd1f0e8
+
+running 1 test
+test test::test_tempdiff ... <span style="color: #4E9A06">ok</span>
+
+test result: <span style="color: #4E9A06">ok</span>. 1 passed; 0 failed; 0 ignored;
+                 0 measured; 0 filtered out
+</pre>
+
+Notes:
+
 Next slide: `Stats`.
 
 ---
 
 ```rust
+struct Stats {
+    min: f64,
+    max: f64,
+    avg: f64,
+    count: usize,
+}
+```
+
+Notes: I want to be able to state various things about a collection of
+temperatures --- like their range and their average, so this `Stats` struct
+will handle that computation.
+
+---
+
+```rust
+impl Default for Stats {
+    fn default() -> Self {
+        Self {
+            min: f64::INFINITY,
+            max: f64::NEG_INFINITY,
+            avg: 0.0,
+            count: 0,
+        }
+    }
+}
+```
+
+Notes: Let's implement the `Default` trait for `Stats`, which gives us a way to
+construct a default value for a type. It's like Go's concept of a zero-value,
+but Rust doesn't require that every type have a default, because that's not
+always meaningful (types like file-handles, for instance, don't have a
+reasonable default).
+
+We're picking `f64::INFINITY` for the starting minimum value because every
+float is less than infinity, and `f64::NEG_INFINITY` for `max` for the same
+reason.
+
+---
+
+```rust
+impl Stats {
+    fn from(itr: impl Iterator<Item = f64>) -> Self {
+        let mut ret = Self::default();
+        let mut sum = 0.0;
+        // ...
+    }
+}
+```
+
+Notes: Now we can construct a `Stats` object from an iterator of floats. We
+start by initializing a mutable return value and a sum of the iterator's
+elements.
+
+---
+
+```rust
+impl Stats {
+    fn from(itr: impl Iterator<Item = f64>) -> Self {
+        // ...
+        for i in itr {
+            if i < ret.min {
+                ret.min = i;
+            } else if i > ret.max {
+                ret.max = i;
+            }
+            ret.count += 1;
+            sum += i;
+        }
+        // ...
+    }
+}
+```
+
+Notes: Next, we take each value in the iterator and update the return value's
+minimum and maximum values, as well as the element count and running total.
+
+---
+
+
+```rust
+impl Stats {
+    fn from(itr: impl Iterator<Item = f64>) -> Self {
+        // ...
+        ret.avg = sum / ret.count as f64;
+        ret
+    }
+}
+```
+
+Notes: And finally, we compute the average value and return.
+
+---
+
+<slide data-timing=20>
+
+```rust no-line-numbers [1-2|3-4|6]
 let yesterday =
     Stats::from(historical.iter().map(|h| h.feels_like));
 let today = Stats::from(
@@ -1129,9 +1297,15 @@ let today = Stats::from(
 let diff = TempDifference::from(yesterday.avg, today.avg);
 ```
 
-Notes: Then, I'm going to gather the minimum, maximum, and average temperature
-from yesterday and the forecast for today into these `Stats` structs I've
-created.
+Notes: Then, we can gather the temperatures for yesterday into a `Stats`
+object.
+
+Note that we're using lazy iterators here, so mapping each data-point to the
+temperature it "felt like" doesn't require writing a whole new array.
+
+1. We can do the same thing with our forecast, making sure to limit the
+   forecast to 24 hourly points.
+2. And then we can get a temperature difference between the two days.
 
 Next slide: Printing the result.
 

@@ -1111,7 +1111,7 @@ using before, without even a constructor method.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="60"><div class="slide-wrapper">
 <pre><code class="language-rust no-line-numbers left" data-line-numbers="1-10|3|2,6" data-noescape="">impl OpenWeather {
     fn get&lt;Response: DeserializeOwned&gt;(
         &amp;self,
@@ -1125,9 +1125,9 @@ using before, without even a constructor method.</p>
 }
 </code></pre>
 <aside class="notes"><p> Now, to make our API a bit cleaner, let's start implementing methods.
-This gives us something that looks a lot like the classes we're familiar with
-— Rust doesn't have inheritance or subtyping, although generic functions and
-traits get us pretty close.</p>
+This gives us something that looks a lot like the classes we may have used in
+other languages, and although Rust doesn't have inheritance or subtyping,
+generic functions and traits can get us pretty close.</p>
 <p>An <code>impl</code> block lets us put methods on types.</p>
 <ol>
 <li>Like Python, Rust doesn't have an implicit <code>this</code> object you can reference
@@ -1151,7 +1151,7 @@ any type we define.</li>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="10"><div class="slide-wrapper">
 <pre><code class="language-rust" data-noescape="">#[derive(Deserialize, Debug, Clone)]
 pub struct OneCall {
     pub hourly: Vec&lt;Hourly&gt;,
@@ -1182,7 +1182,7 @@ copied from the <a href="https://openweathermap.org/">openweathermap.org</a> API
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="45"><div class="slide-wrapper">
 <pre><code class="language-rust no-line-numbers left" data-line-numbers="1-9|11-17" data-noescape="">impl OpenWeather {
     fn onecall(&amp;self) -&gt; eyre::Result&lt;OneCall&gt; {
         self.get(
@@ -1203,14 +1203,13 @@ fn main() -&gt; eyre::Result&lt;()&gt; {
 <aside class="notes"><p></p>
 <ol>
 <li>
-<p>Then we can define a helper method to make that request directly. Note that
-we don't need to annotate that <code>self.get</code> should be used with the generic
-type parameter <code>Response</code> as <code>OneCall</code> — the Rust compiler is smart enough
-to figure out that because we're returning the result of <code>self.get</code> from
-<code>OpenWeather::onecall</code>, <code>Response</code> can <em>only</em> possibly be <code>OneCall</code>.</p>
+<p>Then, we can define a helper method to make that request directly. Note that
+we don't need to annotate the generic types for the <code>self.get</code> call, though
+we can if we want — the compiler is smart enough to figure out what the
+type parameter needs to be from the return type of <code>self.get</code> on its own.</p>
 </li>
 <li>
-<p>And then, of course, we can use the new method in our <code>main</code> to get the
+<p>And then we can use the new method in our <code>main</code> function to get the
 forecast data as a richly-typed struct.</p>
 </li>
 </ol>
@@ -1225,8 +1224,8 @@ forecast data as a richly-typed struct.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
-<pre><code>#[derive(Debug, PartialEq)]
+<section data-timing="15"><div class="slide-wrapper">
+<pre><code class="language-rust" data-noescape="">#[derive(Debug, PartialEq)]
 enum TempDifference {
     MuchColder,
     Colder,
@@ -1238,6 +1237,89 @@ enum TempDifference {
 <aside class="notes"><p> One thing I want from my forecast is to tell me if today is going to be
 warmer or colder than yesterday. So I'll create a <code>TempDifference</code> enum, and
 then a helper method to get the appropriate <code>TempDifference</code> for two floats.</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">
+    Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
+  </div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i>
+<a href="https://twitter.com/16kbps">@16kbps</a>
+    / <a href="https://becca.ooo">becca.ooo</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<pre><code class="language-rust left" data-noescape="">impl TempDifference {
+    fn from(from: f64, to: f64) -&gt; Self {
+        let delta = to - from;
+        match delta {
+            _ if delta &gt;  10.0 =&gt; TempDifference::MuchWarmer,
+            _ if delta &gt;   5.0 =&gt; TempDifference::Warmer,
+            _ if delta &lt; -10.0 =&gt; TempDifference::MuchColder,
+            _ if delta &lt;  -5.0 =&gt; TempDifference::Colder,
+            _ =&gt; TempDifference::Same,
+        }
+    }
+}
+</code></pre>
+<aside class="notes"><p> Here's that constructor function, which takes two floats, calculates
+their difference, and matches them to the correct <code>TempDifference</code> variant.</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">
+    Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
+  </div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i>
+<a href="https://twitter.com/16kbps">@16kbps</a>
+    / <a href="https://becca.ooo">becca.ooo</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<pre><code class="language-rust no-line-numbers left" data-line-numbers="1-13|1|3|5-12|7-10" data-noescape="">#[cfg(test)]
+mod test {
+    use <a href="https://docs.rs/super">super</a>::*;
+
+    #[test]
+    fn test_tempdiff() {
+        assert_eq!(
+            TempDifference::from(50.0, 69.0),
+            TempDifference::MuchWarmer
+        );
+        // And so on, but these slides are small...
+    }
+}
+</code></pre>
+<aside class="notes"><p> I'm <em>really bad</em> at arithmetic stuff like this, so I want to write a few
+tests to make sure I got the subtraction order and everything right.</p>
+<ol>
+<li>The <code>#[cfg(test)]</code> attribute means the entire <code>test</code> module is conditionally
+compiled, so our tests don't get lumped in to our other builds.</li>
+<li>We have to import the functions and values from the parent module — that
+is, the rest of the file — explicitly.</li>
+<li>Then, a test is a function annotated with the <code>#[test]</code> attribute.</li>
+<li>Finally, we can write asserts with the <code>assert!</code> and <code>assert_eq!</code> macros.</li>
+</ol>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">
+    Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
+  </div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i>
+<a href="https://twitter.com/16kbps">@16kbps</a>
+    / <a href="https://becca.ooo">becca.ooo</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper"><pre class="term"><span class="hljs-keyword">$</span> <span class="hljs-title">cargo test</span>
+<span style="color: #4E9A06"><b>    Finished</b></span> test [unoptimized + debuginfo] target(s)
+             in 0.04s
+<span style="color: #4E9A06"><b>     Running</b></span> target/debug/deps/rustconf_code-affd1f0e8
+
+running 1 test
+test test::test_tempdiff ... <span style="color: #4E9A06">ok</span>
+
+test result: <span style="color: #4E9A06">ok</span>. 1 passed; 0 failed; 0 ignored;
+                 0 measured; 0 filtered out
+</pre>
+<aside class="notes"><p></p>
 <div class="next-slide"><p>Next slide: <code>Stats</code>.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
@@ -1250,7 +1332,129 @@ then a helper method to get the appropriate <code>TempDifference</code> for two 
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-rust left" data-noescape="">let yesterday =
+<pre><code class="language-rust" data-noescape="">struct Stats {
+    min: f64,
+    max: f64,
+    avg: f64,
+    count: usize,
+}
+</code></pre>
+<aside class="notes"><p> I want to be able to state various things about a collection of
+temperatures — like their range and their average, so this <code>Stats</code> struct
+will handle that computation.</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">
+    Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
+  </div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i>
+<a href="https://twitter.com/16kbps">@16kbps</a>
+    / <a href="https://becca.ooo">becca.ooo</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<pre><code class="language-rust" data-noescape="">impl Default for Stats {
+    fn default() -&gt; Self {
+        Self {
+            min: f64::INFINITY,
+            max: f64::NEG_INFINITY,
+            avg: 0.0,
+            count: 0,
+        }
+    }
+}
+</code></pre>
+<aside class="notes"><p> Let's implement the <code>Default</code> trait for <code>Stats</code>, which gives us a way to
+construct a default value for a type. It's like Go's concept of a zero-value,
+but Rust doesn't require that every type have a default, because that's not
+always meaningful (types like file-handles, for instance, don't have a
+reasonable default).</p>
+<p>We're picking <code>f64::INFINITY</code> for the starting minimum value because every
+float is less than infinity, and <code>f64::NEG_INFINITY</code> for <code>max</code> for the same
+reason.</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">
+    Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
+  </div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i>
+<a href="https://twitter.com/16kbps">@16kbps</a>
+    / <a href="https://becca.ooo">becca.ooo</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<pre><code class="language-rust left" data-noescape="">impl Stats {
+    fn from(itr: impl Iterator&lt;Item = f64&gt;) -&gt; Self {
+        let mut ret = Self::default();
+        let mut sum = 0.0;
+        // ...
+    }
+}
+</code></pre>
+<aside class="notes"><p> Now we can construct a <code>Stats</code> object from an iterator of floats. We
+start by initializing a mutable return value and a sum of the iterator's
+elements.</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">
+    Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
+  </div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i>
+<a href="https://twitter.com/16kbps">@16kbps</a>
+    / <a href="https://becca.ooo">becca.ooo</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<pre><code class="language-rust left" data-noescape="">impl Stats {
+    fn from(itr: impl Iterator&lt;Item = f64&gt;) -&gt; Self {
+        // ...
+        for i in itr {
+            if i &lt; ret.min {
+                ret.min = i;
+            } else if i &gt; ret.max {
+                ret.max = i;
+            }
+            ret.count += 1;
+            sum += i;
+        }
+        // ...
+    }
+}
+</code></pre>
+<aside class="notes"><p> Next, we take each value in the iterator and update the return value's
+minimum and maximum values, as well as the element count and running total.</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">
+    Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
+  </div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i>
+<a href="https://twitter.com/16kbps">@16kbps</a>
+    / <a href="https://becca.ooo">becca.ooo</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<pre><code class="language-rust left" data-noescape="">impl Stats {
+    fn from(itr: impl Iterator&lt;Item = f64&gt;) -&gt; Self {
+        // ...
+        ret.avg = sum / ret.count as f64;
+        ret
+    }
+}
+</code></pre>
+<aside class="notes"><p> And finally, we compute the average value and return.</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">
+    Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
+  </div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i>
+<a href="https://twitter.com/16kbps">@16kbps</a>
+    / <a href="https://becca.ooo">becca.ooo</a>
+</div>
+</div></section>
+<section data-timing="20"><div class="slide-wrapper">
+<pre><code class="language-rust no-line-numbers left" data-line-numbers="1-2|3-4|6" data-noescape="">let yesterday =
     Stats::from(historical.iter().map(|h| h.feels_like));
 let today = Stats::from(
     onecall.hourly.iter().map(|h| h.feels_like).take(24),
@@ -1258,9 +1462,15 @@ let today = Stats::from(
 
 let diff = TempDifference::from(yesterday.avg, today.avg);
 </code></pre>
-<aside class="notes"><p> Then, I'm going to gather the minimum, maximum, and average temperature
-from yesterday and the forecast for today into these <code>Stats</code> structs I've
-created.</p>
+<aside class="notes"><p> Then, we can gather the temperatures for yesterday into a <code>Stats</code>
+object.</p>
+<p>Note that we're using lazy iterators here, so mapping each data-point to the
+temperature it "felt like" doesn't require writing a whole new array.</p>
+<ol>
+<li>We can do the same thing with our forecast, making sure to limit the
+forecast to 24 hourly points.</li>
+<li>And then we can get a temperature difference between the two days.</li>
+</ol>
 <div class="next-slide"><p>Next slide: Printing the result.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">

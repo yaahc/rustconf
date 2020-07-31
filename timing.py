@@ -63,8 +63,9 @@ class TimingInfo:
 
         total_time = f"Total time:     {total_time / 60:.2f} minutes"
         remaining_time_line = f"Remaining time: {remaining_time / 60:.2f} minutes"
+        nslides = f"Slide count:     {len(self.untimed_slides) + len(self.timed_slides)}"
 
-        return '\n'.join(line for line in (untimed_slides, timed_slides, total_time, remaining_time_line, time_for_untimed_slides) if line)
+        return '\n'.join(line for line in (untimed_slides, timed_slides, total_time, remaining_time_line, time_for_untimed_slides, nslides) if line)
 
 def main():
     with open('index.html') as f:
