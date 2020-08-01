@@ -1,5 +1,3 @@
-#![allow(unused_imports)]
-
 use std::ffi::{OsStr, OsString};
 use std::fs::{self, File};
 use std::io::{self, BufReader, BufWriter, Read, Write};
@@ -9,6 +7,7 @@ use std::process::{Command, Stdio};
 
 use eyre::{eyre, WrapErr};
 use handlebars::Handlebars;
+use lol_html::{element, HtmlRewriter, OutputSink, Settings};
 use pulldown_cmark::{html, CowStr, Event, Options, Parser};
 use serde::Serialize;
 use structopt::StructOpt;
@@ -205,24 +204,22 @@ impl App {
             &self.opt.template.parent().unwrap_or(&self.opt.template),
             RecursiveMode::NonRecursive,
         )?;
-        watcher.watch(&self.opt.html_touchup, RecursiveMode::NonRecursive)?;
 
-        let filename = |p: &Path| {
-            p.file_name()
-                .unwrap_or_else(|| panic!(format!("{:?} should have a filename", p)))
-                .to_owned()
-        };
-
-        let input_fn = filename(&self.opt.input);
-        let template_fn = filename(&self.opt.template);
-        let html_touchup_fn = filename(&self.opt.html_touchup.join("html_touchup.py"));
+        let input_fn = &self
+            .opt
+            .input
+            .file_name()
+            .expect("Input file should have a filename")
+            .to_owned();
+        let template_fn = &self
+            .opt
+            .template
+            .file_name()
+            .expect("Input file should have a filename")
+            .to_owned();
         let is_relevant = |path: &Path| -> bool {
             path.file_name()
-                .map(|file_name| {
-                    file_name == input_fn
-                        || file_name == template_fn
-                        || file_name == html_touchup_fn
-                })
+                .map(|file_name| file_name == input_fn || file_name == template_fn)
                 .unwrap_or(true)
         };
 
@@ -310,13 +307,6 @@ impl<'a> MappedParser<'a> {
     }
 }
 
-fn fake_smartypants<S: AsRef<str>>(text: S) -> String {
-    text.as_ref()
-        .replace("---", "—")
-        .replace("--", "–")
-        .replace("...", "…")
-}
-
 impl<'a> Iterator for MappedParser<'a> {
     type Item = Event<'a>;
 
@@ -344,16 +334,21 @@ impl<'a> Iterator for MappedParser<'a> {
                 ret
             }
             Event::Text(text) => {
-                if self.started_paragraph && text.starts_with("Notes:") {
+                if self.started_paragraph && text.starts_with("Notes: ") {
                     self.lookahead = Some(Event::Text(
-                        fake_smartypants(text.strip_prefix("Notes:").unwrap()).into(),
+                        text.strip_prefix("Notes: ").unwrap().to_owned().into(),
                     ));
                     self.has_notes = true;
                     Event::Html(r#"</p><aside class="notes"><p>"#.into())
                 } else if self.in_code {
                     Event::Text(text)
                 } else {
-                    Event::Text(fake_smartypants(text).into())
+                    Event::Text(
+                        text.replace("---", "—")
+                            .replace("--", "–")
+                            .replace("...", "…")
+                            .into(),
+                    )
                 }
             }
             Event::Start(Tag::CodeBlock(CodeBlockKind::Fenced(header))) => {

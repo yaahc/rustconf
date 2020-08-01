@@ -6,7 +6,34 @@
 @import url(https://use.typekit.net/buc1fag.css)
 @import url(https://use.typekit.net/buc1fag.css)
 
-@import "./rustconf-colors.sass"
+$c-black: rgb(13, 9, 17)
+$c-peach: rgb(245, 167, 143)
+$c-peach-dark: rgb(187, 118, 97)
+$c-orange: rgb(243, 183, 115)
+$c-yellow: rgb(241, 223, 141)
+$rgb-yellow: 241,223,141
+$c-green: rgb(105, 160, 92)
+$c-teal: rgb(94, 173, 157)
+$c-purple-light: rgb(195, 187, 200)
+// $c-purple: rgb(145, 134, 154)
+$c-purple: #ab94bf // slightly brighter
+$c-purple-dark: rgb(115, 109, 119)
+$c-purple-xdark: rgb(33, 28, 38)
+$c-ruby: rgb(181, 63, 40)
+$c-white: rgb(250, 249, 243)
+$c-eggshell: rgb(238, 233, 216)
+$c-white-dark: rgb(230, 229, 220)
+$c-white-a60: rgb(250, 249, 243, 0.6)
+$c-purple-a30: rgba(145, 134, 154, 0.30)
+$c-gray-a30: rgba(132, 136, 153, 0.30)
+$c-orange-a15: rgba(255, 163, 87, 0.15)
+$c-yellow-a15: rgba(255, 227, 100, 0.15)
+$c-blue-a15: rgba(143, 199, 236, 0.15)
+$c-purple-a15: rgba(145, 134, 154, 0.15)
+$c-peach-a15: rgba(243, 156, 129, 0.15)
+$c-gray-a15: rgba(132, 136, 153, 0.15)
+$c-gray: rgb(153, 136, 132)
+$c-gray-dark: rgb(68, 65, 64)
 
 // Override theme settings (see ../template/settings.scss)
 $backgroundColor: $c-black
@@ -32,16 +59,12 @@ $heading4Size: 1.0em
 
 @import "../template/theme"
 
-i
-  &.fa, &.fab, &.fad, &.fal, &.far, &.fas
-    min-width: 1em
-
 .reveal > .slides
   .small
     font-size: 0.6em
     line-height: 1
 
-  span.author, .small
+  span.author
     color: $c-peach
 
   h2
@@ -84,9 +107,8 @@ i
     font-size: 0.6em
     color: $c-purple
 
-  & > section, & > section > section
+  & > section
     height: 100%
-    padding: 0
 
     & > .slide-wrapper
       height: 100%
@@ -95,7 +117,7 @@ i
     & > .slide-footer
       font-size: 0.8em
       position: absolute
-      bottom: 0em
+      bottom: 0
       width: 100%
       text-align: center
       display: flex
@@ -121,15 +143,11 @@ i
       margin: 0
 
 
-  .title-card, .center, .image-slide
+  .title-card, .center
     & > .slide-wrapper
       display: flex
-      flex-direction: column
       align-items: center
       justify-content: center
-
-      & .r-stack
-        width: 100%
 
   .title-card
     h2
@@ -140,14 +158,10 @@ i
 
 
 .reveal-viewport
-  &.peach,
-  &.purple,
-  &.teal,
-  &.orange,
-  &.yellow,
-  &.green
-    &, h1, h2, h3, h4, h5, h6, a
-      color: $c-black
+  &.peach, &.purple
+    & .title-card > .slide-wrapper
+      &, & h2, h1
+        color: $c-black
 
 .reveal-viewport.peach
   background-color: $c-peach
@@ -155,112 +169,14 @@ i
 .reveal-viewport.purple
   background-color: $c-purple
 
-.reveal-viewport.teal
-  background-color: $c-teal
-
-.reveal-viewport.orange
-  background-color: $c-orange
-
-  .reveal,
-  span.author
-    color: $c-blue
-
-  .small,
-  a
-    color: $c-blue-light
-
-.reveal-viewport.yellow
-  background-color: $c-yellow
-
-.reveal-viewport.green
-  background-color: $c-green
-
-  .reveal,
-  span.author
-    color: $c-black
-
-  .small,
-  a
-    color: $c-blue
-
-.reveal-viewport.ruby
-  background-color: $c-ruby
-
-  .reveal, span.author, .small
-    color: $c-yellow
-
 .reveal > .speaker-notes
-  &::before
-    opacity: 1
-
-  .notes-placeholder
-    color: #555f6e
-
   a
     color: #00a
     text-decoration: underline
 
-  .next-slide
+  & .next-slide
     font-style: italic
 
-
-.tweet
-  font-family: sans-serif
-  width: 600px
-  margin: auto
-  text-align: left
-  background-color: rgb(21, 32, 43)
-  color: #fff
-  padding: 1em
-  border-radius: 0.5em
-
-  .user,
-  .tweet-main
-    margin-bottom: 0.5em
-
-  .interactions > .item > .number,
-  .user .display-name
-    color: #fff
-    font-weight: bold
-
-  .interactions > .item
-    margin-right: 1em
-
-  .interactions > .item > .number
-    margin-right: 0.25em
-
-  .user,
-  .date,
-  .interactions
-    color: rgb(136, 153, 166)
-    font-size: 0.7em
-
-  .date,
-  .interactions
-    padding-top: 0.5em
-
-  .interactions
-    border-top: 2px solid rgb(56, 68, 77)
-
-  .date
-    padding-bottom: 0.5em
-
-  .user
-    display: flex
-
-    img
-      max-width: 2.5em
-      border-radius: 50%
-      position: relative
-      top: 0.25em
-      margin: 0
-
-    .col-left
-      margin-right: 0.5em
-
-    .col-right
-      margin-top: 0.15em
-
-  // .user > .display-name,
-  // .user > .username
-  //   xxx
+section.has-light-background
+  &, h1, h2, h3, h4, h5, h6
+    color: #222

@@ -5,16 +5,12 @@ let
 
   dart-sass = stdenv.mkDerivation rec {
     pname = "dart-sass";
-    version = "1.26.10";
-    src = fetchzip (let
-      platform = if stdenv.isDarwin then "macos-x64" else "linux-x64";
+    version = "1.26.8";
+    src = fetchzip {
+      sha256 = "0c3mj0imd2r8hdakqzwhdds95dm1kazb8p1lva9rrj63a2zrp9lj";
       url =
-        "https://github.com/sass/${pname}/releases/download/${version}/${pname}-${version}-${platform}.tar.gz";
-      sha256 = if stdenv.isDarwin then
-        "1kjv3r0az4bq3hlvrjz0c0jybnqyw9v50kz9ag548x6yi4r99lxx"
-      else
-        "1jh96rh6i99qa4pmcvbl7hk5znkkrq4nfl8vgmgb9i8kwcg9dfhw";
-    in { inherit url sha256; });
+        "https://github.com/sass/${pname}/releases/download/${version}/${pname}-${version}-linux-x64.tar.gz";
+    };
 
     installPhase = ''
       mkdir -p $out/bin/
@@ -30,11 +26,39 @@ let
 
       mkdir -p $out/share/dart-sass
       cp src/* $out/share/dart-sass
-    '' + (lib.optionalString (!stdenv.isDarwin) ''
+
       ${patchelf}/bin/patchelf \
         --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
         $out/share/dart-sass/dart
-    '');
+    '';
+  };
+
+  sfz = stdenv.mkDerivation rec {
+    pname = "sfz";
+    version = "0.1.0";
+
+    inherit (stdenv.targetPlatform) isDarwin;
+
+    src = fetchzip {
+      sha256 = if isDarwin then
+        "0ndmyibdzyab50l1rczskxyf73ar6c84wg60namspcmzd9xr823q"
+      else
+        "1z26ls2jq6mg8xphy6kkxnlc6qzg8iqq4nxhgrd8181hiqs99ii1";
+      url =
+        let platform = if isDarwin then "apple-darwin" else "unknown-linux-gnu";
+        in "https://github.com/weihanglo/${pname}/releases/download/${version}/${pname}-${version}-x86_64-${platform}.tar.gz";
+    };
+
+    installPhase = ''
+      mkdir -p $out/bin/
+      cp sfz $out/bin/
+      if [[ -z "$isDarwin" ]]
+      then
+        ${patchelf}/bin/patchelf \
+          --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
+          $out/bin/sfz
+      fi
+    '';
   };
 
   reveal-js = stdenv.mkDerivation rec {
@@ -67,5 +91,5 @@ in stdenv.mkDerivation {
   pname = "error-handling-isnt-all-about-errors";
   version = "1.0.0";
   src = if lib.inNixShell then null else ./.;
-  buildInputs = [ pkgs.devd dart-sass py ];
+  buildInputs = [ sfz dart-sass py ];
 }
