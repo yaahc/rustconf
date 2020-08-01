@@ -557,7 +557,9 @@ Finally, it provides an interface for reporters.
 
 Next slide: The concept of error reporters isn't a concept that is common in
 the rust ecosystem today or any language's error handling ecosystem as far as
-I know. The only reason they exist in rust is because of the rust error trait.
+I know. However it is vocabulary that I find particularly compelling in the
+context of rust error handling, and this is largely because of how rust has
+defined it's error trait.
 
 ---
 
@@ -639,8 +641,8 @@ Notes: Here we've implemented our reporter as a short free function. This
 function takes an error and prints that error and all of its sources,
 followed by a backtrace if our error captured one. A more complex error
 reporter might also try to check all errors for a backtrace, or if it were a
-type, it might print some members it is storing alongside the error, such as
-a SpanTrace.
+type and was storing its own context in addition to the error it might print
+that as well.
 
 Next slide: In other languages there is no distinction between errors and
 reporters, and this is largely due the lack of an equivalent to the Error
@@ -700,9 +702,8 @@ Error:
 Notes: In rust we can have the same error print to a log as one line, but the
 screen as many.
 
-This wouldn't be possible if the error trait didn't separate context from
-errors, unless we wanted to re-implement the formats in every error message
-we ever print...
+This wouldn't be possible if the error trait didn't separate the error
+message from other context such as the source error.
 
 Next slide: However, despite the fact that the error trait in rust is more
 flexible than most other languages, it is still restrictive in some ways.
@@ -716,10 +717,17 @@ flexible than most other languages, it is still restrictive in some ways.
 - Can only represent errors with a single source
 - Can only access 3 forms of context
 
-Notes: Can't return types like SpanTrace without using hacks based on
-downcast to work around the error trait.
+Notes: If you've ever written a parser you might have run into this, where
+you have multiple syntax errors at once, but you can only return one via
+`source`. The error trait can only represent a chain of errors as a singly
+linked list, not as a tree, and so it doesn't work for every situation.
 
-Error return traces
+Can't return types like SpanTrace without using hacks based on downcast to
+work around the error trait.
+
+This prevents us from having things like Error return traces in zig, though I
+do have plans on how we can fix these problems so in the future this may no
+longer be an issue.
 
 ---
 
