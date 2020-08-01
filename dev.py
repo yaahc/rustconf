@@ -58,7 +58,12 @@ async def sass_watch(watch: str, render: str):
 
 async def serve_static(root: str = "."):
     print(f"{INFO}Serving static files in ", path.realpath(root) + RESET)
-    await run("sfz", "--no-ignore", "--render-index", "--bind", "127.0.0.1", root)
+    await run("devd", "--color",
+              "--livereload", "--livewatch",
+              "--ignore", "/favicon.*",
+              "--port", "5000",
+              "--address", "127.0.0.1",
+              root)
 
 
 async def open_browser(address: str):

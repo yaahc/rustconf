@@ -37,34 +37,6 @@ let
     '');
   };
 
-  sfz = stdenv.mkDerivation rec {
-    pname = "sfz";
-    version = "0.1.1";
-
-    inherit (stdenv.targetPlatform) isDarwin;
-
-    src = fetchzip {
-      sha256 = if isDarwin then
-        "13b730a7bj3sqr9vh9rply2jyn13jwm7qxsgrdqr4iajr2shsy87"
-      else
-        "1mvdndb0vdyzxh8sv0sc2qv6rsv5gqgc3600cacr9rf78285ay1i";
-      url =
-        let platform = if isDarwin then "apple-darwin" else "unknown-linux-gnu";
-        in "https://github.com/weihanglo/${pname}/releases/download/${version}/${pname}-${version}-x86_64-${platform}.tar.gz";
-    };
-
-    installPhase = ''
-      mkdir -p $out/bin/
-      cp sfz $out/bin/
-      if [[ -z "$isDarwin" ]]
-      then
-        ${patchelf}/bin/patchelf \
-          --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-          $out/bin/sfz
-      fi
-    '';
-  };
-
   reveal-js = stdenv.mkDerivation rec {
     pname = "reveal.js";
     version = "4.0.2";
@@ -95,5 +67,5 @@ in stdenv.mkDerivation {
   pname = "rust-for-non-systems-programmers";
   version = "1.0.0";
   src = if lib.inNixShell then null else ./.;
-  buildInputs = [ sfz dart-sass py ];
+  buildInputs = [ pkgs.devd dart-sass py ];
 }
