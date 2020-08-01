@@ -30,10 +30,14 @@ Next slide: Let me start by introducing myself...
 
 Notes: My name is Jane Lusby. On the internet I go by Yaah or Yaahc. I've
 been writing rust for two and a half years though I was only recently hired
-to do so professionally, by The Zcash Foundation. I got into error handling
-on accident, it started as a yak shave when I wanted to open source a library
-I wrote for work but I wasn't happy with the error handling and decided to
-fix it up first.
+to do so professionally, by The Zcash Foundation. I also maintain
+`awesome-rust-mentors`, which is a list of projects and people who are
+willing to provide mentorship to anyone who asks. If you're interested in
+finding a mentor or being a mentor you should check it out.
+
+I got into error handling on accident, it started as a yak shave when I
+wanted to open source a library I wrote for work but I wasn't happy with the
+error handling and decided to fix it up first.
 
 That yak shave ended with me writing eyre, a fork of anyhow with support for
 customized error reports via a global hook, similar to panic hooks, and
@@ -498,32 +502,55 @@ back to their original type safely, rather than using match as we would with enu
 
 Finally, it provides a reporting interface for all errors.
 
-Next slide: Now, what do I mean by reporting interface?
+Next slide: Lets dig into what I mean by that...
 
 ---
 
 ## The Error Trait
 
-<list fragments>
+```rust [1-9|1|2-4|6-9]
+pub trait Error: Debug + Display {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        None
+    }
 
-- Backtrace via `backtrace()`
-- Cause via `source()`
-- Error Message via `Display`
+    fn backtrace(&self) -> Option<&Backtrace> {
+        None
+    }
+}
+```
 
-Notes: The error trait is how reporters access context that was captured for
-them.
-
-This includes...
+Notes: Here is a simplified version of the error trait...
 
 ---
 
-<slide class=title-card data-state=purple>
+## The Error Trait
 
-# The error trait provides an interface _for_ reporters.
+```rust [1-2|4|9|13]
+#[derive(Debug)]
+struct DeserializeError;
 
-Notes: Next slide: In other languages there is no distinction between errors
-and reporters, and this is largely due the lack of an equivalent to the Error
+impl std::fmt::Display for DeserializeError {
+    fn fmt(
+        &self,
+        f: &mut std::fmt::Formatter<'_>,
+    ) -> std::fmt::Result {
+        write!(f, "unable to deserialize type")
+    }
+}
+
+impl std::error::Error for DeserializeError {}
+```
+
+Notes: We don't have a source or a backtrace, so we don't need to implement any
+functions here. If we did have a source though we would need to override the
+`source` function to explicitly return a reference to our source when the
+function is called by an error reporter.
+
+Next slide: In other languages there is no distinction between errors and
+reporters, and this is largely due the lack of an equivalent to the Error
 Trait.
+
 
 ---
 
@@ -581,9 +608,18 @@ screen as many.
 
 This wouldn't be possible if the error trait didn't separate context from errors.
 
+---
+
+<slide class=title-card data-state=purple>
+
+# The error trait provides an interface _for_ reporters.
+
+Notes: Without the error trait each error type would be in charge of its own
+formatting and it would be prohibitively difficult to implement a consistent
+formatting for all errors.
+
 Next slide: However, despite the fact that the error trait in rust is more
 flexible than most other languages, it is still restrictive in some ways.
-
 ---
 
 ## The Error Trait is restrictive
@@ -664,10 +700,13 @@ definitions...
 <list fragments>
 
 - **Error**: A description of why an operation failed
-- **Context**: Any information relevant to an error or an error report that is not itself an error
-- **Error Report**: Printed representation of an error and all of its associated context
+- **Context**: Any information relevant to an error or an error report that
+  is not itself an error
+- **Error Report**: Printed representation of an error and all of its
+  associated context
 
-Notes: In the context of error reporting an error is ..., context is ..., and an error report is the ...
+Notes: In the context of error reporting an error is ..., context is ..., and
+an error report is the ...
 
 This gets to the other goal of this talk, clarifying the relationship between
 errors and context. Errors describe what went wrong, context helps you figure
@@ -675,9 +714,9 @@ out why, and it's my opinion that keeping these two concepts separate leads
 to more readable error reports and that adding just a little context can take
 your error reports from somewhat servicable to oddly satisfying.
 
-I think the best way to explain what I mean will be with an example, so let's
-dig into error reporting by recreating the custom_section example from the
-beginning of the talk. NEXT SLIDE
+Next slide: I think the best way to explain what I mean will be with an
+example, so let's dig into error reporting real quick by recreating the
+custom_section example from the beginning of the talk.
 
 ---
 
@@ -853,39 +892,132 @@ Stderr:
    	tag
    	var</pre>
 
-Notes: And finally we have an error report including all the context we need
-to pinpoint what went wrong _and_ why.
+Notes: And finally we have an error report including all the information we
+need. With it we can pinpoint what went wrong, why it went wrong, and, as an
+added bonus, how we can fix it.
 
 Hopefully this makes it clear how benefitial just a little context can be for
 error reports.
 
-Next slide: so by now you should know all the tools built into the language,
-and have an idea of how to combine them to write error reports. So lets look
-at the ecosystem at large to see what open source libraries we can use to
-help us with these 5 forms of error handling.
+Next slide: By now you should know all the tools built into the language,
+how they fit into the various pieces of error handling, and have an
+understanding of how they can be combined to write error reports. So lets
+look at the ecosystem at large to see what open source libraries we can use
+to help us with our five parts of error handling.
 
 ---
 
 ## Libraries
 
 - Defining
-- Propagating
+- Propagating and Gathering Context
 - Matching and Reacting
 - Discarding
 - Reporting
 
-Notes: Defining => thiserror, displaydoc, SNAFU
-Defining ad-hoc errors + Reporting => anyhow, eyre
-Report Hooks => color-eyre, color-backtrace, color-anyhow (soon tm)
-Propagation => fehler
-Context Capture => tracing-error, extracterr
+Notes: I'm going to introduce these libraries by how they fit into our error
+handling breakdown, not every part will have libraries to help and some will
+be disproportionately represented.
+
+Next slide: First I'd like to introduce thiserror.
 
 ---
 
 ## Defining - thiserror
 
 ``` rust []
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug)]
+pub enum DataStoreError {
+
+    Disconnect(io::Error),
+
+    Redaction(String),
+
+    InvalidHeader {
+        expected: String,
+        found: String,
+    },
+
+    Unknown,
+}
+```
+
+Notes: This error is an error derive macro, and it exists to reduce boiler
+plate by implementing commonly used traits for you, such as Error, Display,
+and From.
+
+---
+
+## Defining - thiserror
+
+``` rust []
+#[derive(Debug, thiserror::Error)]
+pub enum DataStoreError {
+
+    Disconnect(io::Error),
+
+    Redaction(String),
+
+    InvalidHeader {
+        expected: String,
+        found: String,
+    },
+
+    Unknown,
+}
+```
+
+Notes: To use it, we start by adding the macro's identifier to our derive
+attribute.
+
+---
+
+## Defining - thiserror
+
+``` rust [1-14|3|5|7|4]
+#[derive(Debug, thiserror::Error)]
+pub enum DataStoreError {
+    #[error("data store disconnected")]
+    Disconnect(io::Error),
+    #[error("the data for key `{0}` is not available")]
+    Redaction(String),
+    #[error("invalid header (expected {expected:?}, found {found:?})")]
+    InvalidHeader {
+        expected: String,
+        found: String,
+    },
+    #[error("unknown data store error")]
+    Unknown,
+}
+```
+
+---
+
+## Defining - thiserror
+
+``` rust [4]
+#[derive(Debug, thiserror::Error)]
+pub enum DataStoreError {
+    #[error("data store disconnected")]
+    Disconnect(#[source] io::Error),
+    #[error("the data for key `{0}` is not available")]
+    Redaction(String),
+    #[error("invalid header (expected {expected:?}, found {found:?})")]
+    InvalidHeader {
+        expected: String,
+        found: String,
+    },
+    #[error("unknown data store error")]
+    Unknown,
+}
+```
+
+---
+
+## Defining - thiserror
+
+``` rust [4|1-14]
+#[derive(Debug, thiserror::Error)]
 pub enum DataStoreError {
     #[error("data store disconnected")]
     Disconnect(#[from] io::Error),
@@ -901,12 +1033,14 @@ pub enum DataStoreError {
 }
 ```
 
+Notes: Next slide: Next I'd like to introduce `displaydoc`
+
 ---
 
 ## Defining - displaydoc
 
 ```rust []
-#[derive(thiserror::Error, Debug, displaydoc::Display)]
+#[derive(Debug, thiserror::Error, displaydoc::Display)]
 pub enum DataStoreError {
     /// data store disconnected
     Disconnect(#[from] io::Error),
@@ -922,12 +1056,16 @@ pub enum DataStoreError {
 }
 ```
 
+Notes: Display doc is a fork of thiserror that provides only the display
+derive portion of this error, but uses doc comments instead of custom
+attributes to input the format strings.
+
 ---
 
-## Defining - SNAFU
+## Defining Errors & Gathering Context - SNAFU
 
 
-```rust [1-13|10-11]
+```rust [1-13|1|2-4|10-11]
 #[derive(Debug, Snafu)]
 enum Error {
     #[snafu(display("Unable to read configuration from {}: {}", path.display(), source))]
@@ -943,6 +1081,13 @@ fn process_data() -> Result<(), Error> {
 }
 ```
 
+Notes: The context function takes a result and a "Context Selector" struct
+which is autogenerated by the derive macro. This struct implicitly passes
+along context like the source and backtrace, making it so you only have to
+capture additional context that is unique that your error variant. It then
+internally creates the correct wrapping error variant. You can think of it as
+syntax sugar for `map_err`.
+
 ---
 
 ## Defining - anyhow/eyre
@@ -955,6 +1100,14 @@ Err(eyre!("file not found"))?
 fallible_fn()
     .wrap_err("failed operation")?;
 ```
+
+Notes: anyhow and eyre also have helpers for defining new errors. However,
+these functions don't help you define new error types, instead they use
+private types to create the new errors and then they immediately wrap those
+types in the main reporting type e.g. `eyre::Report`. This is mostly useful
+for when you want to create errors exclusively to report them, though these
+crates do also provide some helpers for then later reacting to these adhoc
+error types.
 
 ---
 

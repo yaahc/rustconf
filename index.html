@@ -28,10 +28,13 @@
 <h2>About Me</h2>
 <aside class="notes"><p>My name is Jane Lusby. On the internet I go by Yaah or Yaahc. I've
 been writing rust for two and a half years though I was only recently hired
-to do so professionally, by The Zcash Foundation. I got into error handling
-on accident, it started as a yak shave when I wanted to open source a library
-I wrote for work but I wasn't happy with the error handling and decided to
-fix it up first.</p>
+to do so professionally, by The Zcash Foundation. I also maintain
+<code>awesome-rust-mentors</code>, which is a list of projects and people who are
+willing to provide mentorship to anyone who asks. If you're interested in
+finding a mentor or being a mentor you should check it out.</p>
+<p>I got into error handling on accident, it started as a yak shave when I
+wanted to open source a library I wrote for work but I wasn't happy with the
+error handling and decided to fix it up first.</p>
 <p>That yak shave ended with me writing eyre, a fork of anyhow with support for
 customized error reports via a global hook, similar to panic hooks, and
 color-eyre, a library which provides custom error and panic report hooks that
@@ -503,7 +506,7 @@ implements the error trait into an error trait object.</p>
 <p>Second, it lets us then react to specific errors by letting us try to downcast them
 back to their original type safely, rather than using match as we would with enums.</p>
 <p>Finally, it provides a reporting interface for all errors.</p>
-<div class="next-slide"><p>Next slide: Now, what do I mean by reporting interface?</p></div>
+<div class="next-slide"><p>Next slide: Lets dig into what I mean by that…</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -512,25 +515,45 @@ back to their original type safely, rather than using match as we would with enu
 </div></section>
 <section><div class="slide-wrapper">
 <h2>The Error Trait</h2>
+<pre><code class="language-rust" data-line-numbers="1-9|1|2-4|6-9" data-noescape="">pub trait Error: Debug + Display {
+    fn source(&amp;self) -&gt; Option&lt;&amp;(dyn Error + 'static)&gt; {
+        None
+    }
 
-<ul>
-<li class="fragment">Backtrace via <code>backtrace()</code></li>
-<li class="fragment">Cause via <code>source()</code></li>
-<li class="fragment">Error Message via <code>Display</code></li>
-</ul>
-<aside class="notes"><p>The error trait is how reporters access context that was captured for
-them.</p>
-<p>This includes…</p>
+    fn backtrace(&amp;self) -&gt; Option&lt;&amp;Backtrace&gt; {
+        None
+    }
+}
+</code></pre>
+<aside class="notes"><p>Here is a simplified version of the error trait...</p>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
-<section class="title-card" data-state="purple"><div class="slide-wrapper">
-<h1>The error trait provides an interface <em>for</em> reporters.</h1>
-<aside class="notes"><div class="next-slide"><p>Next slide: In other languages there is no distinction between errors
-and reporters, and this is largely due the lack of an equivalent to the Error
+<section><div class="slide-wrapper">
+<h2>The Error Trait</h2>
+<pre><code class="language-rust" data-line-numbers="1-2|4|9|13" data-noescape="">#[derive(Debug)]
+struct DeserializeError;
+
+impl std::fmt::Display for DeserializeError {
+    fn fmt(
+        &amp;self,
+        f: &amp;mut std::fmt::Formatter&lt;'_&gt;,
+    ) -&gt; std::fmt::Result {
+        write!(f, "unable to deserialize type")
+    }
+}
+
+impl std::error::Error for DeserializeError {}
+</code></pre>
+<aside class="notes"><p>We don't have a source or a backtrace, so we don't need to implement any
+functions here. If we did have a source though we would need to override the
+<code>source</code> function to explicitly return a reference to our source when the
+function is called by an error reporter.</p>
+<div class="next-slide"><p>Next slide: In other languages there is no distinction between errors and
+reporters, and this is largely due the lack of an equivalent to the Error
 Trait.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
@@ -587,15 +610,19 @@ Error:
 <aside class="notes"><p>In rust we can have the same error print to a log as one line, but the
 screen as many.</p>
 <p>This wouldn't be possible if the error trait didn't separate context from errors.</p>
-<div class="next-slide"><p>Next slide: However, despite the fact that the error trait in rust is more
-flexible than most other languages, it is still restrictive in some ways.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section class="title-card" data-state="purple"><div class="slide-wrapper">
+<h1>The error trait provides an interface <em>for</em> reporters.</h1>
+<aside class="notes"><p>Without the error trait each error type would be in charge of its own
+formatting and it would be prohibitively difficult to implement a consistent
+formatting for all errors.</p>
+<h2>Next slide: However, despite the fact that the error trait in rust is more
+flexible than most other languages, it is still restrictive in some ways.</h2>
 <h2>The Error Trait is restrictive</h2>
 
 <ul>
@@ -605,7 +632,7 @@ flexible than most other languages, it is still restrictive in some ways.</p></d
 <aside class="notes"><p>Can't return types like SpanTrace without using hacks based on
 downcast to work around the error trait.</p>
 <p>Error return traces</p>
-</aside></div><div class="slide-footer">
+</aside></aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
@@ -700,18 +727,21 @@ definitions…</p></div>
 
 <ul>
 <li class="fragment"><strong>Error</strong>: A description of why an operation failed</li>
-<li class="fragment"><strong>Context</strong>: Any information relevant to an error or an error report that is not itself an error</li>
-<li class="fragment"><strong>Error Report</strong>: Printed representation of an error and all of its associated context</li>
+<li class="fragment"><strong>Context</strong>: Any information relevant to an error or an error report that
+is not itself an error</li>
+<li class="fragment"><strong>Error Report</strong>: Printed representation of an error and all of its
+associated context</li>
 </ul>
-<aside class="notes"><p>In the context of error reporting an error is ..., context is ..., and an error report is the ...</p>
+<aside class="notes"><p>In the context of error reporting an error is ..., context is ..., and
+an error report is the …</p>
 <p>This gets to the other goal of this talk, clarifying the relationship between
 errors and context. Errors describe what went wrong, context helps you figure
 out why, and it's my opinion that keeping these two concepts separate leads
 to more readable error reports and that adding just a little context can take
 your error reports from somewhat servicable to oddly satisfying.</p>
-<p>I think the best way to explain what I mean will be with an example, so let's
-dig into error reporting by recreating the custom_section example from the
-beginning of the talk. NEXT SLIDE</p>
+<div class="next-slide"><p>Next slide: I think the best way to explain what I mean will be with an
+example, so let's dig into error reporting real quick by recreating the
+custom_section example from the beginning of the talk.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -903,14 +933,16 @@ Stderr:
    	stash
    	tag
    	var</pre>
-<aside class="notes"><p>And finally we have an error report including all the context we need
-to pinpoint what went wrong <em>and</em> why.</p>
+<aside class="notes"><p>And finally we have an error report including all the information we
+need. With it we can pinpoint what went wrong, why it went wrong, and, as an
+added bonus, how we can fix it.</p>
 <p>Hopefully this makes it clear how benefitial just a little context can be for
 error reports.</p>
-<div class="next-slide"><p>Next slide: so by now you should know all the tools built into the language,
-and have an idea of how to combine them to write error reports. So lets look
-at the ecosystem at large to see what open source libraries we can use to
-help us with these 5 forms of error handling.</p></div>
+<div class="next-slide"><p>Next slide: By now you should know all the tools built into the language,
+how they fit into the various pieces of error handling, and have an
+understanding of how they can be combined to write error reports. So lets
+look at the ecosystem at large to see what open source libraries we can use
+to help us with our five parts of error handling.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -921,16 +953,15 @@ help us with these 5 forms of error handling.</p></div>
 <h2>Libraries</h2>
 <ul>
 <li>Defining</li>
-<li>Propagating</li>
+<li>Propagating and Gathering Context</li>
 <li>Matching and Reacting</li>
 <li>Discarding</li>
 <li>Reporting</li>
 </ul>
-<aside class="notes"><p>Defining =&gt; thiserror, displaydoc, SNAFU
-Defining ad-hoc errors + Reporting =&gt; anyhow, eyre
-Report Hooks =&gt; color-eyre, color-backtrace, color-anyhow (soon tm)
-Propagation =&gt; fehler
-Context Capture =&gt; tracing-error, extracterr</p>
+<aside class="notes"><p>I'm going to introduce these libraries by how they fit into our error
+handling breakdown, not every part will have libraries to help and some will
+be disproportionately represented.</p>
+<div class="next-slide"><p>Next slide: First I'd like to introduce thiserror.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -939,10 +970,61 @@ Context Capture =&gt; tracing-error, extracterr</p>
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Defining - thiserror</h2>
-<pre><code class="language-rust" data-line-numbers="" data-noescape="">#[derive(thiserror::Error, Debug)]
+<pre><code class="language-rust" data-line-numbers="" data-noescape="">#[derive(Debug)]
+pub enum DataStoreError {
+
+    Disconnect(io::Error),
+
+    Redaction(String),
+
+    InvalidHeader {
+        expected: String,
+        found: String,
+    },
+
+    Unknown,
+}
+</code></pre>
+<aside class="notes"><p>This error is an error derive macro, and it exists to reduce boiler
+plate by implementing commonly used traits for you, such as Error, Display,
+and From.</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby (she/her)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>Defining - thiserror</h2>
+<pre><code class="language-rust" data-line-numbers="" data-noescape="">#[derive(Debug, thiserror::Error)]
+pub enum DataStoreError {
+
+    Disconnect(io::Error),
+
+    Redaction(String),
+
+    InvalidHeader {
+        expected: String,
+        found: String,
+    },
+
+    Unknown,
+}
+</code></pre>
+<aside class="notes"><p>To use it, we start by adding the macro's identifier to our derive
+attribute.</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby (she/her)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>Defining - thiserror</h2>
+<pre><code class="language-rust" data-line-numbers="1-14|3|5|7|4" data-noescape="">#[derive(Debug, thiserror::Error)]
 pub enum DataStoreError {
     #[error("data store disconnected")]
-    Disconnect(#[from] io::Error),
+    Disconnect(io::Error),
     #[error("the data for key `{0}` is not available")]
     Redaction(String),
     #[error("invalid header (expected {expected:?}, found {found:?})")]
@@ -961,8 +1043,55 @@ pub enum DataStoreError {
 </div>
 </div></section>
 <section><div class="slide-wrapper">
+<h2>Defining - thiserror</h2>
+<pre><code class="language-rust" data-line-numbers="4" data-noescape="">#[derive(Debug, thiserror::Error)]
+pub enum DataStoreError {
+    #[error("data store disconnected")]
+    Disconnect(#[source] io::Error),
+    #[error("the data for key `{0}` is not available")]
+    Redaction(String),
+    #[error("invalid header (expected {expected:?}, found {found:?})")]
+    InvalidHeader {
+        expected: String,
+        found: String,
+    },
+    #[error("unknown data store error")]
+    Unknown,
+}
+</code></pre>
+</div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby (she/her)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>Defining - thiserror</h2>
+<pre><code class="language-rust" data-line-numbers="4|1-14" data-noescape="">#[derive(Debug, thiserror::Error)]
+pub enum DataStoreError {
+    #[error("data store disconnected")]
+    Disconnect(#[from] io::Error),
+    #[error("the data for key `{0}` is not available")]
+    Redaction(String),
+    #[error("invalid header (expected {expected:?}, found {found:?})")]
+    InvalidHeader {
+        expected: String,
+        found: String,
+    },
+    #[error("unknown data store error")]
+    Unknown,
+}
+</code></pre>
+<aside class="notes"><div class="next-slide"><p>Next slide: Next I'd like to introduce <code>displaydoc</code></p></div>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby (she/her)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
 <h2>Defining - displaydoc</h2>
-<pre><code class="language-rust" data-line-numbers="" data-noescape="">#[derive(thiserror::Error, Debug, displaydoc::Display)]
+<pre><code class="language-rust" data-line-numbers="" data-noescape="">#[derive(Debug, thiserror::Error, displaydoc::Display)]
 pub enum DataStoreError {
     /// data store disconnected
     Disconnect(#[from] io::Error),
@@ -977,15 +1106,18 @@ pub enum DataStoreError {
     Unknown,
 }
 </code></pre>
-</div><div class="slide-footer">
+<aside class="notes"><p>Display doc is a fork of thiserror that provides only the display
+derive portion of this error, but uses doc comments instead of custom
+attributes to input the format strings.</p>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<h2>Defining - SNAFU</h2>
-<pre><code class="language-rust" data-line-numbers="1-13|10-11" data-noescape="">#[derive(Debug, Snafu)]
+<h2>Defining Errors &amp; Gathering Context - SNAFU</h2>
+<pre><code class="language-rust" data-line-numbers="1-13|1|2-4|10-11" data-noescape="">#[derive(Debug, Snafu)]
 enum Error {
     #[snafu(display("Unable to read configuration from {}: {}", path.display(), source))]
     ReadConfiguration { source: io::Error, path: PathBuf },
@@ -999,7 +1131,13 @@ fn process_data() -&gt; Result&lt;(), Error&gt; {
     Ok(())
 }
 </code></pre>
-</div><div class="slide-footer">
+<aside class="notes"><p>The context function takes a result and a "Context Selector" struct
+which is autogenerated by the derive macro. This struct implicitly passes
+along context like the source and backtrace, making it so you only have to
+capture additional context that is unique that your error variant. It then
+internally creates the correct wrapping error variant. You can think of it as
+syntax sugar for <code>map_err</code>.</p>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
@@ -1014,7 +1152,14 @@ Err(eyre!("file not found"))?
 fallible_fn()
     .wrap_err("failed operation")?;
 </code></pre>
-</div><div class="slide-footer">
+<aside class="notes"><p>anyhow and eyre also have helpers for defining new errors. However,
+these functions don't help you define new error types, instead they use
+private types to create the new errors and then they immediately wrap those
+types in the main reporting type e.g. <code>eyre::Report</code>. This is mostly useful
+for when you want to create errors exclusively to report them, though these
+crates do also provide some helpers for then later reacting to these adhoc
+error types.</p>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
