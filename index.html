@@ -25,28 +25,53 @@
 </aside></div></section>
 <section class="center"><div class="slide-wrapper">
 <h2>About Me</h2>
-<aside class="notes"><p> My name is Jane Lusby. On the internet I go by Yaah or Yaahc. I've
-been writing rust for two and a half years though I was only recently hired
-to do so professionally, by The Zcash Foundation. I also maintain
-<code>awesome-rust-mentors</code>, which is a list of projects and people who are
-willing to provide mentorship to anyone who asks. If you're interested in
-finding a mentor or being a mentor you should check it out.</p>
-<p>I got into error handling on accident, it started as a yak shave when I
-wanted to open source a library I wrote for work but I wasn't happy with the
-error handling and decided to fix it up first.</p>
-<p>That yak shave ended with me writing eyre, a fork of anyhow with support for
-customized error reports via a global hook, similar to panic hooks, and
-color-eyre, a library which provides custom error and panic report hooks that
-let you construct error reports like this.</p>
-<p>too fast in the beginning
-Remember to breathe
-show go and cpp original code
-pause between unrecoverable and recoverable bullet lists
-more on the application vs library
-Fill out script for all slides
-Transition from the command -&gt; the libraries section
-polish the entire libraries section</p>
-<div class="next-slide"><p>Next slide: Show the various usage examples from <code>color-eyre</code>.</p></div>
+<aside class="notes"><p> My name is Jane Lusby, my pronouns are she/her. On the internet I go
+by Yaah or Yaahc. I've been writing rust for two and a half years though I
+was only recently hired to do so professionally, by The Zcash Foundation.</p>
+<div class="next-slide"><p>Next slide: Quick shameless plug, I also maintain <code>awesome-rust-mentors</code>…</p></div>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby (she/her)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>Awesome Rust Mentors</h2>
+<img alt="" src="img/mentors.png"/>
+<aside class="notes"><p> Awesome-rust-mentors is a list of projects and people who are willing
+to provide mentorship to anyone who asks. If you're interested in finding a
+mentor, finding a project to get involved in, being a mentor, or getting
+people involved in your project you should check it out.</p>
+</aside></div></section>
+<section><div class="slide-wrapper">
+<h2>Why Error Handling?</h2>
+<aside class="notes"><p> I actually got into error handling on accident, it started as a yak
+shave when I wanted to open source a library I wrote for work but I wasn't
+happy with the error handling so I decided to fix it up first.</p>
+<div class="next-slide"><p>Next slide: That yak shave ended with me writing eyre…</p></div>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby (she/her)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>eyre</h2>
+<aside class="notes"><p> Eyre is a fork of anyhow with support for customized error reports via a
+global hook, similar to a panic hook.</p>
+<div class="next-slide"><p>Next slide: I also ended up writing color-eyre.</p></div>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby (she/her)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>color-eyre</h2>
+<aside class="notes"><p> color-eyre is a library which provides a custom panic report hook and
+a custom error report hook for eyre.</p>
+<div class="next-slide"><p>Next slide: With these libraries I'm now able to construct error reports like
+this.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -70,10 +95,8 @@ Suggestion: try using a file that exists next time
 Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
-<aside class="notes"><p> this is the basic usage example, with an error section, a spantrace
-section which, if you're not familiar with tracing is this extremely cool
-backtrace-like type of tracing spans…, a suggestion, and an env setting
-section.</p>
+<aside class="notes"><p> Here we can see the basic usage example.</p>
+<div class="next-slide"><p>Next slide: In it we have an error section.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -97,10 +120,7 @@ Suggestion: try using a file that exists next time
 Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
-<aside class="notes"><p> this is the basic usage example, with an error section, a spantrace
-section which, if you're not familiar with tracing is this extremely cool
-backtrace-like type of tracing spans…, a suggestion, and an env setting
-section.</p>
+<aside class="notes"><div class="next-slide"><p> Next slide: followed by a span trace section…</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -124,7 +144,10 @@ Suggestion: try using a file that exists next time
 Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
-</div><div class="slide-footer">
+<aside class="notes"><p> If you're not familiar with tracing is this extremely cool
+backtrace-like type of tracing spans.</p>
+<div class="next-slide"><p>Next slide: then after that we have a suggestion section</p></div>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
@@ -147,10 +170,7 @@ Error:
 Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
-<aside class="notes"><p> this is the basic usage example, with an error section, a spantrace
-section which, if you're not familiar with tracing is this extremely cool
-backtrace-like type of tracing spans…, a suggestion, and an env setting
-section.</p>
+<aside class="notes"><div class="next-slide"><p> Next slide: Followed finally by a omitted backtrace section</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -174,10 +194,7 @@ Suggestion: try using a file that exists next time
 Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</pre>
-<aside class="notes"><p> this is the basic usage example, with an error section, a spantrace
-section which, if you're not familiar with tracing is this extremely cool
-backtrace-like type of tracing spans…, a suggestion, and an env setting
-section.</p>
+<aside class="notes"><div class="next-slide"><p> Next slide: I can also enable backtrace capture…</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -197,8 +214,7 @@ section.</p>
                         ⋮ 10 frames hidden ⋮
 // ...
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
-<aside class="notes"><p> we can pretty print backtraces and hide unimportant frames, here you can see…</p>
-<div class="next-slide"><p>Next slide: we can also filter our backtrace frames, note that here there are 10 frames hidden after main…</p></div>
+<aside class="notes"><div class="next-slide"><p> Next slide: Here we have a backtrace section…</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -218,8 +234,33 @@ Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
   <font color="#34E2E2">                      ⋮ 10 frames hidden ⋮                       </font>
 <font color="#333333">// ...
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
-<aside class="notes"><p> we can pretty print backtraces and hide unimportant frames, here you can see…</p>
-<div class="next-slide"><p>Next slide: we can also filter our backtrace frames, note that here there are 10 frames hidden after main…</p></div>
+<aside class="notes"><p> We can control the formatting of the backtrace section, here you can
+see a pretty printed backtrace based on <code>color-backtrace</code>, which hides
+irrelevant frames, in this case it's hidden 5 frames before read_file and 10
+frames after main.</p>
+<div class="next-slide"><p>Next slide: we can also further customize this by applying custom filters…</p></div>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby (she/her)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper"><pre class="term"><font color="#333333"><b>❯</b> RUST_BACKTRACE=1 cargo run --example custom_filter
+// ...</font>
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ BACKTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  <font color="#34E2E2">                       ⋮ 5 frames hidden ⋮                       </font>
+   6: <font color="#F15D22">custom_filter::read_file</font><font color="#88807C">::h0afee8fe0960bf02</font>
+      at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/custom_filter.rs</font>:<font color="#75507B">53</font>
+   7: <font color="#F15D22">custom_filter::read_config</font><font color="#88807C">::h6622065848c69b29</font>
+      at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/custom_filter.rs</font>:<font color="#75507B">58</font>
+  <font color="#34E2E2">                      ⋮ 11 frames hidden ⋮                       </font>
+<font color="#333333">// ...
+Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
+<aside class="notes"><p> Here you can see we've got 11 frames hidden after read_config instead
+of 10 frames hidden after main because I've configured it to hide the main
+frame.</p>
+<div class="next-slide"><p>Next slide: And we can apply this custom filtering consistently to all of our
+errors.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -237,38 +278,22 @@ Location: <font color="#75507B">examples/panic_hook.rs</font>:<font color="#7550
       at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/panic_hook.rs</font>:<font color="#75507B">37</font>
   15: <font color="#F15D22">panic_hook::read_config</font><font color="#88807C">::h2751dcca3305a9a3</font>
       at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/panic_hook.rs</font>:<font color="#75507B">43</font>
-  16: <font color="#F15D22">panic_hook::main</font><font color="#88807C">::h3197dc34c9c69f83</font>
-      at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/panic_hook.rs</font>:<font color="#75507B">11</font>
-  <font color="#34E2E2">                      ⋮ 10 frames hidden ⋮                       </font>
+  <font color="#34E2E2">                      ⋮ 11 frames hidden ⋮                       </font>
 
 Run with COLORBT_SHOW_HIDDEN=1 environment variable to disable frame filtering.
 Run with RUST_BACKTRACE=full to include source snippets.</pre>
-</div><div class="slide-footer">
-<div class="slide-footer-left">Jane Lusby (she/her)</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
-</div>
-</div></section>
-<section><div class="slide-wrapper"><pre class="term"><font color="#333333"><b>❯</b> RUST_BACKTRACE=1 cargo run --example custom_filter
-// ...</font>
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ BACKTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  <font color="#34E2E2">                       ⋮ 5 frames hidden ⋮                       </font>
-   6: <font color="#F15D22">custom_filter::read_file</font><font color="#88807C">::h0afee8fe0960bf02</font>
-      at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/custom_filter.rs</font>:<font color="#75507B">53</font>
-   7: <font color="#F15D22">custom_filter::read_config</font><font color="#88807C">::h6622065848c69b29</font>
-      at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/custom_filter.rs</font>:<font color="#75507B">58</font>
-  <font color="#34E2E2">                      ⋮ 11 frames hidden ⋮                       </font>
-<font color="#333333">// ...
-Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
-<aside class="notes"><p> And we can apply this custom filtering consistently to backtraces
-printed in both our panic reports and our error reports.</p>
+<aside class="notes"><p> So here you can see we can have the same report format for panics as
+we did for our errors.</p>
+<div class="next-slide"><p>Next slide: with our error report hook we can also bundle arbitrary data with
+our errors.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper"><pre class="term"><font color="#333333"><b>❯</b> cargo run --example custom_section
+<section><div class="slide-wrapper">
+<pre class="term"><font color="#333333"><b>❯</b> cargo run --example custom_section
 Error:
    0: the cat could not be got
    1: cmd exited unsuccessfully
@@ -288,15 +313,13 @@ Stderr:
    	var
 
 <font color="#333333">Suggestion: Maybe that isn't what git is for...</font></pre>
-<aside class="notes"><p> We can add custom sections, here you can see I've added the section
-for Stderr</p>
-<div class="next-slide"><p>Next slide: We will dig into this example more later…</p></div>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Jane Lusby (she/her)</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
-</div>
-</div></section>
+<aside class="notes"><p> We can use this to make custom sections in our error reports. Here you
+can see that in addition to the error section we also have a Command section
+showing which command we tried to run and a stderr section, showing the
+output of the command when it failed. And we'll will dig into this example
+more later, so look forward to that…</p>
+<div class="next-slide"><p>Next slide: and finally, we can also add errors as sections</p></div>
+</aside></div></section>
 <section><div class="slide-wrapper"><pre class="term"><font color="#CC0000"><b>❯</b></font> cargo run --example multiple_errors
 Error:
    0: <font color="#F15D22">encountered multiple errors</font>
@@ -312,12 +335,13 @@ Error:
 Error:
    0: <font color="#F15D22">The file could not be parsed</font>
    1: <font color="#F15D22">The file you're parsing is literally written in c++ instead of rust, what the hell</font></pre>
-<aside class="notes"><p> And we can be consistent when reporting, here you can see a panic
-that produces almost identical output to our Eyre Reports.</p>
-<p>Now, I'm not giving this talk to talk about eyre.</p>
+<aside class="notes"><p> Which we can use to aggregate multiple errors into a single report and
+format them all consistently.</p>
+<p>Now, I'm not giving this talk to talk about eyre and color-eyre.</p>
 <div class="next-slide"><p>Next slide: I'm giving this talk to share what I learned in that yak shave to
-fix the error handling in my library, and how it has changed how I look at
-error handling and error reporting.</p></div>
+fix the error handling in my library that resulted in eyre and color-eyre,
+and how the process has changed how I look at error handling and error
+reporting.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -337,12 +361,13 @@ error handling and error reporting.</p></div>
 </ul>
 <aside class="notes"><p> Show the <code>annoying</code> bullet at the end of saying "What is error handling?".</p>
 <p>don't mention the annoying, just keep going</p>
-<p>It's lot of things, when you zoom in close. Error handling is defining errors.
-It's propagating errors and gathering context, and context I mean stuff like
-the path you tried to open or a backtrace showing where your error came from.
-It's reacting to specific errors, if the file isn't found, create the file.
-It's discarding errors, and doing so intentionally and visibly. And last but
-not least, it's reporting errors and the gathered context.</p>
+<p>It's lot of things, when you zoom in close. Error handling is defining
+errors, with types and traits. It's propagating errors and gathering context,
+and by context I mean stuff like the path you tried to open or a backtrace
+showing where your error came from. It's reacting to specific errors, if the
+file isn't found, create the file. It's discarding errors, and doing so
+intentionally and visibly. And last but not least, it's reporting errors and
+their associated context.</p>
 <p>Now, this breakdown gets to the goal of my talk. I have a theory that error
 handling is made more confusing by people try to simplify it, because, among
 other things, error handling is annoying. I worry that the fuzziness between
@@ -360,15 +385,17 @@ taken almost word for word from The Rust Book's chapter on error handling.</p></
 </div></section>
 <section class="title-card" data-state="purple"><div class="slide-wrapper">
 <h1>Recoverable<br/> vs<br/> Non-Recoverable</h1>
-<aside class="notes"><p> The Rust model for errors distinguishes between two classes of errors.</p>
-<p>Recoverable errors are errors you can reasonably expect to occur during
-execution of…, can be reacted to, or reported.</p>
-<p>Unrecoverable errors are bugs, like index out of bounds. can’t be reacted to,
-only reported before exiting the program / thread</p>
-<p>Most languages dont distinguish between these kinds of errors</p>
-<p>C++ has exceptions</p>
-<p>Rust doesnt</p>
-<p>Rust has panic for unrecoverable errors and result recoverable errors</p>
+<aside class="notes"><p> The Rust model for errors distinguishes between two classes of errors,
+recoverable and non-recoverable errors.</p>
+<p>Recoverable errors are errors that can reasonablly be reacted to, or reported
+when encountered. These are errors like file not found, or connection closed.</p>
+<p>Non-recoverable errors are errors that cannot reasonably be reacted to, only
+reported, before exiting the thread or program. These are errors are usually
+caused by bugs such as index out of bounds or integer overflow.</p>
+<p>Now, most languages dont distinguish between these kinds of errors.</p>
+<p>For example, C++ has historically used exceptions for both.</p>
+<p>Rust doesnt have exceptions, instead Rust has panic for non-recoverable
+errors and result recoverable errors</p>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -386,9 +413,10 @@ only reported before exiting the program / thread</p>
     );
 }
 </code></pre>
-<aside class="notes"><p> Unrecoverable errors in rust are created via the <code>panic!</code> macro. Here
+<aside class="notes"><p> non-recoverable errors in rust are created via the <code>panic!</code> macro. Here
 we can see an example of an index out of bounds error.</p>
-<div class="next-slide"><p>Next slide: Only input is an error message and optional some context</p></div>
+<div class="next-slide"><p>Next slide: Only input for the panic macro is an error message and optionally
+some context to include in that error message.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -406,10 +434,13 @@ we can see an example of an index out of bounds error.</p>
     );
 }
 </code></pre>
-<aside class="notes"><p> Reporting and default context gathering done by panic hook</p>
-<p>once its done printing the report the panic handler cleans up either by
-unwinding the thread's stack or aborting the application all together.</p>
-<div class="next-slide"><p>Next slide: Recoverable errors are modeled in rust with the enum <code>Result&lt;T, E&gt;</code>.</p></div>
+<aside class="notes"><p> Reporting and default context gathering is done by panic hook, and by
+default context gathering I mean capturing the caller location or capturing
+the backtrace if it's enabled.</p>
+<p>Once the panic hook is done printing the report the panic handler takes over
+and cleans up either by unwinding the thread's stack or aborting the
+application all together.</p>
+<div class="next-slide"><p>Next slide: Result</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -418,20 +449,22 @@ unwinding the thread's stack or aborting the application all together.</p>
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Result</h2>
-<pre><code class="language-rust" data-line-numbers="1-6|2-3|4-5|1-6" data-noescape="">enum Result&lt;T, E&gt; {
+<pre><code class="language-rust" data-line-numbers="1-7|3-4|5-6|1-7" data-noescape="">#[must_use]
+enum Result&lt;T, E&gt; {
     /// Contains the success value
     Ok(T),
     /// Contains the error value
     Err(E),
 }
 </code></pre>
-<aside class="notes"><p> This enum has two variants, Ok, which contains the value of an
+<aside class="notes"><p> Recoverable errors in rust are modeled with the enum <code>Result&lt;T, E&gt;</code>.</p>
+<p>This enum has two variants, Ok, which contains the value of an
 operation when it completes successfully, and Err, which contains the error
 value of an operation when it could <em>not</em> be completed successfully.</p>
 <p>We use Result to combine two return types in one and assign meaning to each
 possibility.</p>
-<div class="next-slide"><p>Next slide: The big advantage of using enums for recoverable errors is we
-must react all errors.</p></div>
+<div class="next-slide"><p>Next slide: The big advantage of using enums for recoverable errors is that
+we must react to all errors.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -445,10 +478,14 @@ must react all errors.</p></div>
     Err(error) =&gt; println!("uh oh we got an error: {}", error),
 }
 </code></pre>
-<aside class="notes"><p> With an enum, we cannot access the inner value without first
-accounting for all the variants it could possibly be. In addition to this,
-Rust has marked the Result enum as <code>#[must_use]</code>, which makes the compiler
-emit a warning whenever a result is discarded accidentally.</p>
+<aside class="notes"><p> Here you can see we have to use match (or anything equivalent to
+match) to access the values inside of either variant.</p>
+<p>With an enum, we cannot access the inner values without first accounting for
+all the variants that enum could possibly be. In addition to this, Rust has
+marked the Result enum as <code>#[must_use]</code>, which makes the compiler emit a
+warning whenever a result is discarded implicitly. This helps us avoid
+ignoring errors accidentally and makes discarded errors visible to later
+readers.</p>
 <div class="next-slide"><p>Next slide: For recoverable errors rust also provides the currently unstable
 Try trait and the already stable try operator…</p></div>
 </aside></div><div class="slide-footer">
@@ -501,11 +538,16 @@ simply using the try operator to propagate the error.</p>
 </ul>
 <aside class="notes"><p> The error trait fills three roles in rust.</p>
 <p>First, it lets us represent an open set of errors by converting any type that
-implements the error trait into an error trait object.</p>
-<p>Second, it lets us then react to specific errors by letting us try to downcast them
-back to their original type safely, rather than using match as we would with enums.</p>
-<p>Finally, it provides a reporting interface for all errors.</p>
-<div class="next-slide"><p>Next slide: Lets dig into what I mean by that…</p></div>
+implements the error trait into an error trait object. This is useful for
+composing errors, and it is what lets us expose source errors via the error
+trait regardless of their actual type.</p>
+<p>Second, the error trait lets us then react to specific errors by letting us
+try to downcast them back to their original type safely, rather than using
+match as we would with enums.</p>
+<p>Finally, it provides an interface for reporters.</p>
+<div class="next-slide"><p>Next slide: The concept of error reporters isn't a concept that is common in
+the rust ecosystem today or any language's error handling ecosystem as far as
+I know. The only reason they exist in rust is because of the rust error trait.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -524,7 +566,11 @@ back to their original type safely, rather than using match as we would with enu
     }
 }
 </code></pre>
-<aside class="notes"><p> Here is a simplified version of the error trait…</p>
+<aside class="notes"><p> Here is a simplified version of the error trait. Here you can see
+we've got two super traits, debug and display, which we must impl to
+implement the error trait. Then below that we have two functions, source and
+backtrace, both with default impls that we can override when needed.</p>
+<div class="next-slide"><p>Next slide: Next lets look at a simple error</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -532,7 +578,7 @@ back to their original type safely, rather than using match as we would with enu
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<h2>The Error Trait</h2>
+<h2>The Error Trait - An Error</h2>
 <pre><code class="language-rust" data-line-numbers="1-2|4|9|13" data-noescape="">#[derive(Debug)]
 struct DeserializeError;
 
@@ -547,10 +593,44 @@ impl std::fmt::Display for DeserializeError {
 
 impl std::error::Error for DeserializeError {}
 </code></pre>
-<aside class="notes"><p> We don't have a source or a backtrace, so we don't need to implement any
-functions here. If we did have a source though we would need to override the
-<code>source</code> function to explicitly return a reference to our source when the
-function is called by an error reporter.</p>
+<aside class="notes"><p> Here we've got an error with no members. We derive debug on it, then
+implement display, where we just write our error message and finally we impl
+the error trait.</p>
+<p>We don't have a source or a backtrace, so we don't need to override any
+functions here, which is why the block on the trait implementation is empty.
+If we did have a source though we would need to override the <code>source</code>
+function to explicitly return a reference to our source when that function is
+called by an error reporter.</p>
+<div class="next-slide"><p>Next slide: finally lets look at a simple error reporter.</p></div>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby (she/her)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>The Error Trait - A Reporter</h2>
+<pre><code class="language-rust left" data-line-numbers="" data-noescape="">fn report(error: &amp;(dyn std::error::Error + 'static)) {
+    print!("Error:");
+
+    let errors =
+        std::iter::successors(Some(error), |e| e.source());
+
+    for (ind, error) in errors.enumerate() {
+        print!("\n   {}: {}", ind, error);
+    }
+
+    if let Some(backtrace) = error.backtrace() {
+        print!("\n\nBacktrace: {}", backtrace);
+    }
+}
+</code></pre>
+<aside class="notes"><p> Here we've implemented our reporter as a short free function. This
+function takes an error and prints that error and all of its sources,
+followed by a backtrace if our error captured one. A more complex error
+reporter might also try to check all errors for a backtrace, or if it were a
+type, it might print some members it is storing alongside the error, such as
+a SpanTrace.</p>
 <div class="next-slide"><p>Next slide: In other languages there is no distinction between errors and
 reporters, and this is largely due the lack of an equivalent to the Error
 Trait.</p></div>
@@ -578,11 +658,11 @@ to avoid using the provided interface all together.</p>
 <p>In rust we don't have to combine our messages all into one, in fact, you're
 encouraged not to. Including a source error's message in your <code>Display</code>
 implementation and returning it as your source via the Error trait is
-essentially a bug, and it forces reporters to duplicate information when they
+essentially a bug, as it forces reporters to duplicate information when they
 print out the chain of error messages.</p>
 <div class="next-slide"><p>Next slide: By separating the source and the error message we move the
 responsibility of formatting away from the errors themselves, making it
-easier to get fancy.</p></div>
+possible to get fancy.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -608,20 +688,18 @@ Error:
       at <font color="#75507B">examples/usage.rs</font>:<font color="#75507B">58</font></pre>
 <aside class="notes"><p> In rust we can have the same error print to a log as one line, but the
 screen as many.</p>
-<p>This wouldn't be possible if the error trait didn't separate context from errors.</p>
+<p>This wouldn't be possible if the error trait didn't separate context from
+errors, unless we wanted to re-implement the formats in every error message
+we ever print…</p>
+<div class="next-slide"><p>Next slide: However, despite the fact that the error trait in rust is more
+flexible than most other languages, it is still restrictive in some ways.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
-<section class="title-card" data-state="purple"><div class="slide-wrapper">
-<h1>The error trait provides an interface <em>for</em> reporters.</h1>
-<aside class="notes"><p> Without the error trait each error type would be in charge of its own
-formatting and it would be prohibitively difficult to implement a consistent
-formatting for all errors.</p>
-<h2>Next slide: However, despite the fact that the error trait in rust is more
-flexible than most other languages, it is still restrictive in some ways.</h2>
+<section><div class="slide-wrapper">
 <h2>The Error Trait is restrictive</h2>
 
 <ul>
@@ -631,7 +709,22 @@ flexible than most other languages, it is still restrictive in some ways.</h2>
 <aside class="notes"><p> Can't return types like SpanTrace without using hacks based on
 downcast to work around the error trait.</p>
 <p>Error return traces</p>
-</aside></aside></div><div class="slide-footer">
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">Jane Lusby (she/her)</div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
+</div>
+</div></section>
+<section><div class="slide-wrapper">
+<h2>TIPS - Reporters</h2>
+<ul>
+<li>Reporters usually impl <code>From&lt;E: Error&gt;</code></li>
+<li>if they do they <em>cannot</em> impl <code>Error</code></li>
+<li>don't compose well</li>
+<li>They often carry extra context</li>
+<li>Prints report via <code>Debug</code> trait</li>
+</ul>
+</div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
@@ -678,7 +771,7 @@ downcast to work around the error trait.</p>
 </ul>
 </div>
 <div class="col">
-Unrecoverable
+Non-Recoverable
 
 <ul>
 <li class="fragment">Defining
@@ -1165,7 +1258,7 @@ error types.</p>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<h2>Common Concerns - Defining</h2>
+<h2>TIPS - Defining</h2>
 <ul>
 <li>Open Set vs Closed Set</li>
 <li>Stack Size</li>
@@ -1274,19 +1367,6 @@ let foo_error = report.downcast_ref::&lt;FooError&gt;().unwrap();
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<h2>Common Concerns - Reporters</h2>
-<ul>
-<li>Reporters usually impl <code>From&lt;E: Error&gt;</code></li>
-<li>if they do they <em>cannot</em> impl <code>Error</code></li>
-<li>Prints report via <code>Debug</code> trait</li>
-</ul>
-</div><div class="slide-footer">
-<div class="slide-footer-left">Jane Lusby (she/her)</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
-</div>
-</div></section>
-<section><div class="slide-wrapper">
 <h2>Library vs Application</h2>
 <ul>
 <li>Library =&gt; error defining libraries</li>
@@ -1322,18 +1402,13 @@ debug our applications, so we might want a custom report hook like
 <div class="slide-footer-right">
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
-</div></section>
-<section><div class="slide-wrapper">
-<h1>Fin</h1>
-</div><div class="slide-footer">
-<div class="slide-footer-left">Jane Lusby (she/her)</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
-</div>
-</div></section>
-</div>
-</div>
-<script src="dist/reveal.js"></script>
+</div></section></div></div></body></html>
+
+<script dist="" reveal.js"="" src="dist
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;script src="></script>
 <script src="plugin/notes/notes.js"></script>
 <script src="plugin/highlight/highlight.js"></script>
 <script src="plugin/highlight/rust.js"></script>
@@ -1352,5 +1427,5 @@ debug our applications, so we might want a custom report hook like
             plugins: [HighlightRustCompiler, HighlightShellSession, RevealHighlight, RevealNotes]
         });
     </script>
-</body>
-</html>
+
+

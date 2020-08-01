@@ -28,33 +28,55 @@ Next slide: Let me start by introducing myself...
 
 ## About Me
 
-Notes: My name is Jane Lusby. On the internet I go by Yaah or Yaahc. I've
-been writing rust for two and a half years though I was only recently hired
-to do so professionally, by The Zcash Foundation. I also maintain
-`awesome-rust-mentors`, which is a list of projects and people who are
-willing to provide mentorship to anyone who asks. If you're interested in
-finding a mentor or being a mentor you should check it out.
+Notes: My name is Jane Lusby, my pronouns are she/her. On the internet I go
+by Yaah or Yaahc. I've been writing rust for two and a half years though I
+was only recently hired to do so professionally, by The Zcash Foundation.
 
-I got into error handling on accident, it started as a yak shave when I
-wanted to open source a library I wrote for work but I wasn't happy with the
-error handling and decided to fix it up first.
+Next slide: Quick shameless plug, I also maintain `awesome-rust-mentors`...
 
-That yak shave ended with me writing eyre, a fork of anyhow with support for
-customized error reports via a global hook, similar to panic hooks, and
-color-eyre, a library which provides custom error and panic report hooks that
-let you construct error reports like this.
+---
 
-too fast in the beginning
-Remember to breathe
-show go and cpp original code
-pause between unrecoverable and recoverable bullet lists
-more on the application vs library
-Fill out script for all slides
-Transition from the command -> the libraries section
-polish the entire libraries section
+<slide no-footer>
+
+## Awesome Rust Mentors
+
+![](img/mentors.png)
+
+Notes: Awesome-rust-mentors is a list of projects and people who are willing
+to provide mentorship to anyone who asks. If you're interested in finding a
+mentor, finding a project to get involved in, being a mentor, or getting
+people involved in your project you should check it out.
+
+---
+
+## Why Error Handling?
+
+Notes: I actually got into error handling on accident, it started as a yak
+shave when I wanted to open source a library I wrote for work but I wasn't
+happy with the error handling so I decided to fix it up first.
+
+Next slide: That yak shave ended with me writing eyre...
+
+---
+
+## eyre
 
 
-Next slide: Show the various usage examples from `color-eyre`.
+
+Notes: Eyre is a fork of anyhow with support for customized error reports via a
+global hook, similar to a panic hook.
+
+Next slide: I also ended up writing color-eyre.
+
+---
+
+## color-eyre
+
+Notes: color-eyre is a library which provides a custom panic report hook and
+a custom error report hook for eyre.
+
+Next slide: With these libraries I'm now able to construct error reports like
+this.
 
 ---
 
@@ -76,10 +98,9 @@ Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
 
-Notes: this is the basic usage example, with an error section, a spantrace
-section which, if you're not familiar with tracing is this extremely cool
-backtrace-like type of tracing spans..., a suggestion, and an env setting
-section.
+Notes: Here we can see the basic usage example.
+
+Next slide: In it we have an error section.
 
 ---
 
@@ -101,10 +122,8 @@ Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
 
-Notes: this is the basic usage example, with an error section, a spantrace
-section which, if you're not familiar with tracing is this extremely cool
-backtrace-like type of tracing spans..., a suggestion, and an env setting
-section.
+Notes: Next slide: followed by a span trace section...
+
 
 ---
 
@@ -126,6 +145,12 @@ Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
 
+Notes: If you're not familiar with tracing is this extremely cool
+backtrace-like type of tracing spans.
+
+Next slide: then after that we have a suggestion section
+
+
 ---
 
 <pre class=term><font color="#333333"><b>❯</b> cargo run --example usage
@@ -146,10 +171,7 @@ Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
 
-Notes: this is the basic usage example, with an error section, a spantrace
-section which, if you're not familiar with tracing is this extremely cool
-backtrace-like type of tracing spans..., a suggestion, and an env setting
-section.
+Notes: Next slide: Followed finally by a omitted backtrace section
 
 ---
 
@@ -171,10 +193,7 @@ Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</pre>
 
-Notes: this is the basic usage example, with an error section, a spantrace
-section which, if you're not familiar with tracing is this extremely cool
-backtrace-like type of tracing spans..., a suggestion, and an env setting
-section.
+Notes: Next slide: I can also enable backtrace capture...
 
 ---
 
@@ -192,9 +211,7 @@ section.
 // ...
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
 
-Notes: we can pretty print backtraces and hide unimportant frames, here you can see...
-
-Next slide: we can also filter our backtrace frames, note that here there are 10 frames hidden after main...
+Notes: Next slide: Here we have a backtrace section...
 
 ---
 
@@ -212,29 +229,12 @@ Next slide: we can also filter our backtrace frames, note that here there are 10
 <font color="#333333">// ...
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
 
-Notes: we can pretty print backtraces and hide unimportant frames, here you can see...
+Notes: We can control the formatting of the backtrace section, here you can
+see a pretty printed backtrace based on `color-backtrace`, which hides
+irrelevant frames, in this case it's hidden 5 frames before read_file and 10
+frames after main.
 
-Next slide: we can also filter our backtrace frames, note that here there are 10 frames hidden after main...
-
----
-
-<pre class=term><font color="#CC0000"><b>❯</b></font> RUST_BACKTRACE=1 cargo run --example panic_hook --no-default-features
-<font color="#CC0000">The application panicked (crashed).</font>
-Message:  <font color="#06989A">No such file or directory (os error 2)</font>
-Location: <font color="#75507B">examples/panic_hook.rs</font>:<font color="#75507B">37</font>
-
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ BACKTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  <font color="#34E2E2">                      ⋮ 13 frames hidden ⋮                       </font>
-  14: <font color="#F15D22">panic_hook::read_file</font><font color="#88807C">::h1a2c1d2710c16ca9</font>
-      at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/panic_hook.rs</font>:<font color="#75507B">37</font>
-  15: <font color="#F15D22">panic_hook::read_config</font><font color="#88807C">::h2751dcca3305a9a3</font>
-      at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/panic_hook.rs</font>:<font color="#75507B">43</font>
-  16: <font color="#F15D22">panic_hook::main</font><font color="#88807C">::h3197dc34c9c69f83</font>
-      at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/panic_hook.rs</font>:<font color="#75507B">11</font>
-  <font color="#34E2E2">                      ⋮ 10 frames hidden ⋮                       </font>
-
-Run with COLORBT_SHOW_HIDDEN=1 environment variable to disable frame filtering.
-Run with RUST_BACKTRACE=full to include source snippets.</pre>
+Next slide: we can also further customize this by applying custom filters...
 
 ---
 
@@ -250,10 +250,40 @@ Run with RUST_BACKTRACE=full to include source snippets.</pre>
 <font color="#333333">// ...
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
 
-Notes: And we can apply this custom filtering consistently to backtraces
-printed in both our panic reports and our error reports.
+Notes: Here you can see we've got 11 frames hidden after read_config instead
+of 10 frames hidden after main because I've configured it to hide the main
+frame.
+
+Next slide: And we can apply this custom filtering consistently to all of our
+errors.
 
 ---
+
+<pre class=term><font color="#CC0000"><b>❯</b></font> RUST_BACKTRACE=1 cargo run --example panic_hook --no-default-features
+<font color="#CC0000">The application panicked (crashed).</font>
+Message:  <font color="#06989A">No such file or directory (os error 2)</font>
+Location: <font color="#75507B">examples/panic_hook.rs</font>:<font color="#75507B">37</font>
+
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━ BACKTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  <font color="#34E2E2">                      ⋮ 13 frames hidden ⋮                       </font>
+  14: <font color="#F15D22">panic_hook::read_file</font><font color="#88807C">::h1a2c1d2710c16ca9</font>
+      at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/panic_hook.rs</font>:<font color="#75507B">37</font>
+  15: <font color="#F15D22">panic_hook::read_config</font><font color="#88807C">::h2751dcca3305a9a3</font>
+      at <font color="#75507B">/home/jlusby/git/yaahc/color-eyre/examples/panic_hook.rs</font>:<font color="#75507B">43</font>
+  <font color="#34E2E2">                      ⋮ 11 frames hidden ⋮                       </font>
+
+Run with COLORBT_SHOW_HIDDEN=1 environment variable to disable frame filtering.
+Run with RUST_BACKTRACE=full to include source snippets.</pre>
+
+Notes: So here you can see we can have the same report format for panics as
+we did for our errors.
+
+Next slide: with our error report hook we can also bundle arbitrary data with
+our errors.
+
+---
+
+<slide no-footer>
 
 <pre class=term><font color="#333333"><b>❯</b> cargo run --example custom_section
 Error:
@@ -276,10 +306,13 @@ Stderr:
 
 <font color="#333333">Suggestion: Maybe that isn&apos;t what git is for...</font></pre>
 
-Notes: We can add custom sections, here you can see I've added the section
-for Stderr
+Notes: We can use this to make custom sections in our error reports. Here you
+can see that in addition to the error section we also have a Command section
+showing which command we tried to run and a stderr section, showing the
+output of the command when it failed. And we'll will dig into this example
+more later, so look forward to that...
 
-Next slide: We will dig into this example more later...
+Next slide: and finally, we can also add errors as sections
 
 ---
 
@@ -299,14 +332,17 @@ Error:
    0: <font color="#F15D22">The file could not be parsed</font>
    1: <font color="#F15D22">The file you&apos;re parsing is literally written in c++ instead of rust, what the hell</font></pre>
 
-Notes: And we can be consistent when reporting, here you can see a panic
-that produces almost identical output to our Eyre Reports.
+Notes: Which we can use to aggregate multiple errors into a single report and
+format them all consistently.
 
-Now, I'm not giving this talk to talk about eyre.
+
+Now, I'm not giving this talk to talk about eyre and color-eyre.
 
 Next slide: I'm giving this talk to share what I learned in that yak shave to
-fix the error handling in my library, and how it has changed how I look at
-error handling and error reporting.
+fix the error handling in my library that resulted in eyre and color-eyre,
+and how the process has changed how I look at error handling and error
+reporting.
+
 
 ---
 
@@ -326,12 +362,13 @@ Notes: Show the `annoying` bullet at the end of saying "What is error handling?"
 
 don't mention the annoying, just keep going
 
-It's lot of things, when you zoom in close. Error handling is defining errors.
-It's propagating errors and gathering context, and context I mean stuff like
-the path you tried to open or a backtrace showing where your error came from.
-It's reacting to specific errors, if the file isn't found, create the file.
-It's discarding errors, and doing so intentionally and visibly. And last but
-not least, it's reporting errors and the gathered context.
+It's lot of things, when you zoom in close. Error handling is defining
+errors, with types and traits. It's propagating errors and gathering context,
+and by context I mean stuff like the path you tried to open or a backtrace
+showing where your error came from. It's reacting to specific errors, if the
+file isn't found, create the file. It's discarding errors, and doing so
+intentionally and visibly. And last but not least, it's reporting errors and
+their associated context.
 
 Now, this breakdown gets to the goal of my talk. I have a theory that error
 handling is made more confusing by people try to simplify it, because, among
@@ -350,21 +387,22 @@ taken almost word for word from The Rust Book's chapter on error handling.
 
 # Recoverable<br> vs<br> Non-Recoverable
 
-Notes: The Rust model for errors distinguishes between two classes of errors.
+Notes: The Rust model for errors distinguishes between two classes of errors,
+recoverable and non-recoverable errors.
 
-Recoverable errors are errors you can reasonably expect to occur during
-execution of..., can be reacted to, or reported.
+Recoverable errors are errors that can reasonablly be reacted to, or reported
+when encountered. These are errors like file not found, or connection closed.
 
-Unrecoverable errors are bugs, like index out of bounds. can’t be reacted to,
-only reported before exiting the program / thread
+Non-recoverable errors are errors that cannot reasonably be reacted to, only
+reported, before exiting the thread or program. These are errors are usually
+caused by bugs such as index out of bounds or integer overflow.
 
-Most languages dont distinguish between these kinds of errors
+Now, most languages dont distinguish between these kinds of errors.
 
-C++ has exceptions
+For example, C++ has historically used exceptions for both.
 
-Rust doesnt
-
-Rust has panic for unrecoverable errors and result recoverable errors
+Rust doesnt have exceptions, instead Rust has panic for non-recoverable
+errors and result recoverable errors
 
 ---
 
@@ -381,10 +419,11 @@ Rust has panic for unrecoverable errors and result recoverable errors
 }
 ```
 
-Notes: Unrecoverable errors in rust are created via the `panic!` macro. Here
+Notes: non-recoverable errors in rust are created via the `panic!` macro. Here
 we can see an example of an index out of bounds error.
 
-Next slide: Only input is an error message and optional some context
+Next slide: Only input for the panic macro is an error message and optionally
+some context to include in that error message.
 
 ---
 
@@ -401,18 +440,22 @@ Next slide: Only input is an error message and optional some context
 }
 ```
 
-Notes: Reporting and default context gathering done by panic hook
+Notes: Reporting and default context gathering is done by panic hook, and by
+default context gathering I mean capturing the caller location or capturing
+the backtrace if it's enabled.
 
-once its done printing the report the panic handler cleans up either by
-unwinding the thread's stack or aborting the application all together.
+Once the panic hook is done printing the report the panic handler takes over
+and cleans up either by unwinding the thread's stack or aborting the
+application all together.
 
-Next slide: Recoverable errors are modeled in rust with the enum `Result<T, E>`.
+Next slide: Result
 
 ---
 
 ## Result
 
-```rust [1-6|2-3|4-5|1-6]
+```rust [1-7|3-4|5-6|1-7]
+#[must_use]
 enum Result<T, E> {
     /// Contains the success value
     Ok(T),
@@ -421,15 +464,17 @@ enum Result<T, E> {
 }
 ```
 
-Notes: This enum has two variants, Ok, which contains the value of an
+Notes: Recoverable errors in rust are modeled with the enum `Result<T, E>`.
+
+This enum has two variants, Ok, which contains the value of an
 operation when it completes successfully, and Err, which contains the error
 value of an operation when it could _not_ be completed successfully.
 
 We use Result to combine two return types in one and assign meaning to each
 possibility.
 
-Next slide: The big advantage of using enums for recoverable errors is we
-must react all errors.
+Next slide: The big advantage of using enums for recoverable errors is that
+we must react to all errors.
 
 ---
 
@@ -442,10 +487,15 @@ match result {
 }
 ```
 
-Notes: With an enum, we cannot access the inner value without first
-accounting for all the variants it could possibly be. In addition to this,
-Rust has marked the Result enum as `#[must_use]`, which makes the compiler
-emit a warning whenever a result is discarded accidentally.
+Notes: Here you can see we have to use match (or anything equivalent to
+match) to access the values inside of either variant.
+
+With an enum, we cannot access the inner values without first accounting for
+all the variants that enum could possibly be. In addition to this, Rust has
+marked the Result enum as `#[must_use]`, which makes the compiler emit a
+warning whenever a result is discarded implicitly. This helps us avoid
+ignoring errors accidentally and makes discarded errors visible to later
+readers.
 
 Next slide: For recoverable errors rust also provides the currently unstable
 Try trait and the already stable try operator...
@@ -495,14 +545,19 @@ Next slide: Finally, for recoverable errors rust also provides the error trait.
 Notes: The error trait fills three roles in rust.
 
 First, it lets us represent an open set of errors by converting any type that
-implements the error trait into an error trait object.
+implements the error trait into an error trait object. This is useful for
+composing errors, and it is what lets us expose source errors via the error
+trait regardless of their actual type.
 
-Second, it lets us then react to specific errors by letting us try to downcast them
-back to their original type safely, rather than using match as we would with enums.
+Second, the error trait lets us then react to specific errors by letting us
+try to downcast them back to their original type safely, rather than using
+match as we would with enums.
 
-Finally, it provides a reporting interface for all errors.
+Finally, it provides an interface for reporters.
 
-Next slide: Lets dig into what I mean by that...
+Next slide: The concept of error reporters isn't a concept that is common in
+the rust ecosystem today or any language's error handling ecosystem as far as
+I know. The only reason they exist in rust is because of the rust error trait.
 
 ---
 
@@ -520,11 +575,16 @@ pub trait Error: Debug + Display {
 }
 ```
 
-Notes: Here is a simplified version of the error trait...
+Notes: Here is a simplified version of the error trait. Here you can see
+we've got two super traits, debug and display, which we must impl to
+implement the error trait. Then below that we have two functions, source and
+backtrace, both with default impls that we can override when needed.
+
+Next slide: Next lets look at a simple error
 
 ---
 
-## The Error Trait
+## The Error Trait - An Error
 
 ```rust [1-2|4|9|13]
 #[derive(Debug)]
@@ -542,15 +602,49 @@ impl std::fmt::Display for DeserializeError {
 impl std::error::Error for DeserializeError {}
 ```
 
-Notes: We don't have a source or a backtrace, so we don't need to implement any
-functions here. If we did have a source though we would need to override the
-`source` function to explicitly return a reference to our source when the
-function is called by an error reporter.
+Notes: Here we've got an error with no members. We derive debug on it, then
+implement display, where we just write our error message and finally we impl
+the error trait.
+
+We don't have a source or a backtrace, so we don't need to override any
+functions here, which is why the block on the trait implementation is empty.
+If we did have a source though we would need to override the `source`
+function to explicitly return a reference to our source when that function is
+called by an error reporter.
+
+Next slide: finally lets look at a simple error reporter.
+
+---
+
+## The Error Trait - A Reporter
+
+```rust []
+fn report(error: &(dyn std::error::Error + 'static)) {
+    print!("Error:");
+
+    let errors =
+        std::iter::successors(Some(error), |e| e.source());
+
+    for (ind, error) in errors.enumerate() {
+        print!("\n   {}: {}", ind, error);
+    }
+
+    if let Some(backtrace) = error.backtrace() {
+        print!("\n\nBacktrace: {}", backtrace);
+    }
+}
+```
+
+Notes: Here we've implemented our reporter as a short free function. This
+function takes an error and prints that error and all of its sources,
+followed by a backtrace if our error captured one. A more complex error
+reporter might also try to check all errors for a backtrace, or if it were a
+type, it might print some members it is storing alongside the error, such as
+a SpanTrace.
 
 Next slide: In other languages there is no distinction between errors and
 reporters, and this is largely due the lack of an equivalent to the Error
 Trait.
-
 
 ---
 
@@ -576,12 +670,12 @@ to avoid using the provided interface all together.
 In rust we don't have to combine our messages all into one, in fact, you're
 encouraged not to. Including a source error's message in your `Display`
 implementation and returning it as your source via the Error trait is
-essentially a bug, and it forces reporters to duplicate information when they
+essentially a bug, as it forces reporters to duplicate information when they
 print out the chain of error messages.
 
 Next slide: By separating the source and the error message we move the
 responsibility of formatting away from the errors themselves, making it
-easier to get fancy.
+possible to get fancy.
 
 ---
 
@@ -606,20 +700,13 @@ Error:
 Notes: In rust we can have the same error print to a log as one line, but the
 screen as many.
 
-This wouldn't be possible if the error trait didn't separate context from errors.
-
----
-
-<slide class=title-card data-state=purple>
-
-# The error trait provides an interface _for_ reporters.
-
-Notes: Without the error trait each error type would be in charge of its own
-formatting and it would be prohibitively difficult to implement a consistent
-formatting for all errors.
+This wouldn't be possible if the error trait didn't separate context from
+errors, unless we wanted to re-implement the formats in every error message
+we ever print...
 
 Next slide: However, despite the fact that the error trait in rust is more
 flexible than most other languages, it is still restrictive in some ways.
+
 ---
 
 ## The Error Trait is restrictive
@@ -633,6 +720,16 @@ Notes: Can't return types like SpanTrace without using hacks based on
 downcast to work around the error trait.
 
 Error return traces
+
+---
+
+## TIPS - Reporters
+
+- Reporters usually impl `From<E: Error>`
+- if they do they _cannot_ impl `Error`
+- don't compose well
+- They often carry extra context
+- Prints report via `Debug` trait
 
 ---
 
@@ -666,7 +763,7 @@ Error return traces
 </div>
 
 <div class="col">
-Unrecoverable
+Non-Recoverable
 
 <list fragments>
 
@@ -1111,7 +1208,7 @@ error types.
 
 ---
 
-## Common Concerns - Defining
+## TIPS - Defining
 
 - Open Set vs Closed Set
 - Stack Size
@@ -1192,14 +1289,6 @@ let foo_error = report.downcast_ref::<FooError>().unwrap();
 
 - Reporters: anyhow/eyre
 - Hooks: color-eyre, jane-eyre, color-anyhow (soon), color-backtrace
-
----
-
-## Common Concerns - Reporters
-
-- Reporters usually impl `From<E: Error>`
-- if they do they _cannot_ impl `Error`
-- Prints report via `Debug` trait
 
 ---
 
