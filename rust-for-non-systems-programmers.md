@@ -561,6 +561,22 @@ the default units are Kelvins.
 Here's a simple call of their API; we 1. load the API key from a JSON file, 2.
 make a request, and then 3. print out the response text.
 
+Next slide: Running the example.
+
+---
+
+<slide data-timing=10>
+
+```shell-session
+$ ./openweather.py
+{"coord":{"lon":-71.24,"lat":42.38},"weather":[{"id":801,"main":
+"Clouds","description":"few clouds","icon":"02d"}],"base":
+"stations","main":{"temp":298.14,"feels_like":297.91,"temp_min":
+296.48,"temp_max":299.82,"pressure":1009,"humidity":57}, ...
+```
+
+Notes: And when we run it, we get this minified JSON blob as output.
+
 Let's work on recreating this in Rust.
 
 Next slide: Reading the API key from JSON.
@@ -760,7 +776,9 @@ Next slide: Adding <crate eyre>.
 
 <slide data-timing=25>
 
-```rust left no-line-numbers [1-8|3,5]
+```rust left no-line-numbers [3-10|5,7]
+
+
 fn main() -> eyre::Result<()> {
     let opt = Opt::from_args();
     let config_json = File::open(&opt.config)?;
@@ -786,7 +804,9 @@ Next slide: Syntax sugar for `?`.
 
 <slide data-timing=35>
 
-```rust left no-line-numbers [4-7,9-12]
+```rust left no-line-numbers [6-9,11-14]
+
+
 fn main() -> eyre::Result<()> {
     let opt = Opt::from_args();
     let config_json =
@@ -920,9 +940,6 @@ Response: Response {
         "content-length": "465",
         "connection": "keep-alive",
         "x-cache-key": "/data/2.5/weather?q=waltham%2cma%2cus",
-        "access-control-allow-origin": "*",
-        "access-control-allow-credentials": "true",
-        "access-control-allow-methods": "GET, POST",
     },
 }
 ```
@@ -1125,15 +1142,17 @@ then a helper method to get the appropriate `TempDifference` for two floats.
 
 ---
 
+<slide data-timing=30>
+
 ```rust
 impl TempDifference {
     fn from(from: f64, to: f64) -> Self {
         let delta = to - from;
         match delta {
-            _ if delta >  10.0 => TempDifference::MuchWarmer,
-            _ if delta >   5.0 => TempDifference::Warmer,
-            _ if delta < -10.0 => TempDifference::MuchColder,
-            _ if delta <  -5.0 => TempDifference::Colder,
+            d if d >  10.0 => TempDifference::MuchWarmer,
+            d if d >   5.0 => TempDifference::Warmer,
+            d if d < -10.0 => TempDifference::MuchColder,
+            d if d <  -5.0 => TempDifference::Colder,
             _ => TempDifference::Same,
         }
     }
@@ -1143,7 +1162,12 @@ impl TempDifference {
 Notes: Here's that constructor function, which takes two floats, calculates
 their difference, and matches them to the correct `TempDifference` variant.
 
+We're also adding conditional statements to the match patterns, which helps make
+it a bit clearer that we're determining which range `delta` is in.
+
 ---
+
+<slide data-timing=40>
 
 ```rust no-line-numbers [1-13|1|3|5-12|7-10]
 #[cfg(test)]
@@ -1173,6 +1197,8 @@ tests to make sure I got the subtraction order and everything right.
 
 ---
 
+<slide data-timing=30>
+
 <pre class="term"><span class=hljs-keyword>$</span> <span class=hljs-title>cargo test</span>
 <span style="color: #4E9A06"><b>    Finished</b></span> test [unoptimized + debuginfo] target(s)
              in 0.04s
@@ -1185,11 +1211,17 @@ test result: <span style="color: #4E9A06">ok</span>. 1 passed; 0 failed; 0 ignor
                  0 measured; 0 filtered out
 </pre>
 
-Notes:
+Notes: And we can run our tests to make sure that we've written everything
+correctly. Another little thing I like about Rust? The type system lets me
+describe and check a lot of my code before it compiles correctly, so I end up
+writing tests that crash and fail immediately a *lot* less often than I do in
+other languages, which is a big boost to my self-esteem.
 
 Next slide: `Stats`.
 
 ---
+
+<slide data-timing=20>
 
 ```rust
 struct Stats {
@@ -1205,6 +1237,8 @@ temperatures --- like their range and their average, so this `Stats` struct
 will handle that computation.
 
 ---
+
+<slide data-timing=40>
 
 ```rust
 impl Default for Stats {
@@ -1231,6 +1265,8 @@ reason.
 
 ---
 
+<slide data-timing=15>
+
 ```rust
 impl Stats {
     fn from(itr: impl Iterator<Item = f64>) -> Self {
@@ -1246,6 +1282,8 @@ start by initializing a mutable return value and a sum of the iterator's
 elements.
 
 ---
+
+<slide data-timing=15>
 
 ```rust
 impl Stats {
@@ -1270,6 +1308,7 @@ minimum and maximum values, as well as the element count and running total.
 
 ---
 
+<slide data-timing=8>
 
 ```rust
 impl Stats {
@@ -1311,7 +1350,9 @@ Next slide: Printing the result.
 
 ---
 
-```rust
+<slide data-timing=60>
+
+```rust no-line-numbers [1|2|3-13|8-11|12|1-13]
 let today_is_warm = 60.0 <= today.avg && today.avg <= 80.0;
 print!("Good morning! Today will be about {:.2}°F ", today.avg);
 println!(
@@ -1323,15 +1364,29 @@ println!(
         TempDifference::Same => "as",
         _ => "than",
     },
-    end = if today_is_warm { ":)" } else { "." },
+    end = if today_is_warm { " :)" } else { "." },
 );
 ```
 
-Notes: And then we can print all this information out, and we're done!
+Notes:
+
+1. First, I want to print a smiley face for good weather, so I'll check if the
+   average temperature today is between 60 and 80°F.
+2. Then, we'll print the first line, truncating today's average temperature to 2
+   decimal places.
+3. Then, we're going to print the rest of it. There's a bunch going on here, so
+   let's break it down.
+
+   First, because `println!` is a macro, it can do weird things with the syntax
+   --- like this keyword-argument syntax that's only used for printing and
+   formatting macros.
+4. Next, we have a `match` statement --- Rust's `if`/`else` and `match`
+   statements return a value, so we can use them inline like this.
+5. And then we finish with a smiley face if today is going to be warm, or a
+   period otherwise.
+6. After printing all the information out, our program is done!
 
 Next slide: Running the final program.
-
-<!-- have a receipt printer video...? -->
 
 ---
 
@@ -1346,7 +1401,17 @@ that's about the same as yesterday.
 
 ---
 
-## TODO: Receipt printer video
+<slide data-timing=20>
+
+<video data-src=img/printing.mp4 data-autoplay type=video/mp4>
+
+---
+
+<slide class=image-slide data-timing=15>
+
+![Me holding a printed receipt in my hand, which reads "Good morning! Today will
+be about 77.76°F (69.3 - 89.76°F); that's about the same as yesterday
+:)](img/printed-receipt.jpg)
 
 ---
 
