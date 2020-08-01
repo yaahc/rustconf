@@ -78,6 +78,8 @@ Next slide: "I don't understand Rust" tweet
 
 ---
 
+<slide class=image-slide>
+
 <tweet>
   hi my names rebecca and i still dont understand rust
   <date>10:12 AM · May 1, 2017</date>
