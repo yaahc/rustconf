@@ -14,14 +14,13 @@
 <body>
 <div class="reveal">
 <div class="slides">
-<section data-timing="15"><div class="slide-wrapper">
+<section data-timing="60"><div class="slide-wrapper">
 <h1>Rust <div class="small">for</div> Non-Systems Programmers</h1>
 <p><span class="author">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</span></p>
 <p><i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo/">becca.ooo</a></p>
 
 <aside class="notes"><p> Hey folks, my name is Rebecca Turner, I use <a href="https://pronoun.is/she/her/">she/her</a> pronouns, and I'm
 going to be talking about Rust for non-systems programmers.</p>
-<div class="next-slide"><p>Next slide: Why this talk?</p></div>
 </aside></div></section>
 <section class="title-card" data-timing="15"><div class="slide-wrapper">
 <h2>Why this talk?</h2>
@@ -29,7 +28,6 @@ going to be talking about Rust for non-systems programmers.</p>
 Python — and now Rust is pretty much my favorite language.</p>
 <p>But if you looked at the <a href="https://rust-lang.org/">rust-lang.org</a> website before 2019, that might not
 make a lot of sense to you.</p>
-<div class="next-slide"><p>Next slide: Screenshot of <a href="https://rust-lang.org/">rust-lang.org</a> in 2018.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -45,7 +43,6 @@ make a lot of sense to you.</p>
 <aside class="notes"><p> Here's the <a href="https://rust-lang.org/">rust-lang.org</a> website at the end of 2018, right before
 they rolled out the new site. The headline emphasizes systems programming,
 speed, and memory safety — all things I don't directly care about that much.</p>
-<div class="next-slide"><p>Next slide: Compare that with the new website.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -63,7 +60,6 @@ everyone to build reliable and efficent software," and the website focuses on
 reliability and productivity. But a lot of the documentation has lagged behind
 and still assumes that new Rust programmers already know C++ or something
 similar.</p>
-<div class="next-slide"><p>Next slide: "I don't understand Rust" tweet</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -87,7 +83,6 @@ actually write meaningful programs — I'd get caught up on error handling.</p>
 <p>So we're going to write a non-trivial Rust program together, and see how we can
 solve a lot of common problems in a Rust-y way.</p>
 <!-- So I want to introduce the rest of us to Rust. -->
-<div class="next-slide"><p>Next slide: What can Rust do for you?</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -102,7 +97,6 @@ solve a lot of common problems in a Rust-y way.</p>
 <h2>What can Rust <br/> do for you?</h2>
 <aside class="notes"><p> Before we start writing code, let's take a quick look at some of the
 things Rust makes strikingly easy.</p>
-<div class="next-slide"><p>Next slide: Command-line help messages.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -153,7 +147,6 @@ For more information try <span style="color: #4E9A06">--help</span>
 </pre>
 <aside class="notes"><p> …with automatic typo-correction, while generating tab-completion
 scripts and man pages at compile-time.</p>
-<div class="next-slide"><p>Next slide: JSON deserialization example.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -173,7 +166,6 @@ Caused by:
 </code></pre>
 <aside class="notes"><p> Rust can give you great error reports for complex errors while
 automatically deserializing JSON to a custom type.</p>
-<div class="next-slide"><p>Next slide: Pretty test diffs.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -204,7 +196,6 @@ test result: <span style="color: #CC0000">FAILED</span>. 0 passed; 1 failed; 0 i
 </pre>
 <aside class="notes"><p> And Rust can output fancy test diffs with a one-line import that
 integrates with the default test framework.</p>
-<div class="next-slide"><p>Next slide: (And more.)</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -219,7 +210,6 @@ integrates with the default test framework.</p>
 <h2>(And a lot more)</h2>
 <aside class="notes"><p> Rust can do a whole lot more, too. But I don't want to just list random
 Rust features for 30 minutes.</p>
-<div class="next-slide"><p>Next slide: What is this talk?</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -241,7 +231,6 @@ sort of documentation.</p>
 <em>doing</em> the things I wanted to do — writing user-level applications.</p>
 <p>So we're going to write a non-trivial Rust program together, and see how we can
 solve a lot of common problems in a Rust-y way.</p>
-<div class="next-slide"><p>Next slide: What is this talk <em>not</em>?</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -263,7 +252,6 @@ waiting on some network requests.</p>
 features Rust has, or pointers. I'm not even going to <em>say</em> the words "heap" or
 "stack" or "allocate" — if it wouldn't matter in Python or JavaScript or
 Ruby, it's out of scope here.</p>
-<div class="next-slide"><p>Next slide: Who is this talk for?</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -292,7 +280,6 @@ etc.</li>
 <aside class="notes"><p> In particular, I want to talk to programmers who are already comfortable
 in dynamic scripting languages who are beginning to feel some of the downsides
 of working in those languages.</p>
-<div class="next-slide"><p>Next slide: Why do I like Rust?</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -316,7 +303,6 @@ operations are supported on which variables.</p>
 <p>Rust <em>really shines</em> in all of these areas. I work <em>with</em> the compiler to
 check my work. And it helps me feel a lot more confident that my programs do
 what I think they do.</p>
-<div class="next-slide"><p>Next slide: Tooling.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -348,7 +334,6 @@ quick fixes, and more.</li>
 <li>Cargo is a package manager and build system, integrating with the crates.io
 package repository.</li>
 </ul>
-<div class="next-slide"><p>Next slide: A bit more on documentation.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -381,7 +366,6 @@ check out the documentation for <code>RngCore</code>.</li>
 <li>We can see a description at first…</li>
 <li>And if we scroll down, we can see the required methods and their documentation.</li>
 </ol>
-<div class="next-slide"><p>Next slide: Hello, world!</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -433,7 +417,6 @@ the string literal there is actually turned into a series of formatting
 instructions at compile time so we don't waste time parsing at runtime.</p>
 </li>
 </ol>
-<div class="next-slide"><p>Next slide: <code>cargo build</code>.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -452,7 +435,6 @@ instructions at compile time so we don't waste time parsing at runtime.</p>
 <aside class="notes"><p> We can run <code>cargo build</code> to compile the program.</p>
 <!-- `cargo build` writes output to `target/debug`, so we can run our program from -->
 <!-- there. We can also use `cargo run` to compile and immediately run a program. -->
-<div class="next-slide"><p>Next slide: running the program.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -470,7 +452,6 @@ $ USER=nell ./target/debug/rustconf-code
 Hello, nell!
 </code></pre>
 <aside class="notes"><p> And then we can run it, and it does what we expect.</p>
-<div class="next-slide"><p>Next slide: …although, we might not really expect an empty variable.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -493,7 +474,6 @@ a backtrace
 <aside class="notes"><p> …although, if the <code>USER</code> environment variable is empty, it might be a
 bit confusing, and if <code>USER</code> contains invalid UTF-8, it'll crash the whole
 program.</p>
-<div class="next-slide"><p>Next slide: The <code>Result</code> type.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -514,7 +494,6 @@ program.</p>
 different things. It's also a generic type, so we can pick any two types <code>T</code>
 and <code>E</code> and use a <code>Result</code> type which can be either an <code>Ok</code> variant containing
 a <code>T</code> value or an <code>Err</code> variant containing an <code>E</code> value.</p>
-<div class="next-slide"><p>Next slide: gracefully handling errors with <code>match</code>.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -545,7 +524,6 @@ fn main() {
 <aside class="notes"><p> One way we can deal with that error is by matching on it, which is a bit
 like an <code>isinstance</code> check. Here, we'll just handle an error by printing a
 simple message.</p>
-<div class="next-slide"><p>Next slide: showing what happens when we run it.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -567,7 +545,6 @@ Handling Isn't All About Errors"</a>.</p>
 <p>But this talk is about Rust's value as a practical programming language,
 which means doing more than writing "Hello, world!"s. So lets write a program
 in Rust and explore some of the ways the language helps us out.</p>
-<div class="next-slide"><p>Next slide: receipt printer, weather program overview.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -586,7 +563,6 @@ designed for restaurants and retail, so they're incredibly durable.</p>
 <p>I always forget to check the weather in the morning, so I want to write a
 program I can set to run before I wake up that tells me the weather, and how
 it'll feel compared to the previous day.</p>
-<div class="next-slide"><p>Next slide: Minimal API call with OpenWeather.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -616,7 +592,6 @@ with open("openweather_api.json") as f:
 the default units are Kelvins.</p>
 <p>Here's a simple call of their API; we 1. load the API key from a JSON file, 2.
 make a request, and then 3. print out the response text.</p>
-<div class="next-slide"><p>Next slide: Running the example.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -636,7 +611,6 @@ make a request, and then 3. print out the response text.</p>
 </code></pre>
 <aside class="notes"><p> And when we run it, we get this minified JSON blob as output.</p>
 <p>Let's work on recreating this in Rust.</p>
-<div class="next-slide"><p>Next slide: Reading the API key from JSON.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -688,7 +662,6 @@ could happen — but it is awfully verbose and painful to write.</p>
 <p>Fortunately, there's a better way.</p>
 </li>
 </ol>
-<div class="next-slide"><p>Next slide: <code>Deserialize</code> derive.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -714,7 +687,6 @@ Java calls interfaces. Here, <code>Debug</code> lets us pretty-print the struct'
 <code>Clone</code> lets us deeply copy it, and <a href="https://docs.rs/serde"><code>serde</code></a>'s <code>Deserialize</code> lets us
 deserialize it from JSON — or, with other serde libraries, XML, YAML, TOML,
 Protobufs, and more.</p>
-<div class="next-slide"><p>Next slide: Using the <code>Deserialize</code> implementation with <a href="https://docs.rs/serde_json"><code>serde_json</code></a>.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -739,7 +711,6 @@ fn main() {
 to explicitly construct our <code>OpenWeatherConfig</code> object — that, along with
 parsing the JSON, matching up keys to fields, and recursively constructing
 other <code>Deserialize</code>able values, is handled by <a href="https://docs.rs/serde"><code>serde</code></a> and <a href="https://docs.rs/serde_json"><code>serde_json</code></a>.</p>
-<div class="next-slide"><p>Next slide: Running this example.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -765,7 +736,6 @@ OpenWeatherConfig {
 </code></pre>
 <aside class="notes"><p> Now when we run this, we get some nice pretty-printed debug output by default.</p>
 <p>That's not my actual API key, by the way. Don't worry.</p>
-<div class="next-slide"><p>Next slide: Adding the <a href="https://docs.rs/structopt"><code>structopt</code></a> crate.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -800,7 +770,6 @@ all our arguments as strings and pulling them out of an untyped hashmap, we
 just declare them as struct fields — which means we get autocompletion for
 our command-line options, along with bonuses like detecting that <code>Option</code>
 fields aren't mandatory and <code>Vec</code> fields can have multiple values.</p>
-<div class="next-slide"><p>Next slide: Generated help message.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -829,7 +798,6 @@ OPTIONS:
 </code></pre>
 <aside class="notes"><p> We get a lot of perks from <a href="https://docs.rs/structopt"><code>structopt</code></a>, including the great
 generated help message.</p>
-<div class="next-slide"><p>Next slide: Argument typo help.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -852,7 +820,6 @@ USAGE:
 For more information try --help
 </code></pre>
 <aside class="notes"><p> <a href="https://docs.rs/structopt"><code>structopt</code></a> even helps us with typos by default.</p>
-<div class="next-slide"><p>Next slide: Adding <a href="https://docs.rs/eyre"><code>eyre</code></a>.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -883,7 +850,6 @@ explore here.</p>
 <li>Now, we can handle errors with the <code>?</code> operator, which is a pretty simple but
 important bit of syntax sugar.</li>
 </ol>
-<div class="next-slide"><p>Next slide: Syntax sugar for <code>?</code>.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -919,7 +885,6 @@ value from the whole function — we just bubble up the error to the caller.
 It's a little bit like throwing an exception, but we don't quit an arbitrary
 series of functions — we only go up one layer, and the type system doesn't
 let us ignore it.</p>
-<div class="next-slide"><p>Next slide: <code>WrapErr</code> and context.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -955,7 +920,6 @@ write a bit about what we were doing that might have caused an error, and then
 that string will get displayed if the error report is printed. It's a pretty
 simple step — provided you do it from the start — and it makes debugging a
 <em>lot</em> easier.</p>
-<div class="next-slide"><p>Next slide: Error report examples.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -985,7 +949,6 @@ config file and we can see the error messages we get.</p>
 layers of error context to figure out what we did wrong — and unlike
 exceptions in a lot of languages, we don't just get an enormous unreadable
 stack trace by default.</p>
-<div class="next-slide"><p>Next slide: Using <code>reqwest</code> for HTTP requests.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -1013,7 +976,6 @@ fn get_weather(
 to the <a href="https://openweathermap.org/">openweathermap.org</a> API.</p>
 <p>We create an HTTP client object, call the <code>get</code> method with the endpoint URL,
 add some query parameters, and send the request.</p>
-<div class="next-slide"><p>Next slide: Making the call and printing the result.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -1043,7 +1005,6 @@ Response: Response {
 </code></pre>
 <aside class="notes"><p> We can see when we pretty-print the <code>Response</code> object, we get all the
 fields we might expect — headers, a status code, and so on.</p>
-<div class="next-slide"><p>Next slide: Extracting the response text.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -1068,7 +1029,6 @@ println!("{}", String::from_utf8_lossy(&amp;*bytes));
 <aside class="notes"><p> We can also print the response text, which is this big minified JSON
 blob. We're going to deserialize that, too, but first let's clean up our
 interface to the <a href="https://openweathermap.org/">openweathermap.org</a> API.</p>
-<div class="next-slide"><p>Next slide: Including a <code>Client</code> in the deserialized config.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -1099,7 +1059,6 @@ instead of passing an API key into every function call, we can keep it in the
 same struct that holds the <a href="https://docs.rs/reqwest"><code>reqwest</code></a> client. And because the <code>Client</code> has a
 default value, we can tell serde to use that instead of expecting it in our
 config file.</p>
-<div class="next-slide"><p>Next slide: Deserializing <code>OpenWeather</code> from a reader.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -1121,7 +1080,6 @@ config file.</p>
 </code></pre>
 <aside class="notes"><p> Now, we can just read our config object from the same JSON file we were
 using before, without even a constructor method.</p>
-<div class="next-slide"><p>Next slide: <code>impl OpenWeather</code>.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -1161,7 +1119,6 @@ an implementation of <code>DeserializeOwned</code> — which is exactly what
 parameter from <a href="https://docs.rs/serde_json"><code>serde_json</code></a><code>::from_reader</code> so that we can deserialize
 any type we define.</li>
 </ol>
-<div class="next-slide"><p>Next slide: API response struct definitions.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -1192,7 +1149,6 @@ pub struct Hourly {
 </code></pre>
 <aside class="notes"><p> We can define structs for the API responses — these are pretty much
 copied from the <a href="https://openweathermap.org/">openweathermap.org</a> API docs.</p>
-<div class="next-slide"><p>Next slide: <code>OpenWeather::onecall</code> method and use.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -1234,7 +1190,6 @@ type parameter needs to be from the return type of <code>self.get</code> on its 
 forecast data as a richly-typed struct.</p>
 </li>
 </ol>
-<div class="next-slide"><p>Next slide: <code>TempDifference</code></p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -1348,7 +1303,6 @@ correctly. Another little thing I like about Rust? The type system lets me
 describe and check a lot of my code before it compiles correctly, so I end up
 writing tests that crash and fail immediately a <em>lot</em> less often than I do in
 other languages, which is a big boost to my self-esteem.</p>
-<div class="next-slide"><p>Next slide: <code>Stats</code>.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -1499,7 +1453,6 @@ temperature it "felt like" doesn't require writing a whole new array.</p>
 forecast to 24 hourly points.</li>
 <li>And then we can get a temperature difference between the two days.</li>
 </ol>
-<div class="next-slide"><p>Next slide: Printing the result.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -1554,7 +1507,6 @@ period otherwise.</p>
 <p>After printing all the information out, our program is done!</p>
 </li>
 </ol>
-<div class="next-slide"><p>Next slide: Running the final program.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -1565,7 +1517,7 @@ period otherwise.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="15"><div class="slide-wrapper">
 <pre><code class="language-shell-session left">$ cargo build
     Finished dev [unoptimized + debuginfo] target(s) in 0.04s
 
@@ -1573,7 +1525,25 @@ $ ./target/debug/rustconf-code
 Good morning! Today will be about 85.16°F (76.42 - 94.96°F);
 that's about the same as yesterday.
 </code></pre>
-</div><div class="slide-footer">
+<aside class="notes"><p> Building and running it, we can see what the final output looks like
+after I fixed several issues with missing or superfluous whitespace, so now all
+we have left to do is print it out.</p>
+</aside></div><div class="slide-footer">
+<div class="slide-footer-left">
+    Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
+  </div>
+<div class="slide-footer-right">
+<i class="fa-twitter fab"></i>
+<a href="https://twitter.com/16kbps">@16kbps</a>
+    / <a href="https://becca.ooo">becca.ooo</a>
+</div>
+</div></section>
+<section data-timing="15"><div class="slide-wrapper">
+<pre><code class="language-shell-session">$ ./target/debug/rustconf-code | lp
+request id is star-22 (0 file(s))
+</code></pre>
+<aside class="notes"><p> We pipe our program's output to <code>lp</code>…</p>
+</aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
   </div>
@@ -1607,13 +1577,12 @@ that's about the same as yesterday.
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section class="title-card" data-state="purple"><div class="slide-wrapper">
+<section class="title-card" data-state="purple" data-timing="20"><div class="slide-wrapper">
 <h2>This is only a taste</h2>
 <aside class="notes"><p> Everything I just talked about is just a tiny portion of what you can do
 with Rust — and what Rust can do for you. There's so many features and tools
 I wanted to talk about that I didn't have time for — adding methods to
 foreign types, type-safe numbers and unit conversions.</p>
-<div class="next-slide"><p>Next slide: <strong>None.</strong></p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">
     Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)
@@ -1624,7 +1593,7 @@ foreign types, type-safe numbers and unit conversions.</p>
     / <a href="https://becca.ooo">becca.ooo</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper">
+<section data-timing="15"><div class="slide-wrapper">
 <h1>Rust <div class="small">for</div> Non-Systems Programmers</h1>
 <p><span class="author">Rebecca Turner (<a href="https://pronoun.is/she/her/">she/her</a>)</span></p>
 <p><i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo/">becca.ooo</a></p>

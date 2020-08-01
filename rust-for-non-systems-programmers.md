@@ -1,4 +1,4 @@
-<slide data-timing=15>
+<slide data-timing=60>
 
 # Rust <div class=small>for</div> Non-Systems Programmers
 
@@ -20,8 +20,6 @@
 Notes: Hey folks, my name is Rebecca Turner, I use [she/her] pronouns, and I'm
 going to be talking about Rust for non-systems programmers.
 
-Next slide: Why this talk?
-
 [@16kbps]: https://twitter.com/16kbps
 [becca.ooo]: https://becca.ooo/
 [she/her]: https://pronoun.is/she/her/
@@ -38,8 +36,6 @@ Python --- and now Rust is pretty much my favorite language.
 But if you looked at the [rust-lang.org] website before 2019, that might not
 make a lot of sense to you.
 
-Next slide: Screenshot of [rust-lang.org] in 2018.
-
 [rust-lang.org]: https://rust-lang.org/
 
 ---
@@ -54,8 +50,6 @@ safety."](img/rust-2018-11-30.png)
 Notes: Here's the [rust-lang.org] website at the end of 2018, right before
 they rolled out the new site. The headline emphasizes systems programming,
 speed, and memory safety --- all things I don't directly care about that much.
-
-Next slide: Compare that with the new website.
 
 [rust-lang.org]: https://rust-lang.org/
 
@@ -73,8 +67,6 @@ everyone to build reliable and efficent software," and the website focuses on
 reliability and productivity. But a lot of the documentation has lagged behind
 and still assumes that new Rust programmers already know C++ or something
 similar.
-
-Next slide: "I don't understand Rust" tweet
 
 ---
 
@@ -96,8 +88,6 @@ solve a lot of common problems in a Rust-y way.
 
 <!-- So I want to introduce the rest of us to Rust. -->
 
-Next slide: What can Rust do for you?
-
 ---
 
 <slide class=title-card data-state=peach>
@@ -106,8 +96,6 @@ Next slide: What can Rust do for you?
 
 Notes: Before we start writing code, let's take a quick look at some of the
 things Rust makes strikingly easy.
-
-Next slide: Command-line help messages.
 
 ---
 
@@ -150,8 +138,6 @@ For more information try <span style="color: #4E9A06">--help</span>
 Notes: ...with automatic typo-correction, while generating tab-completion
 scripts and man pages at compile-time.
 
-Next slide: JSON deserialization example.
-
 ---
 
 <slide class=center data-timing=10>
@@ -166,8 +152,6 @@ Caused by:
 
 Notes: Rust can give you great error reports for complex errors while
 automatically deserializing JSON to a custom type.
-
-Next slide: Pretty test diffs.
 
 ---
 
@@ -194,8 +178,6 @@ test result: <span style="color: #CC0000">FAILED</span>. 0 passed; 1 failed; 0 i
 Notes: And Rust can output fancy test diffs with a one-line import that
 integrates with the default test framework.
 
-Next slide: (And more.)
-
 ---
 
 <slide class=title-card data-state=teal data-timing=8>
@@ -204,8 +186,6 @@ Next slide: (And more.)
 
 Notes: Rust can do a whole lot more, too. But I don't want to just list random
 Rust features for 30 minutes.
-
-Next slide: What is this talk?
 
 ---
 
@@ -225,8 +205,6 @@ I also used to struggle to figure out how Rust would be used for actually
 So we're going to write a non-trivial Rust program together, and see how we can
 solve a lot of common problems in a Rust-y way.
 
-Next slide: What is this talk *not*?
-
 ---
 
 <slide class=title-card data-state=purple>
@@ -244,8 +222,6 @@ We're not going to talk about macros, or a lot of the fancy type system
 features Rust has, or pointers. I'm not even going to *say* the words "heap" or
 "stack" or "allocate" --- if it wouldn't matter in Python or JavaScript or
 Ruby, it's out of scope here.
-
-Next slide: Who is this talk for?
 
 ---
 
@@ -267,8 +243,6 @@ Notes: In particular, I want to talk to programmers who are already comfortable
 in dynamic scripting languages who are beginning to feel some of the downsides
 of working in those languages.
 
-Next slide: Why do I like Rust?
-
 ---
 
 <slide class=title-card data-state=peach data-timing=45>
@@ -288,8 +262,6 @@ operations are supported on which variables.
 Rust *really shines* in all of these areas. I work *with* the compiler to
 check my work. And it helps me feel a lot more confident that my programs do
 what I think they do.
-
-Next slide: Tooling.
 
 [mem]: https://en.wikipedia.org/wiki/Working_memory
 
@@ -318,8 +290,6 @@ making writing Rust easy and fun.
   quick fixes, and more.
 - Cargo is a package manager and build system, integrating with the crates.io
   package repository.
-
-Next slide: A bit more on documentation.
 
 [rustdoc]: https://doc.rust-lang.org/rustdoc/what-is-rustdoc.html
 [mdbook]: https://rust-lang.github.io/mdBook/
@@ -353,8 +323,6 @@ find at [docs.rs/rand][`rand`].
    check out the documentation for `RngCore`.
 4. We can see a description at first...
 5. And if we scroll down, we can see the required methods and their documentation.
-
-Next slide: Hello, world!
 
 
 [`rand`]: https://docs.rs/rand/
@@ -395,8 +363,6 @@ Notes: Here's a pretty simple rust program, just to show off a bit of syntax.
    the string literal there is actually turned into a series of formatting
    instructions at compile time so we don't waste time parsing at runtime.
 
-Next slide: `cargo build`.
-
 ---
 
 <slide class=center data-timing=5>
@@ -412,8 +378,6 @@ Notes: We can run `cargo build` to compile the program.
 <!-- `cargo build` writes output to `target/debug`, so we can run our program from -->
 <!-- there. We can also use `cargo run` to compile and immediately run a program. -->
 
-Next slide: running the program.
-
 ---
 
 <slide class=center data-timing=5>
@@ -426,8 +390,6 @@ Hello, nell!
 ```
 
 Notes: And then we can run it, and it does what we expect.
-
-Next slide: ...although, we might not really expect an empty variable.
 
 ---
 
@@ -447,8 +409,6 @@ Notes: ...although, if the `USER` environment variable is empty, it might be a
 bit confusing, and if `USER` contains invalid UTF-8, it'll crash the whole
 program.
 
-Next slide: The `Result` type.
-
 ---
 
 <slide class=center data-timing=25>
@@ -464,8 +424,6 @@ Notes: `Result` is an `enum`, which is a type that can be *one* of a number of
 different things. It's also a generic type, so we can pick any two types `T`
 and `E` and use a `Result` type which can be either an `Ok` variant containing
 a `T` value or an `Err` variant containing an `E` value.
-
-Next slide: gracefully handling errors with `match`.
 
 ---
 
@@ -493,8 +451,6 @@ Notes: One way we can deal with that error is by matching on it, which is a bit
 like an `isinstance` check. Here, we'll just handle an error by printing a
 simple message.
 
-Next slide: showing what happens when we run it.
-
 ---
 
 <slide class=center data-timing=30>
@@ -513,8 +469,6 @@ But this talk is about Rust's value as a practical programming language,
 which means doing more than writing "Hello, world!"s. So lets write a program
 in Rust and explore some of the ways the language helps us out.
 
-Next slide: receipt printer, weather program overview.
-
 [jane-errors]: https://rustconf.com/schedule/error-handling-isn-t-all-about-errors
 
 ---
@@ -532,8 +486,6 @@ designed for restaurants and retail, so they're incredibly durable.
 I always forget to check the weather in the morning, so I want to write a
 program I can set to run before I wake up that tells me the weather, and how
 it'll feel compared to the previous day.
-
-Next slide: Minimal API call with OpenWeather.
 
 ---
 
@@ -563,8 +515,6 @@ the default units are Kelvins.
 Here's a simple call of their API; we 1. load the API key from a JSON file, 2.
 make a request, and then 3. print out the response text.
 
-Next slide: Running the example.
-
 ---
 
 <slide data-timing=10>
@@ -580,8 +530,6 @@ $ ./openweather.py
 Notes: And when we run it, we get this minified JSON blob as output.
 
 Let's work on recreating this in Rust.
-
-Next slide: Reading the API key from JSON.
 
 ---
 
@@ -626,8 +574,6 @@ Notes: Here's a start at a line-by-line conversion of that program.
 
    Fortunately, there's a better way.
 
-Next slide: `Deserialize` derive.
-
 ---
 
 ```rust
@@ -646,8 +592,6 @@ Java calls interfaces. Here, `Debug` lets us pretty-print the struct's data,
 `Clone` lets us deeply copy it, and <crate serde>'s `Deserialize` lets us
 deserialize it from JSON --- or, with other serde libraries, XML, YAML, TOML,
 Protobufs, and more.
-
-Next slide: Using the `Deserialize` implementation with <crate serde_json>.
 
 ---
 
@@ -668,8 +612,6 @@ Notes: Here's what deserializing to a value looks like. Note that we don't need
 to explicitly construct our `OpenWeatherConfig` object --- that, along with
 parsing the JSON, matching up keys to fields, and recursively constructing
 other `Deserialize`able values, is handled by <crate serde> and <crate serde_json>.
-
-Next slide: Running this example.
 
 
 ---
@@ -693,8 +635,6 @@ OpenWeatherConfig {
 Notes: Now when we run this, we get some nice pretty-printed debug output by default.
 
 That's not my actual API key, by the way. Don't worry.
-
-Next slide: Adding the <crate structopt> crate.
 
 ---
 
@@ -726,8 +666,6 @@ just declare them as struct fields --- which means we get autocompletion for
 our command-line options, along with bonuses like detecting that `Option`
 fields aren't mandatory and `Vec` fields can have multiple values.
 
-Next slide: Generated help message.
-
 ---
 
 <slide data-timing=8>
@@ -752,8 +690,6 @@ OPTIONS:
 Notes: We get a lot of perks from <crate structopt>, including the great
 generated help message.
 
-Next slide: Argument typo help.
-
 ---
 
 <slide data-timing=8>
@@ -771,8 +707,6 @@ For more information try --help
 ```
 
 Notes: <crate structopt> even helps us with typos by default.
-
-Next slide: Adding <crate eyre>.
 
 ---
 
@@ -799,8 +733,6 @@ explore here.
 
 1. Now, we can handle errors with the `?` operator, which is a pretty simple but
    important bit of syntax sugar.
-
-Next slide: Syntax sugar for `?`.
 
 ---
 
@@ -833,8 +765,6 @@ It's a little bit like throwing an exception, but we don't quit an arbitrary
 series of functions --- we only go up one layer, and the type system doesn't
 let us ignore it.
 
-Next slide: `WrapErr` and context.
-
 ---
 
 <slide data-timing=30>
@@ -866,8 +796,6 @@ that string will get displayed if the error report is printed. It's a pretty
 simple step --- provided you do it from the start --- and it makes debugging a
 *lot* easier.
 
-Next slide: Error report examples.
-
 ---
 
 <slide data-timing=25>
@@ -894,8 +822,6 @@ layers of error context to figure out what we did wrong --- and unlike
 exceptions in a lot of languages, we don't just get an enormous unreadable
 stack trace by default.
 
-Next slide: Using `reqwest` for HTTP requests.
-
 ---
 
 <slide data-timing=15>
@@ -919,8 +845,6 @@ to the [openweathermap.org] API.
 
 We create an HTTP client object, call the `get` method with the endpoint URL,
 add some query parameters, and send the request.
-
-Next slide: Making the call and printing the result.
 
 ---
 
@@ -949,8 +873,6 @@ Response: Response {
 Notes: We can see when we pretty-print the `Response` object, we get all the
 fields we might expect --- headers, a status code, and so on.
 
-Next slide: Extracting the response text.
-
 ---
 
 <slide data-timing=20>
@@ -972,8 +894,6 @@ println!("{}", String::from_utf8_lossy(&*bytes));
 Notes: We can also print the response text, which is this big minified JSON
 blob. We're going to deserialize that, too, but first let's clean up our
 interface to the [openweathermap.org] API.
-
-Next slide: Including a `Client` in the deserialized config.
 
 ---
 
@@ -1001,8 +921,6 @@ same struct that holds the <crate reqwest> client. And because the `Client` has 
 default value, we can tell serde to use that instead of expecting it in our
 config file.
 
-Next slide: Deserializing `OpenWeather` from a reader.
-
 ---
 
 <slide data-timing=10>
@@ -1019,8 +937,6 @@ fn main() -> eyre::Result<()> {
 
 Notes: Now, we can just read our config object from the same JSON file we were
 using before, without even a constructor method.
-
-Next slide: `impl OpenWeather`.
 
 ---
 
@@ -1057,8 +973,6 @@ An `impl` block lets us put methods on types.
    parameter from <crate serde_json>`::from_reader` so that we can deserialize
    any type we define.
 
-Next slide: API response struct definitions.
-
 ---
 
 <slide data-timing=10>
@@ -1084,8 +998,6 @@ pub struct Hourly {
 
 Notes: We can define structs for the API responses --- these are pretty much
 copied from the [openweathermap.org] API docs.
-
-Next slide: `OpenWeather::onecall` method and use.
 
 ---
 
@@ -1119,8 +1031,6 @@ Notes:
 
 2. And then we can use the new method in our `main` function to get the
    forecast data as a richly-typed struct.
-
-Next slide: `TempDifference`
 
 ---
 
@@ -1218,8 +1128,6 @@ correctly. Another little thing I like about Rust? The type system lets me
 describe and check a lot of my code before it compiles correctly, so I end up
 writing tests that crash and fail immediately a *lot* less often than I do in
 other languages, which is a big boost to my self-esteem.
-
-Next slide: `Stats`.
 
 ---
 
@@ -1348,8 +1256,6 @@ temperature it "felt like" doesn't require writing a whole new array.
    forecast to 24 hourly points.
 2. And then we can get a temperature difference between the two days.
 
-Next slide: Printing the result.
-
 ---
 
 <slide data-timing=60>
@@ -1388,9 +1294,9 @@ Notes:
    period otherwise.
 6. After printing all the information out, our program is done!
 
-Next slide: Running the final program.
-
 ---
+
+<slide data-timing=15>
 
 ```shell-session
 $ cargo build
@@ -1400,6 +1306,21 @@ $ ./target/debug/rustconf-code
 Good morning! Today will be about 85.16°F (76.42 - 94.96°F);
 that's about the same as yesterday.
 ```
+
+Notes: Building and running it, we can see what the final output looks like
+after I fixed several issues with missing or superfluous whitespace, so now all
+we have left to do is print it out.
+
+---
+
+<slide data-timing=15>
+
+```shell-session
+$ ./target/debug/rustconf-code | lp
+request id is star-22 (0 file(s))
+```
+
+Notes: We pipe our program's output to `lp`...
 
 ---
 
@@ -1417,7 +1338,7 @@ be about 77.76°F (69.3 - 89.76°F); that's about the same as yesterday
 
 ---
 
-<slide class=title-card data-state=purple>
+<slide class=title-card data-state=purple data-timing=20>
 
 ## This is only a taste
 
@@ -1426,11 +1347,9 @@ with Rust --- and what Rust can do for you. There's so many features and tools
 I wanted to talk about that I didn't have time for --- adding methods to
 foreign types, type-safe numbers and unit conversions.
 
-Next slide: **None.**
-
 ---
 
-<slide no-footer>
+<slide no-footer data-timing=15>
 
 # Rust <div class=small>for</div> Non-Systems Programmers
 
