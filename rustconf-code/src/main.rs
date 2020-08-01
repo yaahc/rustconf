@@ -43,16 +43,21 @@ fn main() -> eyre::Result<()> {
 
     let diff = TempDifference::from(yesterday.avg, today.avg);
 
+    print!(
+        "Good morning! Today will be about {:.2}°F ",
+        today.avg
+    );
     println!(
-        "Good morning! Today will be about {avg:.2}°F ({min} - {max}°F); that's {diff} {than} yesterday{end}",
-        avg = today.avg, min = today.min, max = today.max,
+        "({min} - {max}°F); that's {diff} {than} yesterday{end}",
+        min = today.min,
+        max = today.max,
         diff = diff,
         than = match diff {
             TempDifference::Same => "as",
             _ => "than",
         },
         end = if 60.0 <= today.avg && today.avg <= 80.0 {
-            ":)"
+            " :)"
         } else {
             "."
         }
@@ -207,16 +212,12 @@ impl fmt::Display for TempDifference {
 impl TempDifference {
     fn from(from: f64, to: f64) -> Self {
         let delta = to - from;
-        if delta > 10.0 {
-            TempDifference::MuchWarmer
-        } else if delta > 5.0 {
-            TempDifference::Warmer
-        } else if delta < -10.0 {
-            TempDifference::MuchColder
-        } else if delta < -5.0 {
-            TempDifference::Colder
-        } else {
-            TempDifference::Same
+        match delta {
+            _ if delta > 10.0 => TempDifference::MuchWarmer,
+            _ if delta > 5.0 => TempDifference::Warmer,
+            _ if delta < -10.0 => TempDifference::MuchColder,
+            _ if delta < -5.0 => TempDifference::Colder,
+            _ => TempDifference::Same,
         }
     }
 }
@@ -228,14 +229,20 @@ struct Stats {
     count: usize,
 }
 
-impl Stats {
-    fn from(itr: impl Iterator<Item = f64>) -> Self {
-        let mut ret = Self {
+impl Default for Stats {
+    fn default() -> Self {
+        Self {
             min: f64::INFINITY,
             max: f64::NEG_INFINITY,
             avg: 0.0,
             count: 0,
-        };
+        }
+    }
+}
+
+impl Stats {
+    fn from(itr: impl Iterator<Item = f64>) -> Self {
+        let mut ret = Self::default();
         let mut sum = 0.0;
 
         for i in itr {

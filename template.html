@@ -23,24 +23,21 @@
 
     <script src="dist/reveal.js"></script>
     <script src="plugin/notes/notes.js"></script>
-    <script src="plugin/markdown/markdown.js"></script>
     <script src="plugin/highlight/highlight.js"></script>
     <script src="plugin/highlight/rust.js"></script>
     <script src="plugin/highlight/shell.js"></script>
     <script>
         Reveal.initialize({
             width: 960,
-            height: 540,
+            height: 580,
             hash: true,
             controls: false,
             progress: false,
             showNotes: true,
             transition: 'none',
+            totalTime: 30 * 60,
             /* vertical- */ center: false,
-            markdown: {
-                smartypants: true,
-            },
-            plugins: [RevealMarkdown, HighlightRustCompiler, HighlightShellSession, RevealHighlight, RevealNotes]
+            plugins: [HighlightRustCompiler, HighlightShellSession, RevealHighlight, RevealNotes]
         });
     </script>
 </body>

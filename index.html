@@ -1,32 +1,31 @@
 <!DOCTYPE html>
-<html lang="en-US"><head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1" name="viewport"/>
 
-    <title>Error Handling Isn't All About Errors</title>
-
-    <link href="dist/reset.css" rel="stylesheet"/>
-    <link href="dist/reveal.css" rel="stylesheet"/>
-    <link href="dist/theme/rustconf.css" id="theme" rel="stylesheet"/>
-    <link href="plugin/highlight/rustconf.css" id="highlight-theme" rel="stylesheet"/>
-    <script crossorigin="anonymous" src="https://kit.fontawesome.com/9144026ed3.js"></script>
+<html lang="en-US">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Error Handling Isn't All About Errors</title>
+<link href="dist/reset.css" rel="stylesheet"/>
+<link href="dist/reveal.css" rel="stylesheet"/>
+<link href="dist/theme/rustconf.css" id="theme" rel="stylesheet"/>
+<link href="plugin/highlight/rustconf.css" id="highlight-theme" rel="stylesheet"/>
+<script crossorigin="anonymous" src="https://kit.fontawesome.com/9144026ed3.js"></script>
 </head>
-
 <body>
-    <div class="reveal">
-        <div class="slides">
-            <section><div class="slide-wrapper">
+<div class="reveal">
+<div class="slides">
+<section><div class="slide-wrapper">
 <h1>Error Handling Isn't All About Errors</h1>
 <p><span class="author">Jane Lusby</span></p>
 <p><i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a></p>
 <p>Slide Template by Rebecca Turner <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo/">becca.ooo</a></p>
-<aside class="notes"><p>Hello and welcome to my talk, error handling isn't all about errors.</p>
+<aside class="notes"><p> Hello and welcome to my talk, error handling isn't all about errors.</p>
 <div class="next-slide"><p>Next slide: Let me start by introducing myself…</p></div>
 
 </aside></div></section>
 <section class="center"><div class="slide-wrapper">
 <h2>About Me</h2>
-<aside class="notes"><p>My name is Jane Lusby. On the internet I go by Yaah or Yaahc. I've
+<aside class="notes"><p> My name is Jane Lusby. On the internet I go by Yaah or Yaahc. I've
 been writing rust for two and a half years though I was only recently hired
 to do so professionally, by The Zcash Foundation. I also maintain
 <code>awesome-rust-mentors</code>, which is a list of projects and people who are
@@ -71,7 +70,7 @@ Suggestion: try using a file that exists next time
 Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
-<aside class="notes"><p>this is the basic usage example, with an error section, a spantrace
+<aside class="notes"><p> this is the basic usage example, with an error section, a spantrace
 section which, if you're not familiar with tracing is this extremely cool
 backtrace-like type of tracing spans…, a suggestion, and an env setting
 section.</p>
@@ -98,7 +97,7 @@ Suggestion: try using a file that exists next time
 Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
-<aside class="notes"><p>this is the basic usage example, with an error section, a spantrace
+<aside class="notes"><p> this is the basic usage example, with an error section, a spantrace
 section which, if you're not familiar with tracing is this extremely cool
 backtrace-like type of tracing spans…, a suggestion, and an env setting
 section.</p>
@@ -148,7 +147,7 @@ Error:
 Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
-<aside class="notes"><p>this is the basic usage example, with an error section, a spantrace
+<aside class="notes"><p> this is the basic usage example, with an error section, a spantrace
 section which, if you're not familiar with tracing is this extremely cool
 backtrace-like type of tracing spans…, a suggestion, and an env setting
 section.</p>
@@ -175,7 +174,7 @@ Suggestion: try using a file that exists next time
 Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</pre>
-<aside class="notes"><p>this is the basic usage example, with an error section, a spantrace
+<aside class="notes"><p> this is the basic usage example, with an error section, a spantrace
 section which, if you're not familiar with tracing is this extremely cool
 backtrace-like type of tracing spans…, a suggestion, and an env setting
 section.</p>
@@ -198,7 +197,7 @@ section.</p>
                         ⋮ 10 frames hidden ⋮
 // ...
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
-<aside class="notes"><p>we can pretty print backtraces and hide unimportant frames, here you can see...</p>
+<aside class="notes"><p> we can pretty print backtraces and hide unimportant frames, here you can see…</p>
 <div class="next-slide"><p>Next slide: we can also filter our backtrace frames, note that here there are 10 frames hidden after main…</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
@@ -219,7 +218,7 @@ Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
   <font color="#34E2E2">                      ⋮ 10 frames hidden ⋮                       </font>
 <font color="#333333">// ...
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
-<aside class="notes"><p>we can pretty print backtraces and hide unimportant frames, here you can see...</p>
+<aside class="notes"><p> we can pretty print backtraces and hide unimportant frames, here you can see…</p>
 <div class="next-slide"><p>Next slide: we can also filter our backtrace frames, note that here there are 10 frames hidden after main…</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
@@ -261,7 +260,7 @@ Run with RUST_BACKTRACE=full to include source snippets.</pre>
   <font color="#34E2E2">                      ⋮ 11 frames hidden ⋮                       </font>
 <font color="#333333">// ...
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
-<aside class="notes"><p>And we can apply this custom filtering consistently to backtraces
+<aside class="notes"><p> And we can apply this custom filtering consistently to backtraces
 printed in both our panic reports and our error reports.</p>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
@@ -289,7 +288,7 @@ Stderr:
    	var
 
 <font color="#333333">Suggestion: Maybe that isn't what git is for...</font></pre>
-<aside class="notes"><p>We can add custom sections, here you can see I've added the section
+<aside class="notes"><p> We can add custom sections, here you can see I've added the section
 for Stderr</p>
 <div class="next-slide"><p>Next slide: We will dig into this example more later…</p></div>
 </aside></div><div class="slide-footer">
@@ -313,7 +312,7 @@ Error:
 Error:
    0: <font color="#F15D22">The file could not be parsed</font>
    1: <font color="#F15D22">The file you're parsing is literally written in c++ instead of rust, what the hell</font></pre>
-<aside class="notes"><p>And we can be consistent when reporting, here you can see a panic
+<aside class="notes"><p> And we can be consistent when reporting, here you can see a panic
 that produces almost identical output to our Eyre Reports.</p>
 <p>Now, I'm not giving this talk to talk about eyre.</p>
 <div class="next-slide"><p>Next slide: I'm giving this talk to share what I learned in that yak shave to
@@ -336,7 +335,7 @@ error handling and error reporting.</p></div>
 <li class="fragment">Discarding errors</li>
 <li class="fragment">Reporting errors and gathered context</li>
 </ul>
-<aside class="notes"><p>Show the <code>annoying</code> bullet at the end of saying "What is error handling?".</p>
+<aside class="notes"><p> Show the <code>annoying</code> bullet at the end of saying "What is error handling?".</p>
 <p>don't mention the annoying, just keep going</p>
 <p>It's lot of things, when you zoom in close. Error handling is defining errors.
 It's propagating errors and gathering context, and context I mean stuff like
@@ -361,7 +360,7 @@ taken almost word for word from The Rust Book's chapter on error handling.</p></
 </div></section>
 <section class="title-card" data-state="purple"><div class="slide-wrapper">
 <h1>Recoverable<br/> vs<br/> Non-Recoverable</h1>
-<aside class="notes"><p>The Rust model for errors distinguishes between two classes of errors.</p>
+<aside class="notes"><p> The Rust model for errors distinguishes between two classes of errors.</p>
 <p>Recoverable errors are errors you can reasonably expect to occur during
 execution of…, can be reacted to, or reported.</p>
 <p>Unrecoverable errors are bugs, like index out of bounds. can’t be reacted to,
@@ -378,7 +377,7 @@ only reported before exiting the program / thread</p>
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Panic</h2>
-<pre><code class="language-rust" data-line-numbers="" data-noescape="">// if the index is past the end of the slice
+<pre><code class="language-rust left" data-line-numbers="" data-noescape="">// if the index is past the end of the slice
 } else if self.end &gt; slice.len() {
     panic!(
         "index {} out of range for slice of length {}",
@@ -387,7 +386,7 @@ only reported before exiting the program / thread</p>
     );
 }
 </code></pre>
-<aside class="notes"><p>Unrecoverable errors in rust are created via the <code>panic!</code> macro. Here
+<aside class="notes"><p> Unrecoverable errors in rust are created via the <code>panic!</code> macro. Here
 we can see an example of an index out of bounds error.</p>
 <div class="next-slide"><p>Next slide: Only input is an error message and optional some context</p></div>
 </aside></div><div class="slide-footer">
@@ -398,7 +397,7 @@ we can see an example of an index out of bounds error.</p>
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Panic</h2>
-<pre><code class="language-rust" data-line-numbers="4|5-6" data-noescape="">// if the index is past the end of the slice
+<pre><code class="language-rust left" data-line-numbers="4|5-6" data-noescape="">// if the index is past the end of the slice
 } else if self.end &gt; slice.len() {
     panic!(
         "index {} out of range for slice of length {}",
@@ -407,7 +406,7 @@ we can see an example of an index out of bounds error.</p>
     );
 }
 </code></pre>
-<aside class="notes"><p>Reporting and default context gathering done by panic hook</p>
+<aside class="notes"><p> Reporting and default context gathering done by panic hook</p>
 <p>once its done printing the report the panic handler cleans up either by
 unwinding the thread's stack or aborting the application all together.</p>
 <div class="next-slide"><p>Next slide: Recoverable errors are modeled in rust with the enum <code>Result&lt;T, E&gt;</code>.</p></div>
@@ -426,7 +425,7 @@ unwinding the thread's stack or aborting the application all together.</p>
     Err(E),
 }
 </code></pre>
-<aside class="notes"><p>This enum has two variants, Ok, which contains the value of an
+<aside class="notes"><p> This enum has two variants, Ok, which contains the value of an
 operation when it completes successfully, and Err, which contains the error
 value of an operation when it could <em>not</em> be completed successfully.</p>
 <p>We use Result to combine two return types in one and assign meaning to each
@@ -441,12 +440,12 @@ must react all errors.</p></div>
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Result</h2>
-<pre><code class="language-rust" data-line-numbers="1-4" data-noescape="">match result {
+<pre><code class="language-rust left" data-line-numbers="1-4" data-noescape="">match result {
     Ok(success) =&gt; println!("we got the value {}!", success),
     Err(error) =&gt; println!("uh oh we got an error: {}", error),
 }
 </code></pre>
-<aside class="notes"><p>With an enum, we cannot access the inner value without first
+<aside class="notes"><p> With an enum, we cannot access the inner value without first
 accounting for all the variants it could possibly be. In addition to this,
 Rust has marked the Result enum as <code>#[must_use]</code>, which makes the compiler
 emit a warning whenever a result is discarded accidentally.</p>
@@ -460,7 +459,7 @@ Try trait and the already stable try operator…</p></div>
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Try and <code>?</code></h2>
-<aside class="notes"><p>The try trait is used to model fallible return types in rust. Indeed,
+<aside class="notes"><p> The try trait is used to model fallible return types in rust. Indeed,
 Result is type that implements the Try trait, as does Option, and other some
 combinations thereof.</p>
 <div class="next-slide"><p>Next slide: With the try trait rust is able to abstract the "propogation of
@@ -482,7 +481,7 @@ errors" with the try operator.</p></div>
 
 let config = get_config()?;
 </code></pre>
-<aside class="notes"><p>Here we see two equivalent code snippets. The first manually
+<aside class="notes"><p> Here we see two equivalent code snippets. The first manually
 propagates the error using match and return. The second does the same by
 simply using the try operator to propagate the error.</p>
 <div class="next-slide"><p>Next slide: Finally, for recoverable errors rust also provides the error trait.</p></div>
@@ -500,7 +499,7 @@ simply using the try operator to propagate the error.</p>
 <li class="fragment">Reacting to specific errors in an open set</li>
 <li class="fragment">Reporting Interface for all errors</li>
 </ul>
-<aside class="notes"><p>The error trait fills three roles in rust.</p>
+<aside class="notes"><p> The error trait fills three roles in rust.</p>
 <p>First, it lets us represent an open set of errors by converting any type that
 implements the error trait into an error trait object.</p>
 <p>Second, it lets us then react to specific errors by letting us try to downcast them
@@ -515,7 +514,7 @@ back to their original type safely, rather than using match as we would with enu
 </div></section>
 <section><div class="slide-wrapper">
 <h2>The Error Trait</h2>
-<pre><code class="language-rust" data-line-numbers="1-9|1|2-4|6-9" data-noescape="">pub trait Error: Debug + Display {
+<pre><code class="language-rust left" data-line-numbers="1-9|1|2-4|6-9" data-noescape="">pub trait Error: Debug + Display {
     fn source(&amp;self) -&gt; Option&lt;&amp;(dyn Error + 'static)&gt; {
         None
     }
@@ -525,7 +524,7 @@ back to their original type safely, rather than using match as we would with enu
     }
 }
 </code></pre>
-<aside class="notes"><p>Here is a simplified version of the error trait...</p>
+<aside class="notes"><p> Here is a simplified version of the error trait…</p>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -548,7 +547,7 @@ impl std::fmt::Display for DeserializeError {
 
 impl std::error::Error for DeserializeError {}
 </code></pre>
-<aside class="notes"><p>We don't have a source or a backtrace, so we don't need to implement any
+<aside class="notes"><p> We don't have a source or a backtrace, so we don't need to implement any
 functions here. If we did have a source though we would need to override the
 <code>source</code> function to explicitly return a reference to our source when the
 function is called by an error reporter.</p>
@@ -571,7 +570,7 @@ trait CppError {
     fn msg(&amp;self) -&gt; &amp;'spooky str;
 }
 </code></pre>
-<aside class="notes"><p>The error trait equivalent in other languages is often quite simple,
+<aside class="notes"><p> The error trait equivalent in other languages is often quite simple,
 just a single fn to grab the error message.</p>
 <p>These interfaces force you to either include your source error, your
 backtrace, and any other information you care about in your error message or
@@ -607,7 +606,7 @@ Error:
       at <font color="#75507B">examples/usage.rs</font>:<font color="#75507B">52</font>
    1: <font color="#F15D22">usage::read_config</font>
       at <font color="#75507B">examples/usage.rs</font>:<font color="#75507B">58</font></pre>
-<aside class="notes"><p>In rust we can have the same error print to a log as one line, but the
+<aside class="notes"><p> In rust we can have the same error print to a log as one line, but the
 screen as many.</p>
 <p>This wouldn't be possible if the error trait didn't separate context from errors.</p>
 </aside></div><div class="slide-footer">
@@ -618,7 +617,7 @@ screen as many.</p>
 </div></section>
 <section class="title-card" data-state="purple"><div class="slide-wrapper">
 <h1>The error trait provides an interface <em>for</em> reporters.</h1>
-<aside class="notes"><p>Without the error trait each error type would be in charge of its own
+<aside class="notes"><p> Without the error trait each error type would be in charge of its own
 formatting and it would be prohibitively difficult to implement a consistent
 formatting for all errors.</p>
 <h2>Next slide: However, despite the fact that the error trait in rust is more
@@ -629,7 +628,7 @@ flexible than most other languages, it is still restrictive in some ways.</h2>
 <li class="fragment">Can only represent errors with a single source</li>
 <li class="fragment">Can only access 3 forms of context</li>
 </ul>
-<aside class="notes"><p>Can't return types like SpanTrace without using hacks based on
+<aside class="notes"><p> Can't return types like SpanTrace without using hacks based on
 downcast to work around the error trait.</p>
 <p>Error return traces</p>
 </aside></aside></div><div class="slide-footer">
@@ -710,7 +709,7 @@ Unrecoverable
 </ul>
 </div>
 </div>
-<aside class="notes"><p>Okay so now we’ve covered the fundamentals, you know all the tools the
+<aside class="notes"><p> Okay so now we’ve covered the fundamentals, you know all the tools the
 language and standard library give you to work with different kinds of
 errors.</p>
 <div class="next-slide"><p>Next slide: So next let’s dig into my favorite part of error handling, error
@@ -732,7 +731,7 @@ is not itself an error</li>
 <li class="fragment"><strong>Error Report</strong>: Printed representation of an error and all of its
 associated context</li>
 </ul>
-<aside class="notes"><p>In the context of error reporting an error is ..., context is ..., and
+<aside class="notes"><p> In the context of error reporting an error is …, context is …, and
 an error report is the …</p>
 <p>This gets to the other goal of this talk, clarifying the relationship between
 errors and context. Errors describe what went wrong, context helps you figure
@@ -749,7 +748,7 @@ custom_section example from the beginning of the talk.</p></div>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-rust" data-line-numbers="1-3|5|7|9-10|12|13|15" data-noescape="">trait CommandExt {
+<pre><code class="language-rust left" data-line-numbers="1-3|5|7|9-10|12|13|15" data-noescape="">trait CommandExt {
     fn output2(&amp;mut self) -&gt; Result&lt;String, eyre::Report&gt;;
 }
 
@@ -768,7 +767,7 @@ impl CommandExt for std::process::Command {
     }
 }
 </code></pre>
-<aside class="notes"><p>lets start with a customized version of <code>Command::output</code> that reports
+<aside class="notes"><p> lets start with a customized version of <code>Command::output</code> that reports
 better errors and converts stdout to a String on success.</p>
 <div class="next-slide"><p>Next slide: lets run it…</p></div>
 </aside></div><div class="slide-footer">
@@ -780,7 +779,7 @@ better errors and converts stdout to a String on success.</p>
 <section><div class="slide-wrapper"><pre class="term"><font color="#CC0000"><b>❯</b></font> cargo run
 Error:
    0: <font color="#F15D22">command exited unsuccessfully</font></pre>
-<aside class="notes"><p>We got our error report with our error message, cool! But also not
+<aside class="notes"><p> We got our error report with our error message, cool! But also not
 very helpful, I didn't even tell you what command I was running. Lets figure
 that out next.</p>
 </aside></div><div class="slide-footer">
@@ -790,7 +789,7 @@ that out next.</p>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-rust" data-line-numbers="10|13" data-noescape="">impl CommandExt for std::process::Command {
+<pre><code class="language-rust left" data-line-numbers="10|13" data-noescape="">impl CommandExt for std::process::Command {
     fn output2(&amp;mut self) -&gt; Result&lt;String, eyre::Report&gt; {
         let output = self.output()?;
 
@@ -807,7 +806,7 @@ that out next.</p>
     }
 }
 </code></pre>
-<aside class="notes"><p>Header takes a type that implements display and prefixes the header
+<aside class="notes"><p> Header takes a type that implements display and prefixes the header
 before printing it, and section takes a type that implements display and
 prints it after the chain of errors.</p>
 <div class="next-slide"><p>Next slide: so lets see how this changes things…</p></div>
@@ -823,7 +822,7 @@ Error:
 
 Command:
    "git" "cat"</pre>
-<aside class="notes"><p>Here we can see why the command failed, cat isn't a real git command!
+<aside class="notes"><p> Here we can see why the command failed, cat isn't a real git command!
 It would be cool if it was though.</p>
 <p>This is context, and the whole thing is a report.</p>
 <div class="next-slide"><p>Next slide: Now, this error isn't very descriptive. Sure, it describes what
@@ -865,7 +864,7 @@ with a more descriptive error message to wrap our source error.</p></div>
     Ok(())
 }
 </code></pre>
-<aside class="notes"><p>This function takes a Result and an arg that implements Display, and
+<aside class="notes"><p> This function takes a Result and an arg that implements Display, and
 if the Result is the <code>Err</code> variant it creates a new error, using the arg as
 the error message and the old error as the source. It then returns this new
 error as an eyre::Report.</p>
@@ -891,7 +890,7 @@ Command:
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<pre><code class="language-rust" data-line-numbers="7-9|13-14" data-noescape="">        let stdout = String...
+<pre><code class="language-rust left" data-line-numbers="7-9|13-14" data-noescape="">        let stdout = String...
 
         if output.status.success() {
             Ok(stdout)
@@ -933,7 +932,7 @@ Stderr:
    	stash
    	tag
    	var</pre>
-<aside class="notes"><p>And finally we have an error report including all the information we
+<aside class="notes"><p> And finally we have an error report including all the information we
 need. With it we can pinpoint what went wrong, why it went wrong, and, as an
 added bonus, how we can fix it.</p>
 <p>Hopefully this makes it clear how benefitial just a little context can be for
@@ -958,7 +957,7 @@ to help us with our five parts of error handling.</p></div>
 <li>Discarding</li>
 <li>Reporting</li>
 </ul>
-<aside class="notes"><p>I'm going to introduce these libraries by how they fit into our error
+<aside class="notes"><p> I'm going to introduce these libraries by how they fit into our error
 handling breakdown, not every part will have libraries to help and some will
 be disproportionately represented.</p>
 <div class="next-slide"><p>Next slide: First I'd like to introduce thiserror.</p></div>
@@ -985,7 +984,7 @@ pub enum DataStoreError {
     Unknown,
 }
 </code></pre>
-<aside class="notes"><p>This error is an error derive macro, and it exists to reduce boiler
+<aside class="notes"><p> This error is an error derive macro, and it exists to reduce boiler
 plate by implementing commonly used traits for you, such as Error, Display,
 and From.</p>
 </aside></div><div class="slide-footer">
@@ -1011,7 +1010,7 @@ pub enum DataStoreError {
     Unknown,
 }
 </code></pre>
-<aside class="notes"><p>To use it, we start by adding the macro's identifier to our derive
+<aside class="notes"><p> To use it, we start by adding the macro's identifier to our derive
 attribute.</p>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
@@ -1021,7 +1020,7 @@ attribute.</p>
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Defining - thiserror</h2>
-<pre><code class="language-rust" data-line-numbers="1-14|3|5|7|4" data-noescape="">#[derive(Debug, thiserror::Error)]
+<pre><code class="language-rust left" data-line-numbers="1-14|3|5|7|4" data-noescape="">#[derive(Debug, thiserror::Error)]
 pub enum DataStoreError {
     #[error("data store disconnected")]
     Disconnect(io::Error),
@@ -1044,7 +1043,7 @@ pub enum DataStoreError {
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Defining - thiserror</h2>
-<pre><code class="language-rust" data-line-numbers="4" data-noescape="">#[derive(Debug, thiserror::Error)]
+<pre><code class="language-rust left" data-line-numbers="4" data-noescape="">#[derive(Debug, thiserror::Error)]
 pub enum DataStoreError {
     #[error("data store disconnected")]
     Disconnect(#[source] io::Error),
@@ -1067,7 +1066,7 @@ pub enum DataStoreError {
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Defining - thiserror</h2>
-<pre><code class="language-rust" data-line-numbers="4|1-14" data-noescape="">#[derive(Debug, thiserror::Error)]
+<pre><code class="language-rust left" data-line-numbers="4|1-14" data-noescape="">#[derive(Debug, thiserror::Error)]
 pub enum DataStoreError {
     #[error("data store disconnected")]
     Disconnect(#[from] io::Error),
@@ -1082,7 +1081,7 @@ pub enum DataStoreError {
     Unknown,
 }
 </code></pre>
-<aside class="notes"><div class="next-slide"><p>Next slide: Next I'd like to introduce <code>displaydoc</code></p></div>
+<aside class="notes"><div class="next-slide"><p> Next slide: Next I'd like to introduce <code>displaydoc</code></p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -1091,7 +1090,7 @@ pub enum DataStoreError {
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Defining - displaydoc</h2>
-<pre><code class="language-rust" data-line-numbers="" data-noescape="">#[derive(Debug, thiserror::Error, displaydoc::Display)]
+<pre><code class="language-rust left" data-line-numbers="" data-noescape="">#[derive(Debug, thiserror::Error, displaydoc::Display)]
 pub enum DataStoreError {
     /// data store disconnected
     Disconnect(#[from] io::Error),
@@ -1106,7 +1105,7 @@ pub enum DataStoreError {
     Unknown,
 }
 </code></pre>
-<aside class="notes"><p>Display doc is a fork of thiserror that provides only the display
+<aside class="notes"><p> Display doc is a fork of thiserror that provides only the display
 derive portion of this error, but uses doc comments instead of custom
 attributes to input the format strings.</p>
 </aside></div><div class="slide-footer">
@@ -1117,7 +1116,7 @@ attributes to input the format strings.</p>
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Defining Errors &amp; Gathering Context - SNAFU</h2>
-<pre><code class="language-rust" data-line-numbers="1-13|1|2-4|10-11" data-noescape="">#[derive(Debug, Snafu)]
+<pre><code class="language-rust left" data-line-numbers="1-13|1|2-4|10-11" data-noescape="">#[derive(Debug, Snafu)]
 enum Error {
     #[snafu(display("Unable to read configuration from {}: {}", path.display(), source))]
     ReadConfiguration { source: io::Error, path: PathBuf },
@@ -1131,7 +1130,7 @@ fn process_data() -&gt; Result&lt;(), Error&gt; {
     Ok(())
 }
 </code></pre>
-<aside class="notes"><p>The context function takes a result and a "Context Selector" struct
+<aside class="notes"><p> The context function takes a result and a "Context Selector" struct
 which is autogenerated by the derive macro. This struct implicitly passes
 along context like the source and backtrace, making it so you only have to
 capture additional context that is unique that your error variant. It then
@@ -1152,7 +1151,7 @@ Err(eyre!("file not found"))?
 fallible_fn()
     .wrap_err("failed operation")?;
 </code></pre>
-<aside class="notes"><p>anyhow and eyre also have helpers for defining new errors. However,
+<aside class="notes"><p> anyhow and eyre also have helpers for defining new errors. However,
 these functions don't help you define new error types, instead they use
 private types to create the new errors and then they immediately wrap those
 types in the main reporting type e.g. <code>eyre::Report</code>. This is mostly useful
@@ -1197,7 +1196,7 @@ fn foo(x: bool) -&gt; i32 {
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Gathering Context - tracing-error</h2>
-<pre><code class="language-rust" data-line-numbers="2|3|5-7" data-noescape="">let error = std::fs::read_to_string("myfile.txt")
+<pre><code class="language-rust left" data-line-numbers="2|3|5-7" data-noescape="">let error = std::fs::read_to_string("myfile.txt")
     .in_current_span();
 let error: &amp;(dyn std::error::Error + 'static) = &amp;error;
 
@@ -1213,7 +1212,7 @@ if let Some(spantrace) = error.span_trace() {
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Gathering Context - extracterr</h2>
-<pre><code class="language-rust" data-noescape="">type Error = extracter::Bundled&lt;ExampleError, backtrace::Backtrace&gt;;
+<pre><code class="language-rust left" data-noescape="">type Error = extracter::Bundled&lt;ExampleError, backtrace::Backtrace&gt;;
 
 fn foo() -&gt; Result&lt;(), Error&gt; {
     Err(ExampleError)?
@@ -1227,7 +1226,7 @@ fn foo() -&gt; Result&lt;(), Error&gt; {
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Matching and Reacting</h2>
-<aside class="notes"><p>mostly handled by builtin features, match, downcast.</p>
+<aside class="notes"><p> mostly handled by builtin features, match, downcast.</p>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -1236,7 +1235,7 @@ fn foo() -&gt; Result&lt;(), Error&gt; {
 </div></section>
 <section><div class="slide-wrapper">
 <h2>Matching and Reacting - anyhow/eyre</h2>
-<pre><code class="language-rust" data-noescape="">use <a href="https://docs.rs/eyre">eyre</a>::WrapErr;
+<pre><code class="language-rust left" data-noescape="">use <a href="https://docs.rs/eyre">eyre</a>::WrapErr;
 
 #[derive(Debug, displaydoc::Display)]
 /// Foo error
@@ -1293,7 +1292,7 @@ let foo_error = report.downcast_ref::&lt;FooError&gt;().unwrap();
 <li>Library =&gt; error defining libraries</li>
 <li>Application =&gt; adhoc error defining + error reporting libraries</li>
 </ul>
-<aside class="notes"><p>What parts of error handling do you need as a library developer? You
+<aside class="notes"><p> What parts of error handling do you need as a library developer? You
 probably don't know, because you're not the one handling errors as a library
 developer. Libraries usually create and return errors for applications to
 react to or report. This means we need errors that are maximally flexible, so
@@ -1332,31 +1331,26 @@ debug our applications, so we might want a custom report hook like
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
-        </div>
-    </div>
-
-    <script src="dist/reveal.js"></script>
-    <script src="plugin/notes/notes.js"></script>
-    <script src="plugin/markdown/markdown.js"></script>
-    <script src="plugin/highlight/highlight.js"></script>
-    <script src="plugin/highlight/rust.js"></script>
-    <script src="plugin/highlight/shell.js"></script>
-    <script>
+</div>
+</div>
+<script src="dist/reveal.js"></script>
+<script src="plugin/notes/notes.js"></script>
+<script src="plugin/highlight/highlight.js"></script>
+<script src="plugin/highlight/rust.js"></script>
+<script src="plugin/highlight/shell.js"></script>
+<script>
         Reveal.initialize({
             width: 960,
-            height: 540,
+            height: 580,
             hash: true,
             controls: false,
             progress: false,
             showNotes: true,
             transition: 'none',
+            totalTime: 30 * 60,
             /* vertical- */ center: false,
-            markdown: {
-                smartypants: true,
-            },
-            plugins: [RevealMarkdown, HighlightRustCompiler, HighlightShellSession, RevealHighlight, RevealNotes]
+            plugins: [HighlightRustCompiler, HighlightShellSession, RevealHighlight, RevealNotes]
         });
     </script>
-
-
-</body></html>
+</body>
+</html>
