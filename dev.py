@@ -22,7 +22,7 @@ async def sass_watch(watch: str, render: str):
 
 async def serve_static(root: str = "."):
     print("Serving static files in ", path.realpath(root))
-    await run("sfz", "--no-ignore", "--render-index", "--bind", "127.0.0.1", root)
+    await run("sfz", "--no-ignore", "--render-index", "--bind", "0.0.0.0", root)
 
 
 async def open_browser(address: str):

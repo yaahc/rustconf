@@ -19,7 +19,9 @@
 <h1>Error Handling Isn't All About Errors</h1>
 <p><span class="author">Jane Lusby</span></p>
 <p><i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a></p>
-<p>Slide Template by Rebecca Turner <i class="fa-twitter fab"></i> <a href="https://twitter.com/16kbps">@16kbps</a> / <a href="https://becca.ooo/">becca.ooo</a></p>
+<span style="font-size: 0.5em">
+Slide Template by Rebecca Turner <i class="fa-twitter fab"></i>@16kbps
+</span>
 <aside class="notes"><p>Hello and welcome to my talk, error handling isn't all about errors.</p>
 <div class="next-slide"><p>Next slide: Let me start by introducing myself…</p></div>
 
@@ -42,7 +44,8 @@ was only recently hired to do so professionally, by The Zcash Foundation.</p>
 <aside class="notes"><p>Awesome-rust-mentors is a list of projects and people who are willing
 to provide mentorship to anyone who asks. If you're interested in finding a
 mentor, finding a project to get involved in, being a mentor, or getting
-people involved in your project you should check it out.</p>
+people involved in your project you should check it out. Also, to be clear,
+there are more than just these two mentors, so please check out the website.</p>
 </aside></div></section>
 <section><div class="slide-wrapper">
 <h2>Why Error Handling?</h2>
@@ -81,7 +84,8 @@ this.</p></div>
 <i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
 </div>
 </div></section>
-<section><div class="slide-wrapper"><pre class="term"><font color="#CC0000"><b>❯</b></font> cargo run --example usage
+<section><div class="slide-wrapper">
+<pre class="term"><font color="#CC0000"><b>❯</b></font> cargo run --example usage
 <font color="#333333">Error:
    0: Unable to read config
    1: No such file or directory (os error 2)
@@ -100,13 +104,9 @@ Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
 <aside class="notes"><p>Here we can see the basic usage example.</p>
 <div class="next-slide"><p>Next slide: In it we have an error section.</p></div>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Jane Lusby (she/her)</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
-</div>
-</div></section>
-<section><div class="slide-wrapper"><pre class="term"><font color="#333333"><b>❯</b> cargo run --example usage</font>
+</aside></div></section>
+<section><div class="slide-wrapper">
+<pre class="term"><font color="#333333"><b>❯</b> cargo run --example usage</font>
 Error:
    0: <font color="#F15D22">Unable to read config</font>
    1: <font color="#F15D22">No such file or directory (os error 2)</font>
@@ -124,13 +124,9 @@ Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
 <aside class="notes"><div class="next-slide"><p>Next slide: followed by a span trace section...</p></div>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Jane Lusby (she/her)</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
-</div>
-</div></section>
-<section><div class="slide-wrapper"><pre class="term"><font color="#333333"><b>❯</b> cargo run --example usage
+</aside></div></section>
+<section><div class="slide-wrapper">
+<pre class="term"><font color="#333333"><b>❯</b> cargo run --example usage
 Error:
    0: Unable to read config
    1: No such file or directory (os error 2)
@@ -150,13 +146,9 @@ Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
 <aside class="notes"><p>If you're not familiar with tracing is this extremely cool
 backtrace-like type of tracing spans.</p>
 <div class="next-slide"><p>Next slide: then after that we have a suggestion section</p></div>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Jane Lusby (she/her)</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
-</div>
-</div></section>
-<section><div class="slide-wrapper"><pre class="term"><font color="#333333"><b>❯</b> cargo run --example usage
+</aside></div></section>
+<section><div class="slide-wrapper">
+<pre class="term"><font color="#333333"><b>❯</b> cargo run --example usage
 Error:
    0: Unable to read config
    1: No such file or directory (os error 2)
@@ -174,13 +166,9 @@ Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
 <aside class="notes"><div class="next-slide"><p>Next slide: Followed finally by a omitted backtrace section</p></div>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Jane Lusby (she/her)</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
-</div>
-</div></section>
-<section><div class="slide-wrapper"><pre class="term"><font color="#333333"><b>❯</b> cargo run --example usage
+</aside></div></section>
+<section><div class="slide-wrapper">
+<pre class="term"><font color="#333333"><b>❯</b> cargo run --example usage
 Error:
    0: Unable to read config
    1: No such file or directory (os error 2)
@@ -198,12 +186,7 @@ Backtrace omitted.
 Run with RUST_BACKTRACE=1 environment variable to display it.
 Run with RUST_BACKTRACE=full to include source snippets.</pre>
 <aside class="notes"><div class="next-slide"><p>Next slide: I can also enable backtrace capture...</p></div>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Jane Lusby (she/her)</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
-</div>
-</div></section>
+</aside></div></section>
 <section><div class="slide-wrapper"><pre class="term"><b>❯</b> RUST_BACKTRACE=1 <font color="#333333">cargo run --example usage
 // ...
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━ BACKTRACE ━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -923,12 +906,7 @@ stdout as vecs of bytes and an <code>ExitStatus</code> lets return just a string
 stdout if the command succeeds, and return an eyre::Report if the command
 fails.</p>
 <div class="next-slide"><p>Next slide: lets run it…</p></div>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Jane Lusby (she/her)</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
-</div>
-</div></section>
+</aside></div></section>
 <section><div class="slide-wrapper"><pre class="term"><font color="#CC0000"><b>❯</b></font> cargo run
 Error:
    0: <font color="#F15D22">command exited unsuccessfully</font></pre>
@@ -1061,13 +1039,9 @@ Command:
     }
 }
 </code></pre>
-</div><div class="slide-footer">
-<div class="slide-footer-left">Jane Lusby (she/her)</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
-</div>
 </div></section>
-<section><div class="slide-wrapper"><pre class="term"><font color="#4E9A06"><b>❯</b></font> cargo run
+<section><div class="slide-wrapper">
+<pre class="term"><font color="#4E9A06"><b>❯</b></font> cargo run
 Error:
    0: <font color="#F15D22">the cat could not be got</font>
    1: <font color="#F15D22">command exited unsuccessfully</font>
@@ -1095,12 +1069,7 @@ configured the hooks from color-eyre to support, you can do much more if you
 take the time to write your own hooks. I don't have time to go into details
 on how to customize eyre as part of this talk but if you're interested in
 learning more please check out my blog.</p>
-</aside></div><div class="slide-footer">
-<div class="slide-footer-left">Jane Lusby (she/her)</div>
-<div class="slide-footer-right">
-<i class="fa-twitter fab"></i> <a href="https://twitter.com/yaahc_">@yaahc_</a> / <a href="https://yaah.dev/">yaah.dev</a>
-</div>
-</div></section>
+</aside></div></section>
 <section><div class="slide-wrapper">
 <h2>TIPS - Reporters</h2>
 
@@ -1310,7 +1279,7 @@ types and that often error messages make for great documentation.</p>
 </div>
 </div></section>
 <section><div class="slide-wrapper">
-<h2>Defining Errors &amp; Gathering Context - SNAFU</h2>
+<h2>Defining - SNAFU</h2>
 <pre><code class="language-rust" data-line-numbers="1-13|1|2-4|10-11" data-noescape="">#[derive(Debug, Snafu)]
 enum Error {
     #[snafu(display("Unable to read configuration from {}: {}", path.display(), source))]
@@ -1523,6 +1492,7 @@ objects, working around one of the restrictions of the error trait.</p>
 <p>Here we use <code>in_current_span</code> to wrap an error with our Instrumented error
 type, then below that we convert that error immediately to a trait object and
 then extract the spantrace from that error using some clever hacks.</p>
+<div class="next-slide"><p>Next slide: Another useful library for gathering context is <code>extracterr</code>.</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -1548,6 +1518,7 @@ for SpanTraces. Instead extracterr exposed a <code>Bundled</code> type for bundl
 arbitrary types with errors which can then be extracted later through <code>dyn Error</code> trait objects. Here is an example of <code>Bundled</code> being used to bundle a
 <code>Backtrace-rs</code> backtrace with an error, emulating the <code>backtrace()</code> fn on the
 error trait in a way that works on stable today.</p>
+<div class="next-slide"><p>Next slide: for matching and reacting</p></div>
 </aside></div><div class="slide-footer">
 <div class="slide-footer-left">Jane Lusby (she/her)</div>
 <div class="slide-footer-right">
@@ -1677,7 +1648,7 @@ everyone for taking the time to listen, I hope you've found it helpful.</p>
             hash: true,
             controls: false,
             progress: false,
-            showNotes: true,
+            showNotes: false,
             transition: 'none',
             /* vertical- */ center: false,
             markdown: {

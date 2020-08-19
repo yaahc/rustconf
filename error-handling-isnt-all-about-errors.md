@@ -4,7 +4,9 @@
 
 <fab fa-twitter> [@yaahc_] / [yaah.dev]
 
-Slide Template by Rebecca Turner <fab fa-twitter> [@16kbps] / [becca.ooo]
+<span style="font-size: 0.5em">
+Slide Template by Rebecca Turner <fab fa-twitter>@16kbps
+</span>
 
 Notes: Hello and welcome to my talk, error handling isn't all about errors.
 
@@ -47,7 +49,8 @@ Next slide: Quick shameless plug, I also maintain `awesome-rust-mentors`...
 Notes: Awesome-rust-mentors is a list of projects and people who are willing
 to provide mentorship to anyone who asks. If you're interested in finding a
 mentor, finding a project to get involved in, being a mentor, or getting
-people involved in your project you should check it out.
+people involved in your project you should check it out. Also, to be clear,
+there are more than just these two mentors, so please check out the website.
 
 ---
 
@@ -85,6 +88,8 @@ this.
 
 ---
 
+<slide no-footer>
+
 <pre class=term><font color="#CC0000"><b>❯</b></font> cargo run --example usage
 <font color="#333333">Error:
    0: Unable to read config
@@ -109,6 +114,8 @@ Next slide: In it we have an error section.
 
 ---
 
+<slide no-footer>
+
 <pre class=term><font color="#333333"><b>❯</b> cargo run --example usage</font>
 Error:
    0: <font color="#F15D22">Unable to read config</font>
@@ -131,6 +138,8 @@ Notes: Next slide: followed by a span trace section...
 
 
 ---
+
+<slide no-footer>
 
 <pre class=term><font color="#333333"><b>❯</b> cargo run --example usage
 Error:
@@ -158,6 +167,8 @@ Next slide: then after that we have a suggestion section
 
 ---
 
+<slide no-footer>
+
 <pre class=term><font color="#333333"><b>❯</b> cargo run --example usage
 Error:
    0: Unable to read config
@@ -179,6 +190,8 @@ Run with RUST_BACKTRACE=full to include source snippets.</font></pre>
 Notes: Next slide: Followed finally by a omitted backtrace section
 
 ---
+
+<slide no-footer>
 
 <pre class=term><font color="#333333"><b>❯</b> cargo run --example usage
 Error:
@@ -909,6 +922,8 @@ recreating the custom_section example from the beginning of the talk.
 
 ---
 
+<slide no-footer>
+
 ```rust [1-3|5|7|9-10|12|13|15]
 trait CommandExt {
     fn output2(&mut self) -> Result<String, eyre::Report>;
@@ -1041,6 +1056,8 @@ Command:
 
 ---
 
+<slide no-footer>
+
 ```rust [7-9|13-14]
         let stdout = String...
 
@@ -1062,6 +1079,8 @@ Command:
 ```
 
 ---
+
+<slide no-footer>
 
 <pre class=term><font color="#4E9A06"><b>❯</b></font> cargo run
 Error:
@@ -1300,7 +1319,7 @@ Next slide: Now I'd like to move onto SNAFU
 
 ---
 
-## Defining Errors & Gathering Context - SNAFU
+## Defining - SNAFU
 
 
 ```rust [1-13|1|2-4|10-11]
@@ -1510,6 +1529,8 @@ Here we use `in_current_span` to wrap an error with our Instrumented error
 type, then below that we convert that error immediately to a trait object and
 then extract the spantrace from that error using some clever hacks.
 
+Next slide: Another useful library for gathering context is `extracterr`.
+
 ---
 
 ## Gathering Context - extracterr
@@ -1534,6 +1555,8 @@ arbitrary types with errors which can then be extracted later through `dyn
 Error` trait objects. Here is an example of `Bundled` being used to bundle a
 `Backtrace-rs` backtrace with an error, emulating the `backtrace()` fn on the
 error trait in a way that works on stable today.
+
+Next slide: for matching and reacting
 
 ---
 
